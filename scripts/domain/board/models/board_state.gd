@@ -4,12 +4,34 @@ class_name BoardState
 var width: int
 var height: int
 var playable_cells: Array[BoardCell]
+var allowed_colors: Array[String]
+var pieces: Array
+var random_generator: RandomNumberGenerator
 
 
-func _init(board_width: int, board_height: int, cells: Array[BoardCell] = []) -> void:
+func _init(
+    board_width: int,
+    board_height: int,
+    cells: Array[BoardCell] = [],
+    colors: Array[String] = [],
+    seed: int = 0
+) -> void:
     width = board_width
     height = board_height
-    playable_cells = cells
+    playable_cells = cells.duplicate()
+    allowed_colors = colors.duplicate()
+    pieces = []
+    random_generator = RandomNumberGenerator.new()
+
+    if seed == 0:
+        random_generator.randomize()
+    else:
+        random_generator.seed = seed
+
+    for _row in range(height):
+        var row_data := []
+        row_data.resize(width)
+        pieces.append(row_data)
 
 
 func has_cell(row: int, column: int) -> bool:
@@ -18,3 +40,52 @@ func has_cell(row: int, column: int) -> bool:
             return true
 
     return false
+
+
+func is_inside(row: int, column: int) -> bool:
+    return row >= 0 and row < height and column >= 0 and column < width
+
+
+func get_piece(row: int, column: int):
+    if not is_inside(row, column):
+        return null
+
+    return pieces[row][column]
+
+
+func set_piece(row: int, column: int, piece) -> void:
+    if not is_inside(row, column):
+        return
+
+    pieces[row][column] = piece
+
+
+func swap_pieces(first_position: Vector2i, second_position: Vector2i) -> void:
+    var first_row := first_position.y
+    var first_column := first_position.x
+    var second_row := second_position.y
+    var second_column := second_position.x
+
+    var first_piece = get_piece(first_row, first_column)
+    var second_piece = get_piece(second_row, second_column)
+
+    set_piece(first_row, first_column, second_piece)
+    set_piece(second_row, second_column, first_piece)
+
+
+func get_playable_rows_for_column(column: int) -> Array:
+    var rows := []
+
+    for row in range(height):
+        if has_cell(row, column):
+            rows.append(row)
+
+    return rows
+
+
+func draw_random_color() -> String:
+    if allowed_colors.is_empty():
+        return "yellow"
+
+    var random_index := random_generator.randi_range(0, allowed_colors.size() - 1)
+    return allowed_colors[random_index]

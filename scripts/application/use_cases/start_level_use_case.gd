@@ -2,11 +2,20 @@ extends RefCounted
 class_name StartLevelUseCase
 
 var _level_repository: LevelRepository
+var _board_generator: BoardGenerator
 
 
-func _init(level_repository: LevelRepository) -> void:
+func _init(level_repository: LevelRepository, board_generator: BoardGenerator) -> void:
     _level_repository = level_repository
+    _board_generator = board_generator
 
 
 func execute(level_id: String) -> Dictionary:
-    return _level_repository.fetch_by_id(level_id)
+    var level_data := _level_repository.fetch_by_id(level_id)
+    if level_data.is_empty():
+        return {}
+
+    return {
+        "level_data": level_data,
+        "board_state": _board_generator.generate_from_level(level_data)
+    }

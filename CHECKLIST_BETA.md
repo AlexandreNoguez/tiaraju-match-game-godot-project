@@ -8,6 +8,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [ ] Definir nomes dos personagens principais
 - [ ] Definir ambientacao da vila ficcional
 - [ ] Definir direcao visual inicial
+- [ ] Confirmar que o protagonista sera ficcional e apenas inspirado em referencias historicas
 - [ ] Confirmar lista de mecanicas do beta
 - [ ] Confirmar lista de obstaculos do beta
 
@@ -49,17 +50,17 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 ## 4. Nucleo do tabuleiro
 
-- [ ] Criar grid com mascara de fase
-- [ ] Criar tipos de pecas coloridas
-- [ ] Implementar selecao de peca
-- [ ] Implementar troca entre pecas adjacentes
-- [ ] Implementar validacao de troca
-- [ ] Implementar match horizontal
-- [ ] Implementar match vertical
-- [ ] Implementar remocao de pecas
-- [ ] Implementar gravidade
-- [ ] Implementar reposicao aleatoria
-- [ ] Implementar cascatas
+- [x] Criar grid com mascara de fase
+- [x] Criar tipos de pecas coloridas
+- [x] Implementar selecao de peca
+- [x] Implementar troca entre pecas adjacentes
+- [x] Implementar validacao de troca
+- [x] Implementar match horizontal
+- [x] Implementar match vertical
+- [x] Implementar remocao de pecas
+- [x] Implementar gravidade
+- [x] Implementar reposicao aleatoria
+- [x] Implementar cascatas
 - [ ] Impedir inicio de fase sem jogadas possiveis
 
 ## 5. Regras da partida

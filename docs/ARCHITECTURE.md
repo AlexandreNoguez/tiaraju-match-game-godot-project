@@ -95,6 +95,8 @@ scripts/
   infrastructure/
     levels/
     persistence/
+  presentation/
+    board/
 ```
 
 ## Convencoes
