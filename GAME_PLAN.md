@@ -19,7 +19,7 @@ Em vez de um castelo europeu, o jogo acontecera em uma vila ficcional inspirada 
 
 ### 2.2 Personagens principais
 
-- protagonista infantil: uma crianca da aldeia
+- protagonista jovem: heroi ficcional inspirado em liderancas indigenas do sul do Brasil
 - companheiro carismatico: um papagaio
 - lideranca da vila: ancia ou anciao sabio
 - artesaos, pescadores, guardioes da mata e familiares como elenco secundario
@@ -30,17 +30,29 @@ Vale muito a pena evitar caricaturas ou uma mistura generica de povos reais. A r
 
 - usar uma comunidade ficcional inspirada no Brasil
 - usar nomes brasileiros e de origem indigena com cuidado
+- usar figuras historicas reais apenas como referencia de valores e contexto, nao como avatar literal
 - evitar copiar adornos sagrados, grafismos especificos ou elementos cerimoniais sem pesquisa
 - tratar os personagens com dignidade, protagonismo e humanidade
 
 ### 2.4 Sugestao inicial de identidade
 
 - nome provisiorio do projeto: `Aldeia das Cores`
-- personagem infantil: `Kaua` ou `Aira`
+- protagonista ficcional: `Tiaru`, `Sepan`, `Kaua` ou `Aira`
 - papagaio companheiro: `Aru`
 - ancia da vila: `Jaci`
 
 Esses nomes sao so placeholders e podem ser ajustados depois.
+
+### 2.5 Diretriz sobre Sepé Tiaraju
+
+Para reduzir risco criativo, juridico e cultural, a melhor decisao para este projeto e:
+
+- nao usar `Sepé Tiaraju` como personagem literal do jogo
+- nao transformar uma figura historica e espiritual em mascote ou avatar gamificado
+- usar sua historia apenas como inspiracao de coragem, lideranca, resistencia e defesa da comunidade
+- criar um protagonista original, com visual, nome, biografia e arco proprios
+
+Essa abordagem e mais segura do que tentar representar diretamente uma figura historica reverenciada.
 
 ## 3. Limites de Inspiracao
 
