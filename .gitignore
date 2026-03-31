@@ -1,0 +1,16 @@
+.godot/
+.import/
+export_presets.cfg
+*.translation
+*.apk
+*.aab
+*.keystore
+*.jks
+*.pck
+*.tmp
+*.log
+android/build/
+build/
+dist/
+tmp/
+.DS_Store
