@@ -1,0 +1,24 @@
+{
+  "id": "level_001",
+  "name": "Fase Sandbox",
+  "moves": 20,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 1,
+  "seed": 1001,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    {
+      "type": "collect_color",
+      "color": "yellow",
+      "amount": 12
+    }
+  ],
+  "obstacles": []
+}
