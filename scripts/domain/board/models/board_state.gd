@@ -83,6 +83,17 @@ func get_playable_rows_for_column(column: int) -> Array:
     return rows
 
 
+func get_playable_positions() -> Array:
+    var positions := []
+
+    for row in range(height):
+        for column in range(width):
+            if has_cell(row, column):
+                positions.append(Vector2i(column, row))
+
+    return positions
+
+
 func draw_random_color() -> String:
     if allowed_colors.is_empty():
         return "yellow"

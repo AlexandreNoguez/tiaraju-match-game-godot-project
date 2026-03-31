@@ -17,5 +17,5 @@ func _ready() -> void:
         return
 
     var board_screen = BoardScreenScene.instantiate()
-    board_screen.setup(payload["level_data"], payload["board_state"])
+    board_screen.setup(payload["level_data"], payload["session_state"])
     add_child(board_screen)

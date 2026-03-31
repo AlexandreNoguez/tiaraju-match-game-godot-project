@@ -4,16 +4,25 @@ class_name GravityResolver
 const BoardPiece = preload("res://scripts/domain/board/models/board_piece.gd")
 
 
-func clear_matches_and_refill(board_state: BoardState, matches: Array) -> Array:
+func clear_matches_and_refill(board_state: BoardState, matches: Array) -> Dictionary:
     var cleared_positions := _collect_unique_positions(matches)
+    var color_counts := {}
 
     for position in cleared_positions:
+        var removed_piece = board_state.get_piece(position.y, position.x)
+        if removed_piece != null:
+            var color_key := String(removed_piece.color_id)
+            color_counts[color_key] = int(color_counts.get(color_key, 0)) + 1
+
         board_state.set_piece(position.y, position.x, null)
 
     for column in range(board_state.width):
         _collapse_column(board_state, column)
 
-    return cleared_positions
+    return {
+        "positions": cleared_positions,
+        "color_counts": color_counts
+    }
 
 
 func _collect_unique_positions(matches: Array) -> Array:

@@ -2,23 +2,33 @@ extends Control
 class_name BoardScreen
 
 const ApplySwapUseCase = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
+const BoardGenerator = preload("res://scripts/domain/board/services/board_generator.gd")
 const GravityResolver = preload("res://scripts/domain/board/services/gravity_resolver.gd")
 const MatchFinder = preload("res://scripts/domain/board/services/match_finder.gd")
+const PossibleMoveFinder = preload("res://scripts/domain/board/services/possible_move_finder.gd")
 
 @onready var _title_label: Label = $MarginContainer/RootColumn/TitleLabel
+@onready var _moves_label: Label = $MarginContainer/RootColumn/HudRow/MovesLabel
+@onready var _goal_label: Label = $MarginContainer/RootColumn/HudRow/GoalLabel
 @onready var _status_label: Label = $MarginContainer/RootColumn/StatusLabel
 @onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardGrid
 
-var _board_state: BoardState
+var _session_state: LevelSessionState
 var _level_data: Dictionary = {}
 var _selected_position := Vector2i(-1, -1)
 var _status_message := "Carregando tabuleiro..."
-var _apply_swap_use_case := ApplySwapUseCase.new(MatchFinder.new(), GravityResolver.new())
+var _board_generator := BoardGenerator.new()
+var _apply_swap_use_case := ApplySwapUseCase.new(
+    MatchFinder.new(),
+    GravityResolver.new(),
+    PossibleMoveFinder.new(MatchFinder.new()),
+    _board_generator
+)
 
 
-func setup(level_data: Dictionary, board_state: BoardState) -> void:
+func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
     _level_data = level_data
-    _board_state = board_state
+    _session_state = session_state
     _status_message = "Selecione duas pecas vizinhas para formar combinacoes."
 
 
@@ -27,12 +37,16 @@ func _ready() -> void:
 
 
 func _refresh_view() -> void:
-    if _board_state == null:
+    if _session_state == null:
         _title_label.text = "Aldeia das Cores"
+        _moves_label.text = "Jogadas: -"
+        _goal_label.text = "Objetivo: -"
         _status_label.text = "Nenhum tabuleiro carregado."
         return
 
     _title_label.text = String(_level_data.get("name", "Aldeia das Cores"))
+    _moves_label.text = "Jogadas: %s" % _session_state.moves_remaining
+    _goal_label.text = _build_goal_text()
     _status_label.text = _status_message
     _render_grid()
 
@@ -41,11 +55,11 @@ func _render_grid() -> void:
     for child in _board_grid.get_children():
         child.queue_free()
 
-    _board_grid.columns = _board_state.width
+    _board_grid.columns = _session_state.board_state.width
 
-    for row in range(_board_state.height):
-        for column in range(_board_state.width):
-            if _board_state.has_cell(row, column):
+    for row in range(_session_state.board_state.height):
+        for column in range(_session_state.board_state.width):
+            if _session_state.board_state.has_cell(row, column):
                 _board_grid.add_child(_build_piece_button(row, column))
             else:
                 _board_grid.add_child(_build_blocked_cell())
@@ -53,12 +67,13 @@ func _render_grid() -> void:
 
 func _build_piece_button(row: int, column: int) -> Button:
     var button := Button.new()
-    var piece = _board_state.get_piece(row, column)
+    var piece = _session_state.board_state.get_piece(row, column)
     var is_selected := _selected_position == Vector2i(column, row)
     var style := StyleBoxFlat.new()
 
     button.custom_minimum_size = Vector2(96, 96)
     button.focus_mode = Control.FOCUS_NONE
+    button.disabled = not _session_state.can_accept_input()
     button.text = _piece_label(piece, is_selected)
 
     style.bg_color = _piece_color(piece)
@@ -97,6 +112,9 @@ func _build_blocked_cell() -> Control:
 
 
 func _on_piece_pressed(position: Vector2i) -> void:
+    if not _session_state.can_accept_input():
+        return
+
     if _selected_position == Vector2i(-1, -1):
         _selected_position = position
         _status_message = "Peca selecionada. Escolha uma gema vizinha."
@@ -115,7 +133,7 @@ func _on_piece_pressed(position: Vector2i) -> void:
         _refresh_view()
         return
 
-    var result := _apply_swap_use_case.execute(_board_state, _selected_position, position)
+    var result := _apply_swap_use_case.execute(_session_state, _selected_position, position)
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
     _refresh_view()
@@ -149,3 +167,22 @@ func _piece_label(piece, is_selected: bool) -> String:
 func _is_adjacent(first_position: Vector2i, second_position: Vector2i) -> bool:
     var distance := abs(first_position.x - second_position.x) + abs(first_position.y - second_position.y)
     return distance == 1
+
+
+func _build_goal_text() -> String:
+    if _session_state.goals.is_empty():
+        return "Objetivo: livre"
+
+    var parts := []
+
+    for goal in _session_state.goals:
+        if goal.get("type", "") == "collect_color":
+            parts.append(
+                "%s %s/%s" % [
+                    String(goal.get("color", "")).capitalize(),
+                    int(goal.get("current_amount", 0)),
+                    int(goal.get("target_amount", 0))
+                ]
+            )
+
+    return "Objetivo: %s" % ", ".join(parts)

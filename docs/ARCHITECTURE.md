@@ -53,6 +53,7 @@ Responsavel por:
 - resolver turno
 - encerrar fase
 - salvar progresso
+- atualizar estado da fase, jogadas e objetivos
 
 Ela conversa com o dominio e com gateways simples de infraestrutura.
 

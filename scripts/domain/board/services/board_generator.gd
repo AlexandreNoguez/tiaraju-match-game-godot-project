@@ -4,6 +4,12 @@ class_name BoardGenerator
 const BoardCell = preload("res://scripts/domain/board/models/board_cell.gd")
 const BoardPiece = preload("res://scripts/domain/board/models/board_piece.gd")
 const BoardState = preload("res://scripts/domain/board/models/board_state.gd")
+const MatchFinder = preload("res://scripts/domain/board/services/match_finder.gd")
+const PossibleMoveFinder = preload("res://scripts/domain/board/services/possible_move_finder.gd")
+
+const MAX_GENERATION_ATTEMPTS := 50
+
+var _possible_move_finder := PossibleMoveFinder.new(MatchFinder.new())
 
 
 func generate_from_level(level_data: Dictionary) -> BoardState:
@@ -32,15 +38,28 @@ func generate_from_level(level_data: Dictionary) -> BoardState:
         int(level_data.get("seed", 0))
     )
 
-    for row in range(board_height):
-        for column in range(board_width):
+    reroll_board(board_state)
+
+    return board_state
+
+
+func reroll_board(board_state: BoardState) -> void:
+    for _attempt in range(MAX_GENERATION_ATTEMPTS):
+        _fill_board_without_initial_matches(board_state)
+        if _possible_move_finder.has_possible_moves(board_state):
+            return
+
+    push_warning("Board generator reached the max reroll attempts before finding a playable board.")
+
+
+func _fill_board_without_initial_matches(board_state: BoardState) -> void:
+    for row in range(board_state.height):
+        for column in range(board_state.width):
             if not board_state.has_cell(row, column):
                 continue
 
             var color_id := _pick_color_without_initial_match(board_state, row, column)
             board_state.set_piece(row, column, BoardPiece.new(color_id))
-
-    return board_state
 
 
 func _pick_color_without_initial_match(board_state: BoardState, row: int, column: int) -> String:

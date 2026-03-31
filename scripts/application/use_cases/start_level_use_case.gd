@@ -15,7 +15,10 @@ func execute(level_id: String) -> Dictionary:
     if level_data.is_empty():
         return {}
 
+    var board_state := _board_generator.generate_from_level(level_data)
+    var session_state := LevelSessionState.new(level_data, board_state)
+
     return {
         "level_data": level_data,
-        "board_state": _board_generator.generate_from_level(level_data)
+        "session_state": session_state
     }

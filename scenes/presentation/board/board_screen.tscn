@@ -32,6 +32,23 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 38
 text = "Aldeia das Cores"
 
+[node name="HudRow" type="HBoxContainer" parent="MarginContainer/RootColumn"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MovesLabel" type="Label" parent="MarginContainer/RootColumn/HudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Jogadas: 0"
+
+[node name="GoalLabel" type="Label" parent="MarginContainer/RootColumn/HudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Objetivo: -"
+horizontal_alignment = 2
+
 [node name="StatusLabel" type="Label" parent="MarginContainer/RootColumn"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22

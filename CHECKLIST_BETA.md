@@ -61,16 +61,16 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Implementar gravidade
 - [x] Implementar reposicao aleatoria
 - [x] Implementar cascatas
-- [ ] Impedir inicio de fase sem jogadas possiveis
+- [x] Impedir inicio de fase sem jogadas possiveis
 
 ## 5. Regras da partida
 
-- [ ] Implementar contador de jogadas
-- [ ] Implementar objetivos de fase
-- [ ] Implementar condicao de vitoria
-- [ ] Implementar condicao de derrota
+- [x] Implementar contador de jogadas
+- [x] Implementar objetivos de fase
+- [x] Implementar condicao de vitoria
+- [x] Implementar condicao de derrota
 - [ ] Bloquear input enquanto o tabuleiro resolve
-- [ ] Mostrar HUD basica
+- [x] Mostrar HUD basica
 
 ## 6. Especiais
 
