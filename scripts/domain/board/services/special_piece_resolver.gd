@@ -4,7 +4,7 @@ class_name SpecialPieceResolver
 const BoardPiece = preload("res://scripts/domain/board/models/board_piece.gd")
 
 
-func build_spawned_specials(matches: Array, primary_positions: Array[Vector2i]) -> Dictionary:
+func build_spawned_specials(matches: Array, primary_positions: Array) -> Dictionary:
     var spawned_specials: Dictionary = {}
 
     for match_data in matches:
@@ -125,10 +125,12 @@ func expand_positions_with_specials(board_state: BoardState, positions: Array) -
     return queue
 
 
-func _pick_spawn_position(cells: Array, primary_positions: Array[Vector2i]) -> Vector2i:
-    for primary_position in primary_positions:
-        if cells.has(primary_position):
-            return primary_position
+func _pick_spawn_position(cells: Array, primary_positions: Array) -> Vector2i:
+    for raw_primary_position in primary_positions:
+        if raw_primary_position is Vector2i:
+            var primary_position: Vector2i = raw_primary_position
+            if cells.has(primary_position):
+                return primary_position
 
     if not cells.is_empty():
         return cells[cells.size() - 1]
@@ -165,7 +167,7 @@ func _positions_for_piece_activation(board_state: BoardState, position: Vector2i
 func _positions_for_rainbow_missile_combo(
     board_state: BoardState,
     color_id: String,
-    extra_positions: Array[Vector2i] = []
+    extra_positions: Array = []
 ) -> Array[Vector2i]:
     var target_positions: Array[Vector2i] = _all_positions_by_color(board_state, color_id, extra_positions)
     var combo_positions: Array = []
@@ -206,7 +208,7 @@ func _positions_for_column(board_state: BoardState, column: int) -> Array[Vector
     return positions
 
 
-func _all_positions_by_color(board_state: BoardState, color_id: String, extra_positions: Array[Vector2i] = []) -> Array[Vector2i]:
+func _all_positions_by_color(board_state: BoardState, color_id: String, extra_positions: Array = []) -> Array[Vector2i]:
     var positions: Array[Vector2i] = []
     for position in board_state.get_playable_positions():
         var piece: Variant = board_state.get_piece(position.y, position.x)
