@@ -5,18 +5,21 @@ var _match_finder: MatchFinder
 var _gravity_resolver: GravityResolver
 var _possible_move_finder: PossibleMoveFinder
 var _board_generator: BoardGenerator
+var _special_piece_resolver
 
 
-func _init(
+func configure(
     match_finder: MatchFinder,
     gravity_resolver: GravityResolver,
     possible_move_finder: PossibleMoveFinder,
-    board_generator: BoardGenerator
+    board_generator: BoardGenerator,
+    special_piece_resolver
 ) -> void:
     _match_finder = match_finder
     _gravity_resolver = gravity_resolver
     _possible_move_finder = possible_move_finder
     _board_generator = board_generator
+    _special_piece_resolver = special_piece_resolver
 
 
 func execute(session_state: LevelSessionState, first_position: Vector2i, second_position: Vector2i) -> Dictionary:
@@ -35,20 +38,48 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
 
     var matches: Array = _match_finder.find_matches(board_state)
     if matches.is_empty():
-        board_state.swap_pieces(first_position, second_position)
-        return _rejected("no_match", "A troca nao formou uma combinacao valida.")
+        var special_activation: Dictionary = _special_piece_resolver.build_swap_special_activation(
+            board_state,
+            first_position,
+            second_position
+        )
+        if special_activation.is_empty():
+            board_state.swap_pieces(first_position, second_position)
+            return _rejected("no_match", "A troca nao formou uma combinacao valida.")
+
+        matches = []
 
     var cascade_count: int = 0
     var removed_count: int = 0
     var removed_color_counts: Dictionary = {}
+    var special_message: String = ""
 
-    while not matches.is_empty():
+    while true:
         cascade_count += 1
-        var resolution: Dictionary = _gravity_resolver.clear_matches_and_refill(board_state, matches)
+        var positions_to_clear: Array = []
+        var spawned_specials: Dictionary = {}
+
+        if not matches.is_empty():
+            spawned_specials = _special_piece_resolver.build_spawned_specials(matches, [second_position, first_position])
+            positions_to_clear = _collect_cleared_positions(matches, spawned_specials)
+        else:
+            var special_activation: Dictionary = _special_piece_resolver.build_swap_special_activation(
+                board_state,
+                first_position,
+                second_position
+            )
+            positions_to_clear = special_activation.get("positions", [])
+            special_message = String(special_activation.get("message", "Especial ativado!"))
+
+        positions_to_clear = _special_piece_resolver.expand_positions_with_specials(board_state, positions_to_clear)
+        var resolution: Dictionary = _gravity_resolver.clear_positions_and_refill(board_state, positions_to_clear, spawned_specials)
         var cleared_positions: Array = resolution.get("positions", [])
         removed_count += cleared_positions.size()
         _merge_color_counts(removed_color_counts, resolution.get("color_counts", {}))
         matches = _match_finder.find_matches(board_state)
+
+        if matches.is_empty():
+            break
 
     session_state.consume_move()
     session_state.register_removed_colors(removed_color_counts)
@@ -61,6 +92,8 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
     session_state.update_status_after_turn()
 
     var message: String = "Jogada valida. %s pecas removidas em %s cascata(s)." % [removed_count, cascade_count]
+    if special_message != "":
+        message = "%s %s" % [special_message, message]
     if board_rerolled:
         message += " Tabuleiro reorganizado por falta de jogadas possiveis."
 
@@ -100,6 +133,19 @@ func _is_adjacent(first_position: Vector2i, second_position: Vector2i) -> bool:
 func _merge_color_counts(target: Dictionary, source: Dictionary) -> void:
     for color_key in source.keys():
         target[color_key] = int(target.get(color_key, 0)) + int(source[color_key])
+
+
+func _collect_cleared_positions(matches: Array, spawned_specials: Dictionary) -> Array[Vector2i]:
+    var positions: Array[Vector2i] = []
+
+    for match_data in matches:
+        for raw_position in match_data.get("cells", []):
+            if raw_position is Vector2i:
+                var position: Vector2i = raw_position
+                if not spawned_specials.has(position):
+                    positions.append(position)
+
+    return positions
 
 
 func _rejected(reason: String, message: String) -> Dictionary:

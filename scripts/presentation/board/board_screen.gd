@@ -1,11 +1,13 @@
 extends Control
 class_name BoardScreen
 
-const ApplySwapUseCase = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
-const BoardGenerator = preload("res://scripts/domain/board/services/board_generator.gd")
-const GravityResolver = preload("res://scripts/domain/board/services/gravity_resolver.gd")
-const MatchFinder = preload("res://scripts/domain/board/services/match_finder.gd")
-const PossibleMoveFinder = preload("res://scripts/domain/board/services/possible_move_finder.gd")
+const ApplySwapUseCaseScript = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
+const BoardGeneratorScript = preload("res://scripts/domain/board/services/board_generator.gd")
+const BoardPieceScript = preload("res://scripts/domain/board/models/board_piece.gd")
+const GravityResolverScript = preload("res://scripts/domain/board/services/gravity_resolver.gd")
+const MatchFinderScript = preload("res://scripts/domain/board/services/match_finder.gd")
+const PossibleMoveFinderScript = preload("res://scripts/domain/board/services/possible_move_finder.gd")
+const SpecialPieceResolverScript = preload("res://scripts/domain/board/services/special_piece_resolver.gd")
 
 @onready var _title_label: Label = $MarginContainer/RootColumn/TitleLabel
 @onready var _moves_label: Label = $MarginContainer/RootColumn/HudRow/MovesLabel
@@ -17,13 +19,8 @@ var _session_state: LevelSessionState
 var _level_data: Dictionary = {}
 var _selected_position: Vector2i = Vector2i(-1, -1)
 var _status_message: String = "Carregando tabuleiro..."
-var _board_generator: BoardGenerator = BoardGenerator.new()
-var _apply_swap_use_case: ApplySwapUseCase = ApplySwapUseCase.new(
-    MatchFinder.new(),
-    GravityResolver.new(),
-    PossibleMoveFinder.new(MatchFinder.new()),
-    _board_generator
-)
+var _board_generator
+var _apply_swap_use_case
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
@@ -33,7 +30,24 @@ func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
 
 
 func _ready() -> void:
+    _initialize_services()
     _refresh_view()
+
+
+func _initialize_services() -> void:
+    if _board_generator == null:
+        _board_generator = BoardGeneratorScript.new()
+
+    if _apply_swap_use_case == null:
+        var match_finder = MatchFinderScript.new()
+        _apply_swap_use_case = ApplySwapUseCaseScript.new()
+        _apply_swap_use_case.configure(
+            match_finder,
+            GravityResolverScript.new(),
+            PossibleMoveFinderScript.new(match_finder),
+            _board_generator,
+            SpecialPieceResolverScript.new()
+        )
 
 
 func _refresh_view() -> void:
@@ -170,7 +184,16 @@ func _piece_label(piece, is_selected: bool) -> String:
         return ""
 
     var prefix: String = "> " if is_selected else ""
-    return "%s%s" % [prefix, piece.color_id.substr(0, 1).to_upper()]
+    var symbol: String = piece.color_id.substr(0, 1).to_upper()
+
+    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_HORIZONTAL:
+        symbol = "H"
+    elif piece.special_type == BoardPieceScript.SPECIAL_MISSILE_VERTICAL:
+        symbol = "V"
+    elif piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
+        symbol = "*"
+
+    return "%s%s" % [prefix, symbol]
 
 
 func _is_adjacent(first_position: Vector2i, second_position: Vector2i) -> bool:

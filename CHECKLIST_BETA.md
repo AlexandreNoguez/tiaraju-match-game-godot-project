@@ -74,11 +74,11 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 ## 6. Especiais
 
-- [ ] Implementar missil horizontal
-- [ ] Implementar missil vertical
-- [ ] Implementar coringa
-- [ ] Implementar combo missil + missil
-- [ ] Implementar combo coringa + peca comum
+- [x] Implementar missil horizontal
+- [x] Implementar missil vertical
+- [x] Implementar coringa
+- [x] Implementar combo missil + missil
+- [x] Implementar combo coringa + peca comum
 - [ ] Implementar combo coringa + missil
 - [ ] Adicionar efeitos visuais simples para especiais
 

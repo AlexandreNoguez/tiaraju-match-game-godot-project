@@ -4,8 +4,8 @@ class_name GravityResolver
 const BoardPiece = preload("res://scripts/domain/board/models/board_piece.gd")
 
 
-func clear_matches_and_refill(board_state: BoardState, matches: Array) -> Dictionary:
-    var cleared_positions: Array = _collect_unique_positions(matches)
+func clear_positions_and_refill(board_state: BoardState, positions: Array, spawned_specials: Dictionary = {}) -> Dictionary:
+    var cleared_positions: Array = _collect_unique_positions_from_positions(positions)
     var color_counts: Dictionary = {}
 
     for position in cleared_positions:
@@ -16,6 +16,18 @@ func clear_matches_and_refill(board_state: BoardState, matches: Array) -> Dictio
 
         board_state.set_piece(position.y, position.x, null)
 
+    for raw_position in spawned_specials.keys():
+        var position: Vector2i = raw_position
+        var special_data: Dictionary = spawned_specials[raw_position]
+        board_state.set_piece(
+            position.y,
+            position.x,
+            BoardPiece.new(
+                String(special_data.get("color_id", "yellow")),
+                String(special_data.get("special_type", BoardPiece.SPECIAL_NONE))
+            )
+        )
+
     for column in range(board_state.width):
         _collapse_column(board_state, column)
 
@@ -25,11 +37,22 @@ func clear_matches_and_refill(board_state: BoardState, matches: Array) -> Dictio
     }
 
 
-func _collect_unique_positions(matches: Array) -> Array:
+func _collect_unique_positions_from_matches(matches: Array) -> Array:
     var unique_positions: Dictionary = {}
 
     for match_data in matches:
         for position in match_data.get("cells", []):
+            unique_positions[position] = true
+
+    return unique_positions.keys()
+
+
+func _collect_unique_positions_from_positions(positions: Array) -> Array:
+    var unique_positions: Dictionary = {}
+
+    for raw_position in positions:
+        if raw_position is Vector2i:
+            var position: Vector2i = raw_position
             unique_positions[position] = true
 
     return unique_positions.keys()

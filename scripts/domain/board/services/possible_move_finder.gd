@@ -22,6 +22,20 @@ func find_possible_moves(board_state: BoardState) -> Array:
             if not board_state.has_cell(target.y, target.x):
                 continue
 
+            var origin_piece: Variant = board_state.get_piece(position.y, position.x)
+            var target_piece: Variant = board_state.get_piece(target.y, target.x)
+            if origin_piece == null or target_piece == null:
+                continue
+
+            if origin_piece.is_special() or target_piece.is_special():
+                moves.append(
+                    {
+                        "from": position,
+                        "to": target
+                    }
+                )
+                continue
+
             board_state.swap_pieces(position, target)
             var matches: Array = _match_finder.find_matches(board_state)
             board_state.swap_pieces(position, target)
