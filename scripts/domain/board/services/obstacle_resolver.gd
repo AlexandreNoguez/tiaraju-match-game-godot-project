@@ -60,7 +60,12 @@ func _collect_affected_positions(
         for direction in ORTHOGONAL_DIRECTIONS:
             _mark_if_valid(board_state, unique_positions, adjacent_source + direction)
 
-    return unique_positions.keys()
+    var affected_positions: Array[Vector2i] = []
+    for raw_position in unique_positions.keys():
+        if raw_position is Vector2i:
+            affected_positions.append(raw_position)
+
+    return affected_positions
 
 
 func _mark_if_valid(board_state: BoardState, unique_positions: Dictionary, position: Vector2i) -> void:
