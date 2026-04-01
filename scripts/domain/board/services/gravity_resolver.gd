@@ -5,11 +5,11 @@ const BoardPiece = preload("res://scripts/domain/board/models/board_piece.gd")
 
 
 func clear_matches_and_refill(board_state: BoardState, matches: Array) -> Dictionary:
-    var cleared_positions := _collect_unique_positions(matches)
-    var color_counts := {}
+    var cleared_positions: Array = _collect_unique_positions(matches)
+    var color_counts: Dictionary = {}
 
     for position in cleared_positions:
-        var removed_piece = board_state.get_piece(position.y, position.x)
+        var removed_piece: Variant = board_state.get_piece(position.y, position.x)
         if removed_piece != null:
             var color_key := String(removed_piece.color_id)
             color_counts[color_key] = int(color_counts.get(color_key, 0)) + 1
@@ -26,7 +26,7 @@ func clear_matches_and_refill(board_state: BoardState, matches: Array) -> Dictio
 
 
 func _collect_unique_positions(matches: Array) -> Array:
-    var unique_positions := {}
+    var unique_positions: Dictionary = {}
 
     for match_data in matches:
         for position in match_data.get("cells", []):
@@ -36,19 +36,19 @@ func _collect_unique_positions(matches: Array) -> Array:
 
 
 func _collapse_column(board_state: BoardState, column: int) -> void:
-    var playable_rows := board_state.get_playable_rows_for_column(column)
+    var playable_rows: Array = board_state.get_playable_rows_for_column(column)
     if playable_rows.is_empty():
         return
 
-    var surviving_pieces := []
+    var surviving_pieces: Array = []
 
     for index in range(playable_rows.size() - 1, -1, -1):
         var row = playable_rows[index]
-        var piece = board_state.get_piece(row, column)
+        var piece: Variant = board_state.get_piece(row, column)
         if piece != null:
             surviving_pieces.append(piece)
 
-    var write_index := 0
+    var write_index: int = 0
 
     for index in range(playable_rows.size() - 1, -1, -1):
         var row = playable_rows[index]

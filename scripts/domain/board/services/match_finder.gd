@@ -3,14 +3,14 @@ class_name MatchFinder
 
 
 func find_matches(board_state: BoardState) -> Array:
-    var matches := []
+    var matches: Array = []
 
     for row in range(board_state.height):
-        var horizontal_run := []
-        var current_horizontal_color := ""
+        var horizontal_run: Array[Vector2i] = []
+        var current_horizontal_color: String = ""
 
         for column in range(board_state.width):
-            var piece = board_state.get_piece(row, column)
+            var piece: Variant = board_state.get_piece(row, column)
             if piece == null:
                 _append_match_if_needed(matches, horizontal_run, "horizontal")
                 horizontal_run = []
@@ -27,11 +27,11 @@ func find_matches(board_state: BoardState) -> Array:
         _append_match_if_needed(matches, horizontal_run, "horizontal")
 
     for column in range(board_state.width):
-        var vertical_run := []
-        var current_vertical_color := ""
+        var vertical_run: Array[Vector2i] = []
+        var current_vertical_color: String = ""
 
         for row in range(board_state.height):
-            var piece = board_state.get_piece(row, column)
+            var piece: Variant = board_state.get_piece(row, column)
             if piece == null:
                 _append_match_if_needed(matches, vertical_run, "vertical")
                 vertical_run = []

@@ -41,7 +41,7 @@ func register_removed_colors(color_counts: Dictionary) -> void:
         if goal.get("type", "") != "collect_color":
             continue
 
-        var color_key := goal.get("color", "")
+        var color_key: String = String(goal.get("color", ""))
         var current_amount := int(goal.get("current_amount", 0))
         var target_amount := int(goal.get("target_amount", 0))
         var removed_amount := int(color_counts.get(color_key, 0))

@@ -5,7 +5,7 @@ var width: int
 var height: int
 var playable_cells: Array[BoardCell]
 var allowed_colors: Array[String]
-var pieces: Array
+var pieces: Array = []
 var random_generator: RandomNumberGenerator
 
 
@@ -20,7 +20,6 @@ func _init(
     height = board_height
     playable_cells = cells.duplicate()
     allowed_colors = colors.duplicate()
-    pieces = []
     random_generator = RandomNumberGenerator.new()
 
     if seed == 0:
@@ -29,7 +28,7 @@ func _init(
         random_generator.seed = seed
 
     for _row in range(height):
-        var row_data := []
+        var row_data: Array = []
         row_data.resize(width)
         pieces.append(row_data)
 
@@ -61,20 +60,20 @@ func set_piece(row: int, column: int, piece) -> void:
 
 
 func swap_pieces(first_position: Vector2i, second_position: Vector2i) -> void:
-    var first_row := first_position.y
-    var first_column := first_position.x
-    var second_row := second_position.y
-    var second_column := second_position.x
+    var first_row: int = first_position.y
+    var first_column: int = first_position.x
+    var second_row: int = second_position.y
+    var second_column: int = second_position.x
 
-    var first_piece = get_piece(first_row, first_column)
-    var second_piece = get_piece(second_row, second_column)
+    var first_piece: Variant = get_piece(first_row, first_column)
+    var second_piece: Variant = get_piece(second_row, second_column)
 
     set_piece(first_row, first_column, second_piece)
     set_piece(second_row, second_column, first_piece)
 
 
 func get_playable_rows_for_column(column: int) -> Array:
-    var rows := []
+    var rows: Array[int] = []
 
     for row in range(height):
         if has_cell(row, column):
@@ -84,7 +83,7 @@ func get_playable_rows_for_column(column: int) -> Array:
 
 
 func get_playable_positions() -> Array:
-    var positions := []
+    var positions: Array[Vector2i] = []
 
     for row in range(height):
         for column in range(width):
@@ -98,5 +97,5 @@ func draw_random_color() -> String:
     if allowed_colors.is_empty():
         return "yellow"
 
-    var random_index := random_generator.randi_range(0, allowed_colors.size() - 1)
+    var random_index: int = random_generator.randi_range(0, allowed_colors.size() - 1)
     return allowed_colors[random_index]

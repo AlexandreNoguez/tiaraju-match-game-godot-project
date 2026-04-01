@@ -7,15 +7,15 @@ const BoardState = preload("res://scripts/domain/board/models/board_state.gd")
 const MatchFinder = preload("res://scripts/domain/board/services/match_finder.gd")
 const PossibleMoveFinder = preload("res://scripts/domain/board/services/possible_move_finder.gd")
 
-const MAX_GENERATION_ATTEMPTS := 50
+const MAX_GENERATION_ATTEMPTS: int = 50
 
-var _possible_move_finder := PossibleMoveFinder.new(MatchFinder.new())
+var _possible_move_finder: PossibleMoveFinder = PossibleMoveFinder.new(MatchFinder.new())
 
 
 func generate_from_level(level_data: Dictionary) -> BoardState:
     var grid_mask: Array = level_data.get("grid_mask", [])
-    var board_height := grid_mask.size()
-    var board_width := 0
+    var board_height: int = grid_mask.size()
+    var board_width: int = 0
     var playable_cells: Array[BoardCell] = []
     var allowed_colors: Array[String] = []
 
@@ -30,7 +30,7 @@ func generate_from_level(level_data: Dictionary) -> BoardState:
             if int(grid_mask[row][column]) == 1:
                 playable_cells.append(BoardCell.new(row, column, true))
 
-    var board_state := BoardState.new(
+    var board_state: BoardState = BoardState.new(
         board_width,
         board_height,
         playable_cells,
@@ -58,7 +58,7 @@ func _fill_board_without_initial_matches(board_state: BoardState) -> void:
             if not board_state.has_cell(row, column):
                 continue
 
-            var color_id := _pick_color_without_initial_match(board_state, row, column)
+            var color_id: String = _pick_color_without_initial_match(board_state, row, column)
             board_state.set_piece(row, column, BoardPiece.new(color_id))
 
 
@@ -66,7 +66,7 @@ func _pick_color_without_initial_match(board_state: BoardState, row: int, column
     if board_state.allowed_colors.is_empty():
         return "yellow"
 
-    var start_index := board_state.random_generator.randi_range(0, board_state.allowed_colors.size() - 1)
+    var start_index: int = board_state.random_generator.randi_range(0, board_state.allowed_colors.size() - 1)
 
     for offset in range(board_state.allowed_colors.size()):
         var color_id: String = board_state.allowed_colors[(start_index + offset) % board_state.allowed_colors.size()]
@@ -77,13 +77,13 @@ func _pick_color_without_initial_match(board_state: BoardState, row: int, column
 
 
 func _would_create_initial_match(board_state: BoardState, row: int, column: int, color_id: String) -> bool:
-    var left_one = board_state.get_piece(row, column - 1)
-    var left_two = board_state.get_piece(row, column - 2)
+    var left_one: Variant = board_state.get_piece(row, column - 1)
+    var left_two: Variant = board_state.get_piece(row, column - 2)
     if left_one != null and left_two != null and left_one.color_id == color_id and left_two.color_id == color_id:
         return true
 
-    var up_one = board_state.get_piece(row - 1, column)
-    var up_two = board_state.get_piece(row - 2, column)
+    var up_one: Variant = board_state.get_piece(row - 1, column)
+    var up_two: Variant = board_state.get_piece(row - 2, column)
     if up_one != null and up_two != null and up_one.color_id == color_id and up_two.color_id == color_id:
         return true
 

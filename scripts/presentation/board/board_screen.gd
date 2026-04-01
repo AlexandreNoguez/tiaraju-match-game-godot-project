@@ -15,10 +15,10 @@ const PossibleMoveFinder = preload("res://scripts/domain/board/services/possible
 
 var _session_state: LevelSessionState
 var _level_data: Dictionary = {}
-var _selected_position := Vector2i(-1, -1)
-var _status_message := "Carregando tabuleiro..."
-var _board_generator := BoardGenerator.new()
-var _apply_swap_use_case := ApplySwapUseCase.new(
+var _selected_position: Vector2i = Vector2i(-1, -1)
+var _status_message: String = "Carregando tabuleiro..."
+var _board_generator: BoardGenerator = BoardGenerator.new()
+var _apply_swap_use_case: ApplySwapUseCase = ApplySwapUseCase.new(
     MatchFinder.new(),
     GravityResolver.new(),
     PossibleMoveFinder.new(MatchFinder.new()),
@@ -66,10 +66,10 @@ func _render_grid() -> void:
 
 
 func _build_piece_button(row: int, column: int) -> Button:
-    var button := Button.new()
+    var button: Button = Button.new()
     var piece = _session_state.board_state.get_piece(row, column)
-    var is_selected := _selected_position == Vector2i(column, row)
-    var style := StyleBoxFlat.new()
+    var is_selected: bool = _selected_position == Vector2i(column, row)
+    var style: StyleBoxFlat = StyleBoxFlat.new()
 
     button.custom_minimum_size = Vector2(96, 96)
     button.focus_mode = Control.FOCUS_NONE
@@ -97,8 +97,8 @@ func _build_piece_button(row: int, column: int) -> Button:
 
 
 func _build_blocked_cell() -> Control:
-    var panel := Panel.new()
-    var style := StyleBoxFlat.new()
+    var panel: Panel = Panel.new()
+    var style: StyleBoxFlat = StyleBoxFlat.new()
 
     panel.custom_minimum_size = Vector2(96, 96)
     style.bg_color = Color(0.09, 0.16, 0.12, 0.45)
@@ -133,7 +133,7 @@ func _on_piece_pressed(position: Vector2i) -> void:
         _refresh_view()
         return
 
-    var result := _apply_swap_use_case.execute(_session_state, _selected_position, position)
+    var result: Dictionary = _apply_swap_use_case.execute(_session_state, _selected_position, position)
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
     _refresh_view()
@@ -160,12 +160,12 @@ func _piece_label(piece, is_selected: bool) -> String:
     if piece == null:
         return ""
 
-    var prefix := "> " if is_selected else ""
+    var prefix: String = "> " if is_selected else ""
     return "%s%s" % [prefix, piece.color_id.substr(0, 1).to_upper()]
 
 
 func _is_adjacent(first_position: Vector2i, second_position: Vector2i) -> bool:
-    var distance := abs(first_position.x - second_position.x) + abs(first_position.y - second_position.y)
+    var distance: int = absi(first_position.x - second_position.x) + absi(first_position.y - second_position.y)
     return distance == 1
 
 
@@ -173,7 +173,7 @@ func _build_goal_text() -> String:
     if _session_state.goals.is_empty():
         return "Objetivo: livre"
 
-    var parts := []
+    var parts: Array[String] = []
 
     for goal in _session_state.goals:
         if goal.get("type", "") == "collect_color":
