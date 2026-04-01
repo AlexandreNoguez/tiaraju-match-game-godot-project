@@ -74,6 +74,8 @@ func _build_piece_button(row: int, column: int) -> Button:
     button.custom_minimum_size = Vector2(96, 96)
     button.focus_mode = Control.FOCUS_NONE
     button.disabled = not _session_state.can_accept_input()
+    button.mouse_filter = Control.MOUSE_FILTER_STOP
+    button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
     button.text = _piece_label(piece, is_selected)
 
     style.bg_color = _piece_color(piece)
@@ -91,7 +93,7 @@ func _build_piece_button(row: int, column: int) -> Button:
     button.add_theme_stylebox_override("hover", style)
     button.add_theme_stylebox_override("pressed", style)
     button.add_theme_font_size_override("font_size", 22)
-    button.pressed.connect(_on_piece_pressed.bind(Vector2i(column, row)))
+    button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
 
     return button
 
@@ -137,6 +139,13 @@ func _on_piece_pressed(position: Vector2i) -> void:
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
     _refresh_view()
+
+
+func _on_piece_gui_input(event: InputEvent, position: Vector2i) -> void:
+    if event is InputEventMouseButton:
+        var mouse_event := event as InputEventMouseButton
+        if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
+            _on_piece_pressed(position)
 
 
 func _piece_color(piece) -> Color:
