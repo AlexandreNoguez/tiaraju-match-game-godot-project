@@ -5,48 +5,48 @@ Marque com `[x]` quando concluir cada etapa.
 ## 1. Windows 10 e WSL
 
 - [ ] Confirmar que o Windows 10 esta no build 19044 ou superior
-- [ ] Confirmar que o WSL esta instalado
-- [ ] Confirmar que a distro Ubuntu esta em `WSL 2`
+- [x] Confirmar que o WSL esta instalado
+- [x] Confirmar que a distro Ubuntu esta em `WSL 2`
 - [ ] Rodar `wsl --update`
 - [ ] Rodar `wsl --shutdown`
 - [ ] Atualizar driver de GPU do Windows
 
 ## 2. GUI no WSL
 
-- [ ] Confirmar que apps GUI do Linux funcionam no WSL
+- [x] Confirmar que apps GUI do Linux funcionam no WSL
 - [ ] Se GUI nao funcionar, decidir entre atualizar o WSL/Windows ou usar X server externo
 
 ## 3. Pacotes base no Ubuntu
 
-- [ ] Rodar `sudo apt update`
-- [ ] Rodar `sudo apt upgrade -y`
-- [ ] Instalar `git`, `curl`, `wget`, `unzip`, `zip`
-- [ ] Instalar `build-essential`
-- [ ] Instalar `openjdk-17-jdk`
-- [ ] Instalar `adb`
-- [ ] Instalar bibliotecas necessarias para apps GUI
+- [x] Rodar `sudo apt update`
+- [x] Rodar `sudo apt upgrade -y`
+- [x] Instalar `git`, `curl`, `wget`, `unzip`, `zip`
+- [x] Instalar `build-essential`
+- [x] Instalar `openjdk-17-jdk`
+- [x] Instalar `adb`
+- [x] Instalar bibliotecas necessarias para apps GUI
 
 ## 4. Godot
 
-- [ ] Baixar Godot 4 para Linux
-- [ ] Extrair Godot em `~/tools/godot`
-- [ ] Dar permissao de execucao no binario
-- [ ] Criar atalho `godot` no `PATH`
-- [ ] Abrir o editor Godot no WSL
-- [ ] Abrir o projeto `royal-match`
+- [x] Baixar Godot 4 para Linux
+- [x] Extrair Godot em `~/tools/godot`
+- [x] Dar permissao de execucao no binario
+- [x] Criar atalho `godot` no `PATH`
+- [x] Abrir o editor Godot no WSL
+- [x] Abrir o projeto `royal-match`
 
 ## 5. Android SDK no WSL
 
-- [ ] Criar pasta `~/Android/Sdk`
-- [ ] Instalar Android command-line tools ou Android Studio no WSL
-- [ ] Configurar `ANDROID_HOME`
-- [ ] Configurar `ANDROID_SDK_ROOT`
-- [ ] Configurar `JAVA_HOME`
-- [ ] Adicionar `platform-tools` e `cmdline-tools/latest/bin` ao `PATH`
-- [ ] Instalar `platform-tools`
-- [ ] Instalar `platforms;android-35`
-- [ ] Instalar `build-tools;35.0.0`
-- [ ] Aceitar licencas com `sdkmanager --licenses`
+- [x] Criar pasta `~/Android/Sdk`
+- [x] Instalar Android command-line tools ou Android Studio no WSL
+- [x] Configurar `ANDROID_HOME`
+- [x] Configurar `ANDROID_SDK_ROOT`
+- [x] Configurar `JAVA_HOME`
+- [x] Adicionar `platform-tools` e `cmdline-tools/latest/bin` ao `PATH`
+- [x] Instalar `platform-tools`
+- [x] Instalar `platforms;android-35`
+- [x] Instalar `build-tools;35.0.0`
+- [x] Aceitar licencas com `sdkmanager --licenses`
 
 ## 6. Dispositivo Android
 
@@ -66,8 +66,8 @@ Marque com `[x]` quando concluir cada etapa.
 
 ## 8. Validacao final
 
-- [ ] Confirmar `java -version`
-- [ ] Confirmar `adb version`
-- [ ] Confirmar `godot` abre sem erro
-- [ ] Confirmar o projeto abre na Godot
+- [x] Confirmar `java -version`
+- [x] Confirmar `adb version`
+- [x] Confirmar `godot` abre sem erro
+- [x] Confirmar o projeto abre na Godot
 - [ ] Confirmar a exportacao Android funciona

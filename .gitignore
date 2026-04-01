@@ -1,6 +1,8 @@
 .godot/
 .import/
 .codex
+assets/third_party/kenney/downloads/
+assets/third_party/**/*.url
 export_presets.cfg
 *.translation
 *.apk
