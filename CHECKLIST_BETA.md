@@ -79,7 +79,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Implementar coringa
 - [x] Implementar combo missil + missil
 - [x] Implementar combo coringa + peca comum
-- [ ] Implementar combo coringa + missil
+- [x] Implementar combo coringa + missil
 - [ ] Adicionar efeitos visuais simples para especiais
 
 ## 7. Obstaculos

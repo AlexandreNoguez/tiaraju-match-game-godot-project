@@ -39,6 +39,26 @@ func build_swap_special_activation(board_state: BoardState, first_position: Vect
             "message": "Combo de coringas! O tabuleiro inteiro foi limpo."
         }
 
+    if first_piece.is_rainbow() and second_piece.is_missile():
+        return {
+            "positions": _positions_for_rainbow_missile_combo(
+                board_state,
+                second_piece.color_id,
+                [first_position, second_position]
+            ),
+            "message": "Combo de coringa com missil! As pecas %s foram energizadas." % second_piece.color_id
+        }
+
+    if second_piece.is_rainbow() and first_piece.is_missile():
+        return {
+            "positions": _positions_for_rainbow_missile_combo(
+                board_state,
+                first_piece.color_id,
+                [first_position, second_position]
+            ),
+            "message": "Combo de coringa com missil! As pecas %s foram energizadas." % first_piece.color_id
+        }
+
     if first_piece.is_rainbow():
         return {
             "positions": _all_positions_by_color(board_state, second_piece.color_id, [first_position]),
@@ -140,6 +160,34 @@ func _positions_for_piece_activation(board_state: BoardState, position: Vector2i
         return _all_positions_by_color(board_state, piece.color_id, [position])
 
     return []
+
+
+func _positions_for_rainbow_missile_combo(
+    board_state: BoardState,
+    color_id: String,
+    extra_positions: Array[Vector2i] = []
+) -> Array[Vector2i]:
+    var target_positions: Array[Vector2i] = _all_positions_by_color(board_state, color_id, extra_positions)
+    var combo_positions: Array = []
+
+    for target_position in target_positions:
+        combo_positions.append(target_position)
+        var virtual_missile: BoardPiece = BoardPiece.new(
+            color_id,
+            _missile_type_for_combo_target(target_position)
+        )
+        combo_positions.append_array(
+            _positions_for_piece_activation(board_state, target_position, virtual_missile)
+        )
+
+    return _unique_positions(combo_positions)
+
+
+func _missile_type_for_combo_target(position: Vector2i) -> String:
+    if (position.x + position.y) % 2 == 0:
+        return BoardPiece.SPECIAL_MISSILE_HORIZONTAL
+
+    return BoardPiece.SPECIAL_MISSILE_VERTICAL
 
 
 func _positions_for_row(board_state: BoardState, row: int) -> Array[Vector2i]:
