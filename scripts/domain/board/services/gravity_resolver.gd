@@ -59,22 +59,22 @@ func _collect_unique_positions_from_positions(positions: Array) -> Array:
 
 
 func _collapse_column(board_state: BoardState, column: int) -> void:
-    var playable_rows: Array = board_state.get_playable_rows_for_column(column)
-    if playable_rows.is_empty():
+    var fillable_rows: Array = board_state.get_fillable_rows_for_column(column)
+    if fillable_rows.is_empty():
         return
 
     var surviving_pieces: Array = []
 
-    for index in range(playable_rows.size() - 1, -1, -1):
-        var row = playable_rows[index]
+    for index in range(fillable_rows.size() - 1, -1, -1):
+        var row = fillable_rows[index]
         var piece: Variant = board_state.get_piece(row, column)
         if piece != null:
             surviving_pieces.append(piece)
 
     var write_index: int = 0
 
-    for index in range(playable_rows.size() - 1, -1, -1):
-        var row = playable_rows[index]
+    for index in range(fillable_rows.size() - 1, -1, -1):
+        var row = fillable_rows[index]
         if write_index < surviving_pieces.size():
             board_state.set_piece(row, column, surviving_pieces[write_index])
             write_index += 1

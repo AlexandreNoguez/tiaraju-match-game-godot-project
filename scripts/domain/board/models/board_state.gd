@@ -34,11 +34,24 @@ func _init(
 
 
 func has_cell(row: int, column: int) -> bool:
-    for cell in playable_cells:
-        if cell.row == row and cell.column == column and cell.is_playable:
-            return true
+    var cell: BoardCell = get_cell(row, column)
+    if cell != null and cell.is_playable:
+        return true
 
     return false
+
+
+func get_cell(row: int, column: int) -> BoardCell:
+    for cell in playable_cells:
+        if cell.row == row and cell.column == column:
+            return cell
+
+    return null
+
+
+func can_hold_piece(row: int, column: int) -> bool:
+    var cell: BoardCell = get_cell(row, column)
+    return cell != null and cell.can_hold_piece()
 
 
 func is_inside(row: int, column: int) -> bool:
@@ -72,11 +85,11 @@ func swap_pieces(first_position: Vector2i, second_position: Vector2i) -> void:
     set_piece(second_row, second_column, first_piece)
 
 
-func get_playable_rows_for_column(column: int) -> Array:
+func get_fillable_rows_for_column(column: int) -> Array:
     var rows: Array[int] = []
 
     for row in range(height):
-        if has_cell(row, column):
+        if can_hold_piece(row, column):
             rows.append(row)
 
     return rows

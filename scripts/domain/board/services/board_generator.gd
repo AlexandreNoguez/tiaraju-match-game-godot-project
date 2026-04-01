@@ -18,6 +18,7 @@ func generate_from_level(level_data: Dictionary) -> BoardState:
     var board_width: int = 0
     var playable_cells: Array[BoardCell] = []
     var allowed_colors: Array[String] = []
+    var obstacles_by_position: Dictionary = _build_obstacle_lookup(level_data.get("obstacles", []))
 
     if board_height > 0:
         board_width = grid_mask[0].size()
@@ -28,7 +29,16 @@ func generate_from_level(level_data: Dictionary) -> BoardState:
     for row in range(board_height):
         for column in range(board_width):
             if int(grid_mask[row][column]) == 1:
-                playable_cells.append(BoardCell.new(row, column, true))
+                var obstacle_data: Dictionary = obstacles_by_position.get(Vector2i(column, row), {})
+                playable_cells.append(
+                    BoardCell.new(
+                        row,
+                        column,
+                        true,
+                        String(obstacle_data.get("type", "")),
+                        int(obstacle_data.get("hit_points", 0))
+                    )
+                )
 
     var board_state: BoardState = BoardState.new(
         board_width,
@@ -56,6 +66,10 @@ func _fill_board_without_initial_matches(board_state: BoardState) -> void:
     for row in range(board_state.height):
         for column in range(board_state.width):
             if not board_state.has_cell(row, column):
+                continue
+
+            if not board_state.can_hold_piece(row, column):
+                board_state.set_piece(row, column, null)
                 continue
 
             var color_id: String = _pick_color_without_initial_match(board_state, row, column)
@@ -88,3 +102,26 @@ func _would_create_initial_match(board_state: BoardState, row: int, column: int,
         return true
 
     return false
+
+
+func _build_obstacle_lookup(raw_obstacles: Array) -> Dictionary:
+    var lookup: Dictionary = {}
+
+    for raw_obstacle in raw_obstacles:
+        if raw_obstacle is not Dictionary:
+            continue
+
+        var obstacle: Dictionary = raw_obstacle
+        var position: Vector2i = Vector2i(
+            int(obstacle.get("column", -1)),
+            int(obstacle.get("row", -1))
+        )
+        if position.x < 0 or position.y < 0:
+            continue
+
+        lookup[position] = {
+            "type": String(obstacle.get("type", "")),
+            "hit_points": int(obstacle.get("hit_points", 1))
+        }
+
+    return lookup

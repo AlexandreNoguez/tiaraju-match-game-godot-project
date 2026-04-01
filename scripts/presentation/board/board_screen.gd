@@ -3,9 +3,11 @@ class_name BoardScreen
 
 const ApplySwapUseCaseScript = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
 const BoardGeneratorScript = preload("res://scripts/domain/board/services/board_generator.gd")
+const BoardCellScript = preload("res://scripts/domain/board/models/board_cell.gd")
 const BoardPieceScript = preload("res://scripts/domain/board/models/board_piece.gd")
 const GravityResolverScript = preload("res://scripts/domain/board/services/gravity_resolver.gd")
 const MatchFinderScript = preload("res://scripts/domain/board/services/match_finder.gd")
+const ObstacleResolverScript = preload("res://scripts/domain/board/services/obstacle_resolver.gd")
 const PossibleMoveFinderScript = preload("res://scripts/domain/board/services/possible_move_finder.gd")
 const SpecialPieceResolverScript = preload("res://scripts/domain/board/services/special_piece_resolver.gd")
 
@@ -44,6 +46,7 @@ func _initialize_services() -> void:
         _apply_swap_use_case.configure(
             match_finder,
             GravityResolverScript.new(),
+            ObstacleResolverScript.new(),
             PossibleMoveFinderScript.new(match_finder),
             _board_generator,
             SpecialPieceResolverScript.new()
@@ -73,8 +76,10 @@ func _render_grid() -> void:
 
     for row in range(_session_state.board_state.height):
         for column in range(_session_state.board_state.width):
-            if _session_state.board_state.has_cell(row, column):
+            if _session_state.board_state.can_hold_piece(row, column):
                 _board_grid.add_child(_build_piece_button(row, column))
+            elif _session_state.board_state.has_cell(row, column):
+                _board_grid.add_child(_build_obstacle_cell(row, column))
             else:
                 _board_grid.add_child(_build_blocked_cell())
 
@@ -125,6 +130,35 @@ func _build_blocked_cell() -> Control:
     panel.add_theme_stylebox_override("panel", style)
 
     return panel
+
+
+func _build_obstacle_cell(row: int, column: int) -> Control:
+    var button: Button = Button.new()
+    var cell: BoardCell = _session_state.board_state.get_cell(row, column)
+    var style: StyleBoxFlat = StyleBoxFlat.new()
+
+    button.custom_minimum_size = Vector2(96, 96)
+    button.focus_mode = Control.FOCUS_NONE
+    button.disabled = true
+    button.mouse_filter = Control.MOUSE_FILTER_STOP
+    button.text = _obstacle_label(cell)
+
+    style.bg_color = _obstacle_color(cell)
+    style.corner_radius_top_left = 16
+    style.corner_radius_top_right = 16
+    style.corner_radius_bottom_right = 16
+    style.corner_radius_bottom_left = 16
+    style.border_width_left = 4
+    style.border_width_top = 4
+    style.border_width_right = 4
+    style.border_width_bottom = 4
+    style.border_color = Color(0.33, 0.18, 0.06, 0.9)
+
+    button.add_theme_stylebox_override("normal", style)
+    button.add_theme_stylebox_override("disabled", style)
+    button.add_theme_font_size_override("font_size", 20)
+
+    return button
 
 
 func _on_piece_pressed(position: Vector2i) -> void:
@@ -216,5 +250,32 @@ func _build_goal_text() -> String:
                     int(goal.get("target_amount", 0))
                 ]
             )
+        elif goal.get("type", "") == "break_obstacle":
+            parts.append(
+                "Caixas %s/%s" % [
+                    int(goal.get("current_amount", 0)),
+                    int(goal.get("target_amount", 0))
+                ]
+            )
 
     return "Objetivo: %s" % ", ".join(parts)
+
+
+func _obstacle_label(cell: BoardCell) -> String:
+    if cell == null:
+        return ""
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_BOX:
+        return "CX"
+
+    return "X"
+
+
+func _obstacle_color(cell: BoardCell) -> Color:
+    if cell == null:
+        return Color(0.24, 0.18, 0.11)
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_BOX:
+        return Color("a86a3a")
+
+    return Color(0.24, 0.18, 0.11)

@@ -22,6 +22,7 @@ func _init(level_data: Dictionary, initial_board_state: BoardState) -> void:
             {
                 "type": String(raw_goal.get("type", "")),
                 "color": String(raw_goal.get("color", "")),
+                "obstacle_type": String(raw_goal.get("obstacle_type", "")),
                 "target_amount": int(raw_goal.get("amount", 0)),
                 "current_amount": 0
             }
@@ -45,6 +46,19 @@ func register_removed_colors(color_counts: Dictionary) -> void:
         var current_amount := int(goal.get("current_amount", 0))
         var target_amount := int(goal.get("target_amount", 0))
         var removed_amount := int(color_counts.get(color_key, 0))
+
+        goal["current_amount"] = min(target_amount, current_amount + removed_amount)
+
+
+func register_removed_obstacles(obstacle_counts: Dictionary) -> void:
+    for goal in goals:
+        if goal.get("type", "") != "break_obstacle":
+            continue
+
+        var obstacle_key: String = String(goal.get("obstacle_type", ""))
+        var current_amount: int = int(goal.get("current_amount", 0))
+        var target_amount: int = int(goal.get("target_amount", 0))
+        var removed_amount: int = int(obstacle_counts.get(obstacle_key, 0))
 
         goal["current_amount"] = min(target_amount, current_amount + removed_amount)
 

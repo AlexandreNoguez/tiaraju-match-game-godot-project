@@ -1,0 +1,68 @@
+extends RefCounted
+class_name ObstacleResolver
+
+const BoardCell = preload("res://scripts/domain/board/models/board_cell.gd")
+
+const ORTHOGONAL_DIRECTIONS: Array[Vector2i] = [
+    Vector2i(1, 0),
+    Vector2i(-1, 0),
+    Vector2i(0, 1),
+    Vector2i(0, -1)
+]
+
+
+func apply_damage(board_state: BoardState, direct_positions: Array, adjacent_damage_sources: Array = []) -> Dictionary:
+    var affected_positions: Array[Vector2i] = _collect_affected_positions(
+        board_state,
+        direct_positions,
+        adjacent_damage_sources
+    )
+    var removed_counts: Dictionary = {}
+    var removed_positions: Array[Vector2i] = []
+
+    for position in affected_positions:
+        var cell: BoardCell = board_state.get_cell(position.y, position.x)
+        if cell == null or not cell.has_obstacle():
+            continue
+
+        var obstacle_type: String = cell.obstacle_type
+        var was_removed: bool = cell.damage()
+        if was_removed:
+            removed_counts[obstacle_type] = int(removed_counts.get(obstacle_type, 0)) + 1
+            removed_positions.append(position)
+            board_state.set_piece(position.y, position.x, null)
+
+    return {
+        "removed_counts": removed_counts,
+        "removed_positions": removed_positions
+    }
+
+
+func _collect_affected_positions(
+    board_state: BoardState,
+    direct_positions: Array,
+    adjacent_damage_sources: Array
+) -> Array[Vector2i]:
+    var unique_positions: Dictionary = {}
+
+    for raw_position in direct_positions:
+        if raw_position is not Vector2i:
+            continue
+
+        var position: Vector2i = raw_position
+        _mark_if_valid(board_state, unique_positions, position)
+
+    for raw_position in adjacent_damage_sources:
+        if raw_position is not Vector2i:
+            continue
+
+        var adjacent_source: Vector2i = raw_position
+        for direction in ORTHOGONAL_DIRECTIONS:
+            _mark_if_valid(board_state, unique_positions, adjacent_source + direction)
+
+    return unique_positions.keys()
+
+
+func _mark_if_valid(board_state: BoardState, unique_positions: Dictionary, position: Vector2i) -> void:
+    if board_state.has_cell(position.y, position.x):
+        unique_positions[position] = true
