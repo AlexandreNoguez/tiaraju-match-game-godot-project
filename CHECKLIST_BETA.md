@@ -137,7 +137,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 ## 12. Testes
 
-- [ ] Criar roteiro de teste manual
+- [x] Criar roteiro de teste manual
 - [ ] Testar trocas invalidas
 - [ ] Testar cascatas longas
 - [ ] Testar fases com poucos movimentos

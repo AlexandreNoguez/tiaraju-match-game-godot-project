@@ -11,6 +11,8 @@ signal play_requested(level_id: String)
 @onready var _title_label: Label = $MarginContainer/RootColumn/HeaderRow/TitleColumn/TitleLabel
 @onready var _subtitle_label: Label = $MarginContainer/RootColumn/HeaderRow/TitleColumn/SubtitleLabel
 @onready var _current_level_label: Label = $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/CurrentLevelLabel
+@onready var _highest_unlocked_label: Label = $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/HighestUnlockedLabel
+@onready var _last_completed_label: Label = $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/LastCompletedLabel
 @onready var _progress_label: Label = $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/ProgressLabel
 @onready var _coins_label: Label = $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/CoinsLabel
 @onready var _status_label: Label = $MarginContainer/RootColumn/StatusLabel
@@ -50,8 +52,12 @@ func _refresh_view() -> void:
     var level_name: String = String(_level_data.get("name", "Primeira fase"))
     var completed_levels: Array = _progress_payload.get("completed_levels", [])
     var coins: int = int(_progress_payload.get("coins", 0))
+    var highest_unlocked_level_id: String = String(_progress_payload.get("highest_unlocked_level_id", level_id))
+    var last_completed_level_id: String = String(_progress_payload.get("last_completed_level_id", ""))
 
     _current_level_label.text = "Fase atual: %s" % _build_level_title(level_id, level_name)
+    _highest_unlocked_label.text = "Maior desbloqueada: %s" % _build_level_id_label(highest_unlocked_level_id)
+    _last_completed_label.text = "Ultima concluida: %s" % _build_level_id_label(last_completed_level_id)
     _progress_label.text = "Fases concluidas no aparelho: %s" % completed_levels.size()
     _coins_label.text = "Moedas: %s" % coins
     _status_label.text = _status_message
@@ -66,6 +72,20 @@ func _build_level_title(level_id: String, level_name: String) -> String:
         return level_name
 
     return "%d - %s" % [int(numeric_part), level_name]
+
+
+func _build_level_id_label(level_id: String) -> String:
+    if level_id == "":
+        return "nenhuma"
+
+    if not level_id.begins_with("level_"):
+        return level_id
+
+    var numeric_part: String = level_id.trim_prefix("level_")
+    if not numeric_part.is_valid_int():
+        return level_id
+
+    return str(int(numeric_part))
 
 
 func _on_play_pressed() -> void:
@@ -114,6 +134,8 @@ func _apply_visual_theme() -> void:
     _title_label.add_theme_color_override("font_color", palette["title"])
     _subtitle_label.add_theme_color_override("font_color", palette["body"])
     _current_level_label.add_theme_color_override("font_color", palette["title"])
+    _highest_unlocked_label.add_theme_color_override("font_color", palette["body"])
+    _last_completed_label.add_theme_color_override("font_color", palette["body"])
     _progress_label.add_theme_color_override("font_color", palette["body"])
     _coins_label.add_theme_color_override("font_color", palette["title"])
     _status_label.add_theme_color_override("font_color", palette["body"])

@@ -131,6 +131,17 @@ Para cada fase, anotar:
 Se uma fase falhar repetidamente por falta de movimentos, primeiro ajustar `moves`.
 Se a fase parecer caotica mesmo com muitas jogadas, revisar obstaculos e layout.
 
+## 6.2 Roteiro manual do fluxo principal
+
+Usar tambem o roteiro detalhado em `docs/MANUAL_TEST_BETA_FLOW.md`.
+
+Esse fluxo deve validar:
+
+- `home -> fase -> home`
+- progressao linear entre fases
+- persistencia do save local entre sessoes
+- coerencia das informacoes exibidas no `home`
+
 ## 7. Quando Usar VSCode, Android Studio e Docker
 
 ### 7.1 VSCode

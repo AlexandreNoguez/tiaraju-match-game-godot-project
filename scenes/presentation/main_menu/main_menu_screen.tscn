@@ -196,6 +196,16 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Fase atual: 1 - Primeira fase"
 
+[node name="HighestUnlockedLabel" type="Label" parent="MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Maior desbloqueada: 1"
+
+[node name="LastCompletedLabel" type="Label" parent="MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Ultima concluida: nenhuma"
+
 [node name="ProgressLabel" type="Label" parent="MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
