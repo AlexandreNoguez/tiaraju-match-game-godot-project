@@ -38,6 +38,15 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
   - status
   - menus e botoes
 
+### Kenney Music Jingles
+
+- origem: https://kenney.nl/assets/music-jingles
+- licenca: `CC0`
+- pasta: `assets/third_party/kenney/music-jingles`
+- uso sugerido:
+  - musica temporaria do `home`
+  - musica temporaria das fases
+
 ## Regras de uso no projeto
 
 1. Priorizar assets `CC0` ou licencas claramente permissivas.
@@ -64,7 +73,7 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
 
 - priorizar primeiro os assets gratuitos que ja estao no repositorio
 - usar SFX gratuitos locais antes de baixar novos packs
-- adiar musica de fase/menu ate escolher uma licenca e estilo que nao gerem retrabalho
+- usar musica temporaria gratuita e simples no `home` e nas fases enquanto a direcao final de audio nao estiver fechada
 - evitar adicionar muitos packs ao mesmo tempo para nao inchar o beta
 
 ## O que nao versionamos

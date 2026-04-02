@@ -14,6 +14,9 @@ script = ExtResource("1")
 [node name="AudioPlayer" type="AudioStreamPlayer" parent="."]
 bus = &"Master"
 
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -85,11 +88,24 @@ theme_override_font_sizes/font_size = 22
 text = "Objetivo: -"
 horizontal_alignment = 2
 
+[node name="PauseButton" type="Button" parent="MarginContainer/RootColumn/HudRow"]
+custom_minimum_size = Vector2(142, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Pausar"
+
 [node name="StatusLabel" type="Label" parent="MarginContainer/RootColumn"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Carregando tabuleiro..."
 autowrap_mode = 3
+
+[node name="ComboFeedbackLabel" type="Label" parent="MarginContainer/RootColumn"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+text = "Combo x2"
 
 [node name="BoardShell" type="PanelContainer" parent="MarginContainer/RootColumn"]
 layout_mode = 2
@@ -170,3 +186,68 @@ text = "Reiniciar"
 [node name="NextButton" type="Button" parent="EndStateLayer/PanelContainer/VBoxContainer/ButtonRow"]
 layout_mode = 2
 text = "Proxima fase"
+
+[node name="PauseLayer" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="PauseLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.52)
+
+[node name="PanelContainer" type="PanelContainer" parent="PauseLayer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -150.0
+offset_right = 240.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseLayer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="PauseLayer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+text = "Pausa"
+
+[node name="MessageLabel" type="Label" parent="PauseLayer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+autowrap_mode = 3
+text = "O jogo esta pausado. Voce pode continuar ou voltar ao home."
+
+[node name="ButtonRow" type="HBoxContainer" parent="PauseLayer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="ResumeButton" type="Button" parent="PauseLayer/PanelContainer/VBoxContainer/ButtonRow"]
+custom_minimum_size = Vector2(170, 56)
+layout_mode = 2
+text = "Continuar"
+
+[node name="HomeButton" type="Button" parent="PauseLayer/PanelContainer/VBoxContainer/ButtonRow"]
+custom_minimum_size = Vector2(170, 56)
+layout_mode = 2
+text = "Voltar ao home"

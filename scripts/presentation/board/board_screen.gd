@@ -9,6 +9,7 @@ const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/s
 const SOUND_SWITCH_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-b.ogg")
 const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
 const SOUND_TAP_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-b.ogg")
+const MUSIC_BOARD_PATH = "res://assets/third_party/kenney/music-jingles/jingles_STEEL07.ogg"
 
 const ApplySwapUseCaseScript = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
 const BoardGeneratorScript = preload("res://scripts/domain/board/services/board_generator.gd")
@@ -31,10 +32,19 @@ const StartLevelUseCaseScript = preload("res://scripts/application/use_cases/sta
 @onready var _title_label: Label = $MarginContainer/RootColumn/TitleLabel
 @onready var _moves_label: Label = $MarginContainer/RootColumn/HudRow/MovesLabel
 @onready var _goal_label: Label = $MarginContainer/RootColumn/HudRow/GoalLabel
+@onready var _pause_button: Button = $MarginContainer/RootColumn/HudRow/PauseButton
 @onready var _status_label: Label = $MarginContainer/RootColumn/StatusLabel
 @onready var _board_shell: PanelContainer = $MarginContainer/RootColumn/BoardShell
 @onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardShell/MarginContainer/BoardGrid
+@onready var _combo_feedback_label: Label = $MarginContainer/RootColumn/ComboFeedbackLabel
 @onready var _audio_player: AudioStreamPlayer = $AudioPlayer
+@onready var _music_player: AudioStreamPlayer = $MusicPlayer
+@onready var _pause_layer: Control = $PauseLayer
+@onready var _pause_panel: PanelContainer = $PauseLayer/PanelContainer
+@onready var _pause_title_label: Label = $PauseLayer/PanelContainer/VBoxContainer/TitleLabel
+@onready var _pause_message_label: Label = $PauseLayer/PanelContainer/VBoxContainer/MessageLabel
+@onready var _pause_resume_button: Button = $PauseLayer/PanelContainer/VBoxContainer/ButtonRow/ResumeButton
+@onready var _pause_home_button: Button = $PauseLayer/PanelContainer/VBoxContainer/ButtonRow/HomeButton
 @onready var _end_state_layer: Control = $EndStateLayer
 @onready var _end_state_title_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/TitleLabel
 @onready var _end_state_message_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/MessageLabel
@@ -55,6 +65,8 @@ var _level_progress_use_case
 var _has_recorded_victory: bool = false
 var _has_requested_home: bool = false
 var _has_played_end_state_sound: bool = false
+var _is_paused: bool = false
+var _combo_feedback_base_position: Vector2 = Vector2.ZERO
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
@@ -65,7 +77,9 @@ func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
     _has_recorded_victory = false
     _has_requested_home = false
     _has_played_end_state_sound = false
+    _is_paused = false
     _hide_end_state()
+    _hide_pause_layer()
     if is_node_ready():
         _apply_level_theme()
 
@@ -74,6 +88,13 @@ func _ready() -> void:
     _initialize_services()
     _restart_button.pressed.connect(_on_restart_pressed)
     _next_button.pressed.connect(_on_next_pressed)
+    _pause_button.pressed.connect(_on_pause_pressed)
+    _pause_resume_button.pressed.connect(_on_pause_resume_pressed)
+    _pause_home_button.pressed.connect(_on_pause_home_pressed)
+    _combo_feedback_base_position = _combo_feedback_label.position
+    _combo_feedback_label.modulate.a = 0.0
+    _hide_pause_layer()
+    _play_music_from_file(MUSIC_BOARD_PATH, -20.0)
     _apply_level_theme()
     _refresh_view()
 
@@ -113,12 +134,14 @@ func _refresh_view() -> void:
         _moves_label.text = "Jogadas: -"
         _goal_label.text = "Objetivo: -"
         _status_label.text = "Nenhum tabuleiro carregado."
+        _pause_button.disabled = true
         return
 
     _title_label.text = String(_level_data.get("name", "Aldeia das Cores"))
     _moves_label.text = "Jogadas: %s" % _session_state.moves_remaining
     _goal_label.text = _build_goal_text()
     _status_label.text = _status_message
+    _pause_button.disabled = _session_state.status != "playing" or _is_paused
     _render_grid()
     _refresh_end_state()
 
@@ -148,7 +171,7 @@ func _build_piece_button(row: int, column: int) -> Button:
 
     button.custom_minimum_size = Vector2(112, 112)
     button.focus_mode = Control.FOCUS_NONE
-    button.disabled = not _session_state.can_accept_input()
+    button.disabled = _is_paused or not _session_state.can_accept_input()
     button.mouse_filter = Control.MOUSE_FILTER_STOP
     button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
     button.text = _piece_label(piece, cell, is_selected)
@@ -224,7 +247,7 @@ func _build_obstacle_cell(row: int, column: int) -> Control:
 
 
 func _on_piece_pressed(position: Vector2i) -> void:
-    if not _session_state.can_accept_input():
+    if _is_paused or not _session_state.can_accept_input():
         return
 
     if _selected_position == Vector2i(-1, -1):
@@ -252,6 +275,7 @@ func _on_piece_pressed(position: Vector2i) -> void:
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
     _play_resolution_sound(result)
+    _show_combo_feedback(result)
     _refresh_view()
 
 
@@ -474,6 +498,35 @@ func _on_next_pressed() -> void:
         _load_level(next_level_id)
 
 
+func _on_pause_pressed() -> void:
+    if _session_state == null or _session_state.status != "playing":
+        return
+
+    _play_sound(SOUND_SWITCH_A, 1.0)
+    _is_paused = true
+    _pause_message_label.text = "O jogo esta pausado. Voce pode continuar ou voltar ao home."
+    _pause_layer.visible = true
+    _refresh_view()
+
+
+func _on_pause_resume_pressed() -> void:
+    _play_sound(SOUND_CLICK_A, 1.0)
+    _is_paused = false
+    _hide_pause_layer()
+    _refresh_view()
+
+
+func _on_pause_home_pressed() -> void:
+    _play_sound(SOUND_CLICK_B, 1.0)
+    _hide_pause_layer()
+    _emit_home_requested()
+
+
+func _hide_pause_layer() -> void:
+    if _pause_layer != null:
+        _pause_layer.visible = false
+
+
 func _load_level(level_id: String) -> void:
     var payload: Dictionary = _start_level_use_case.execute(level_id)
     if payload.is_empty():
@@ -534,6 +587,64 @@ func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
     _audio_player.play()
 
 
+func _play_music(stream: AudioStream, volume_db: float) -> void:
+    if _music_player == null or stream == null:
+        return
+
+    var music_stream: AudioStream = stream.duplicate(true)
+    if music_stream is AudioStreamOggVorbis:
+        music_stream.loop = true
+
+    _music_player.stop()
+    _music_player.stream = music_stream
+    _music_player.volume_db = volume_db
+    _music_player.play()
+
+
+func _play_music_from_file(resource_path: String, volume_db: float) -> void:
+    if not FileAccess.file_exists(resource_path):
+        return
+
+    var music_stream := AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+    if music_stream == null:
+        return
+
+    _play_music(music_stream, volume_db)
+
+
+func _show_combo_feedback(result: Dictionary) -> void:
+    if not bool(result.get("accepted", false)):
+        return
+
+    var cascade_count: int = int(result.get("cascade_count", 1))
+    var removed_count: int = int(result.get("removed_count", 0))
+    var message: String = ""
+
+    if cascade_count >= 3:
+        message = "Combo x%s" % cascade_count
+    elif cascade_count == 2:
+        message = "Cascata x2"
+    elif removed_count >= 8:
+        message = "Boa jogada!"
+
+    if message == "":
+        return
+
+    _combo_feedback_label.text = message
+    _combo_feedback_label.position = _combo_feedback_base_position
+    _combo_feedback_label.modulate = Color(1, 1, 1, 0)
+    _combo_feedback_label.scale = Vector2(0.92, 0.92)
+
+    var tween := create_tween()
+    tween.set_parallel(true)
+    tween.tween_property(_combo_feedback_label, "modulate:a", 1.0, 0.12)
+    tween.tween_property(_combo_feedback_label, "scale", Vector2(1, 1), 0.16)
+    tween.chain().tween_interval(0.55)
+    tween.chain().set_parallel(true)
+    tween.tween_property(_combo_feedback_label, "modulate:a", 0.0, 0.28)
+    tween.tween_property(_combo_feedback_label, "position:y", _combo_feedback_base_position.y - 12.0, 0.28)
+
+
 func _apply_level_theme() -> void:
     if not is_node_ready():
         return
@@ -544,6 +655,9 @@ func _apply_level_theme() -> void:
     _moves_label.add_theme_color_override("font_color", palette["hud"])
     _goal_label.add_theme_color_override("font_color", palette["hud"])
     _status_label.add_theme_color_override("font_color", palette["body"])
+    _combo_feedback_label.add_theme_color_override("font_color", palette["title"])
+    _pause_title_label.add_theme_color_override("font_color", palette["title"])
+    _pause_message_label.add_theme_color_override("font_color", palette["body"])
     _end_state_title_label.add_theme_color_override("font_color", palette["title"])
     _end_state_message_label.add_theme_color_override("font_color", palette["body"])
 
@@ -551,7 +665,11 @@ func _apply_level_theme() -> void:
     _apply_panel_style(_leaf_glow_left, palette["leaf_primary"], palette["leaf_primary"], 180)
     _apply_panel_style(_leaf_glow_right, palette["leaf_secondary"], palette["leaf_secondary"], 180)
     _apply_panel_style(_board_shell, palette["board_panel"], palette["board_border"], 34)
+    _apply_panel_style(_pause_panel, palette["overlay_panel"], palette["board_border"], 30)
     _apply_panel_style(_end_state_panel, palette["overlay_panel"], palette["board_border"], 30)
+    _apply_button_style(_pause_button, palette["button"], palette["button_hover"], palette["button_pressed"], Color("fff8ef"))
+    _apply_button_style(_pause_resume_button, palette["button"], palette["button_hover"], palette["button_pressed"], Color("fff8ef"))
+    _apply_button_style(_pause_home_button, Color("7b684f"), Color("8d785d"), Color("5f503d"), Color("fff8ef"))
     _apply_button_style(_restart_button, palette["button"], palette["button_hover"], palette["button_pressed"], Color("fff8ef"))
     _apply_button_style(_next_button, palette["button"], palette["button_hover"], palette["button_pressed"], Color("fff8ef"))
 

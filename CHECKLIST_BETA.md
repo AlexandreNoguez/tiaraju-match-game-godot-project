@@ -113,9 +113,9 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Criar tela de vitoria
 - [x] Criar tela de derrota
 - [x] Retornar ao home ao terminar cada fase
-- [ ] Criar tela de pausa
-- [ ] Adicionar feedback visual de combo
-- [ ] Adicionar efeitos sonoros basicos
+- [x] Criar tela de pausa
+- [x] Adicionar feedback visual de combo
+- [x] Adicionar efeitos sonoros basicos
 
 ## 10. Save e progresso
 

@@ -8,6 +8,7 @@ const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/cl
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
 const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
+const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/jingles_PIZZI07.ogg"
 
 @onready var _background: ColorRect = $Background
 @onready var _ground_band: ColorRect = $GroundBand
@@ -32,6 +33,7 @@ const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-
 @onready var _settings_cancel_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/CancelButton
 @onready var _settings_reset_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/ResetButton
 @onready var _audio_player: AudioStreamPlayer = $AudioPlayer
+@onready var _music_player: AudioStreamPlayer = $MusicPlayer
 @onready var _profile_panel: PanelContainer = $MarginContainer/RootColumn/ProfilePanel
 @onready var _events_panel: PanelContainer = $MarginContainer/RootColumn/EventsPanel
 @onready var _current_level_panel: PanelContainer = $MarginContainer/RootColumn/CurrentLevelPanel
@@ -50,6 +52,7 @@ func setup(level_data: Dictionary, progress_payload: Dictionary = {}) -> void:
 
 func _ready() -> void:
     _apply_visual_theme()
+    _play_music_from_file(MUSIC_HOME_PATH, -18.0)
     _play_button.pressed.connect(_on_play_pressed)
     _profile_button.pressed.connect(_on_profile_pressed)
     _events_button.pressed.connect(_on_events_pressed)
@@ -127,7 +130,7 @@ func _on_shop_pressed() -> void:
 
 func _on_settings_pressed() -> void:
     _play_sound(SOUND_SWITCH_A, 1.0)
-    _settings_message_label.text = "SFX basicos ja usam assets gratuitos locais. Musica ainda nao foi implementada. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
+    _settings_message_label.text = "SFX e musicas temporarias ja usam assets gratuitos locais. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
     _settings_layer.visible = true
 
 
@@ -244,3 +247,28 @@ func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
     _audio_player.stream = stream
     _audio_player.pitch_scale = pitch_scale
     _audio_player.play()
+
+
+func _play_music(stream: AudioStream, volume_db: float) -> void:
+    if _music_player == null or stream == null:
+        return
+
+    var music_stream: AudioStream = stream.duplicate(true)
+    if music_stream is AudioStreamOggVorbis:
+        music_stream.loop = true
+
+    _music_player.stop()
+    _music_player.stream = music_stream
+    _music_player.volume_db = volume_db
+    _music_player.play()
+
+
+func _play_music_from_file(resource_path: String, volume_db: float) -> void:
+    if not FileAccess.file_exists(resource_path):
+        return
+
+    var music_stream := AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+    if music_stream == null:
+        return
+
+    _play_music(music_stream, volume_db)

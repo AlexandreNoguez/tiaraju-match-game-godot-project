@@ -30,6 +30,10 @@ Estado atual do desenvolvimento:
 - tela principal funcionando com botão Jogar
 - home com placeholders de avatar, eventos, perfil, configurações, moedas e shop
 - fim de fase retornando ao home
+- tela de pausa funcionando
+- feedback visual de combo funcionando
+- efeitos sonoros básicos funcionando com assets gratuitos locais
+- músicas temporárias gratuitas tocando no home e nas fases
 - 9 fases técnicas de teste já criadas
 - pacote inicial com 20 fases jogáveis criado
 - 29 fases totais disponíveis em dados
@@ -50,8 +54,8 @@ Decisões de produto:
 Próximos passos planejados:
 1. executar playtest das fases 010-029 e registrar onde a curva ainda quebra
 2. rodar o roteiro manual home -> fase -> home -> save no Godot do Windows
-3. adicionar pausa, feedback visual e áudio básico
-4. validar no Android resolução, toque e performance
+3. validar no Android resolução, toque e performance
+4. adicionar controles básicos de áudio nas configurações e persistir preferências locais
 5. definir o desenho pós-beta da economia de moedas e do shop offline
 
 Antes de editar, leia:
