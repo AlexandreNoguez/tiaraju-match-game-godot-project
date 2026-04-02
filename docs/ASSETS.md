@@ -16,6 +16,7 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
   - paineis
   - fontes temporarias
   - efeitos sonoros de interface
+  - SFX basicos atuais do beta
 
 ### Kenney Cursor Pack
 
@@ -44,6 +45,27 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
 3. Registrar origem e licenca neste arquivo ao adicionar novos packs.
 4. Evitar misturar assets temporarios com arte final do jogo.
 5. Personagens principais e identidade cultural do projeto devem ser autorais.
+
+## Fontes recomendadas para os proximos assets gratuitos
+
+### Audio e SFX
+
+- Kenney UI Audio: https://kenney.nl/assets/ui-audio
+- Kenney Impact Sounds: https://kenney.nl/assets/impact-sounds
+- OpenGameArt Interface Sounds: https://opengameart.org/content/interface-sounds
+- OpenGameArt UI Sounds CC0: https://opengameart.org/content/ui-sounds
+
+### Musica temporaria
+
+- OpenGameArt CC0 music: https://opengameart.org/content/mecha-collection
+- Pixabay music library: https://pixabay.com/music/
+
+## Diretriz atual para o beta
+
+- priorizar primeiro os assets gratuitos que ja estao no repositorio
+- usar SFX gratuitos locais antes de baixar novos packs
+- adiar musica de fase/menu ate escolher uma licenca e estilo que nao gerem retrabalho
+- evitar adicionar muitos packs ao mesmo tempo para nao inchar o beta
 
 ## O que nao versionamos
 

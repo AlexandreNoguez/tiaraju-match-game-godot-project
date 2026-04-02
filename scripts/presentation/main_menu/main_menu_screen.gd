@@ -4,6 +4,11 @@ class_name MainMenuScreen
 signal play_requested(level_id: String)
 signal reset_save_requested
 
+const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
+const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
+const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
+const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
+
 @onready var _background: ColorRect = $Background
 @onready var _ground_band: ColorRect = $GroundBand
 @onready var _sun_disc: Panel = $SunDisc
@@ -26,6 +31,7 @@ signal reset_save_requested
 @onready var _settings_message_label: Label = $SettingsLayer/PanelContainer/VBoxContainer/MessageLabel
 @onready var _settings_cancel_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/CancelButton
 @onready var _settings_reset_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/ResetButton
+@onready var _audio_player: AudioStreamPlayer = $AudioPlayer
 @onready var _profile_panel: PanelContainer = $MarginContainer/RootColumn/ProfilePanel
 @onready var _events_panel: PanelContainer = $MarginContainer/RootColumn/EventsPanel
 @onready var _current_level_panel: PanelContainer = $MarginContainer/RootColumn/CurrentLevelPanel
@@ -97,34 +103,41 @@ func _build_level_id_label(level_id: String) -> String:
 
 
 func _on_play_pressed() -> void:
+    _play_sound(SOUND_CLICK_B, 1.0)
     emit_signal("play_requested", String(_level_data.get("id", "level_001")))
 
 
 func _on_profile_pressed() -> void:
+    _play_sound(SOUND_TAP_A, 1.0)
     _status_message = "Perfil permanece como placeholder no beta offline, sem login ou foto."
     _refresh_view()
 
 
 func _on_events_pressed() -> void:
+    _play_sound(SOUND_TAP_A, 1.04)
     _status_message = "Eventos ficam para depois do beta. Por enquanto, o foco e validar a progressao linear."
     _refresh_view()
 
 
 func _on_shop_pressed() -> void:
+    _play_sound(SOUND_CLICK_A, 0.98)
     _status_message = "O shop entra no pos-beta. As moedas ja aparecem no home como placeholder da economia futura."
     _refresh_view()
 
 
 func _on_settings_pressed() -> void:
-    _settings_message_label.text = "Audio ainda nao foi implementado. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
+    _play_sound(SOUND_SWITCH_A, 1.0)
+    _settings_message_label.text = "SFX basicos ja usam assets gratuitos locais. Musica ainda nao foi implementada. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
     _settings_layer.visible = true
 
 
 func _on_settings_cancel_pressed() -> void:
+    _play_sound(SOUND_CLICK_A, 0.95)
     _hide_settings()
 
 
 func _on_settings_reset_pressed() -> void:
+    _play_sound(SOUND_CLICK_B, 0.92)
     _hide_settings()
     emit_signal("reset_save_requested")
 
@@ -221,3 +234,13 @@ func _apply_button_style(button: Button, base_color: Color, hover_color: Color, 
     button.add_theme_color_override("font_color", text_color)
     button.add_theme_color_override("font_hover_color", text_color)
     button.add_theme_color_override("font_pressed_color", text_color)
+
+
+func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
+    if _audio_player == null or stream == null:
+        return
+
+    _audio_player.stop()
+    _audio_player.stream = stream
+    _audio_player.pitch_scale = pitch_scale
+    _audio_player.play()

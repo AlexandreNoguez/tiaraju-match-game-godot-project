@@ -3,6 +3,13 @@ class_name BoardScreen
 
 signal home_requested
 
+const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
+const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
+const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
+const SOUND_SWITCH_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-b.ogg")
+const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
+const SOUND_TAP_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-b.ogg")
+
 const ApplySwapUseCaseScript = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
 const BoardGeneratorScript = preload("res://scripts/domain/board/services/board_generator.gd")
 const BoardCellScript = preload("res://scripts/domain/board/models/board_cell.gd")
@@ -27,6 +34,7 @@ const StartLevelUseCaseScript = preload("res://scripts/application/use_cases/sta
 @onready var _status_label: Label = $MarginContainer/RootColumn/StatusLabel
 @onready var _board_shell: PanelContainer = $MarginContainer/RootColumn/BoardShell
 @onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardShell/MarginContainer/BoardGrid
+@onready var _audio_player: AudioStreamPlayer = $AudioPlayer
 @onready var _end_state_layer: Control = $EndStateLayer
 @onready var _end_state_title_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/TitleLabel
 @onready var _end_state_message_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/MessageLabel
@@ -46,6 +54,7 @@ var _save_gateway
 var _level_progress_use_case
 var _has_recorded_victory: bool = false
 var _has_requested_home: bool = false
+var _has_played_end_state_sound: bool = false
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
@@ -55,6 +64,7 @@ func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
     _status_message = "Selecione duas pecas vizinhas para formar combinacoes."
     _has_recorded_victory = false
     _has_requested_home = false
+    _has_played_end_state_sound = false
     _hide_end_state()
     if is_node_ready():
         _apply_level_theme()
@@ -218,18 +228,21 @@ func _on_piece_pressed(position: Vector2i) -> void:
         return
 
     if _selected_position == Vector2i(-1, -1):
+        _play_sound(SOUND_TAP_A, 1.0)
         _selected_position = position
         _status_message = "Peca selecionada. Escolha uma gema vizinha."
         _refresh_view()
         return
 
     if position == _selected_position:
+        _play_sound(SOUND_TAP_B, 0.98)
         _selected_position = Vector2i(-1, -1)
         _status_message = "Selecao cancelada."
         _refresh_view()
         return
 
     if not _is_adjacent(_selected_position, position):
+        _play_sound(SOUND_TAP_A, 1.04)
         _selected_position = position
         _status_message = "Selecione uma segunda gema vizinha."
         _refresh_view()
@@ -238,6 +251,7 @@ func _on_piece_pressed(position: Vector2i) -> void:
     var result: Dictionary = _apply_swap_use_case.execute(_session_state, _selected_position, position)
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
+    _play_resolution_sound(result)
     _refresh_view()
 
 
@@ -402,6 +416,7 @@ func _refresh_end_state() -> void:
         return
 
     if _session_state.status == "defeat":
+        _play_end_state_sound(false)
         _show_end_state("Fase perdida", "As jogadas acabaram. Voltando ao home.", true, false, "Voltar agora")
         _request_home_return()
         return
@@ -422,6 +437,7 @@ func _handle_victory() -> void:
         message += " Voce concluiu o pacote tecnico atual."
 
     message += " Voltando ao home."
+    _play_end_state_sound(true)
     _show_end_state("Fase vencida", message, true, false, "Voltar agora")
     _request_home_return()
 
@@ -444,9 +460,11 @@ func _hide_end_state() -> void:
 
 func _on_restart_pressed() -> void:
     if _end_state_layer.visible and _session_state != null and _session_state.status != "playing":
+        _play_sound(SOUND_CLICK_B, 1.0)
         _emit_home_requested()
         return
 
+    _play_sound(SOUND_SWITCH_A, 1.0)
     _load_level(String(_level_data.get("id", "level_001")))
 
 
@@ -482,6 +500,38 @@ func _emit_home_requested() -> void:
         return
 
     emit_signal("home_requested")
+
+
+func _play_resolution_sound(result: Dictionary) -> void:
+    if bool(result.get("accepted", false)):
+        var cascade_count: int = int(result.get("cascade_count", 1))
+        var pitch_scale: float = min(1.18, 1.0 + (0.03 * max(0, cascade_count - 1)))
+        _play_sound(SOUND_SWITCH_B, pitch_scale)
+        return
+
+    _play_sound(SOUND_SWITCH_A, 0.92)
+
+
+func _play_end_state_sound(is_victory: bool) -> void:
+    if _has_played_end_state_sound:
+        return
+
+    _has_played_end_state_sound = true
+    if is_victory:
+        _play_sound(SOUND_CLICK_B, 1.12)
+        return
+
+    _play_sound(SOUND_CLICK_A, 0.82)
+
+
+func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
+    if _audio_player == null or stream == null:
+        return
+
+    _audio_player.stop()
+    _audio_player.stream = stream
+    _audio_player.pitch_scale = pitch_scale
+    _audio_player.play()
 
 
 func _apply_level_theme() -> void:
