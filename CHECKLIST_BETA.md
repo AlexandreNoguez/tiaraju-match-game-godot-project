@@ -107,9 +107,12 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Criar tela inicial
 - [ ] Criar tela de mapa ou selecao simples
 - [x] Exibir placeholders de avatar, eventos, perfil e configuracoes na tela principal
+- [x] Exibir placeholder de moedas no home
+- [x] Exibir placeholder de shop no home
 - [x] Conectar botao Jogar a fase atual desbloqueada
 - [x] Criar tela de vitoria
 - [x] Criar tela de derrota
+- [x] Retornar ao home ao terminar cada fase
 - [ ] Criar tela de pausa
 - [ ] Adicionar feedback visual de combo
 - [ ] Adicionar efeitos sonoros basicos
@@ -158,3 +161,11 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [ ] Save local funcionando
 - [ ] Build Android funcional
 - [ ] Sem bugs bloqueadores conhecidos
+
+## 14. Pos-beta e backlog
+
+- [ ] Definir como o jogador ganha moedas
+- [ ] Implementar saldo real de moedas no save local
+- [ ] Implementar shop offline
+- [ ] Definir primeiros itens compraveis
+- [ ] Balancear a economia das compras

@@ -1,6 +1,8 @@
 extends Control
 class_name BoardScreen
 
+signal home_requested
+
 const ApplySwapUseCaseScript = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
 const BoardGeneratorScript = preload("res://scripts/domain/board/services/board_generator.gd")
 const BoardCellScript = preload("res://scripts/domain/board/models/board_cell.gd")
@@ -37,6 +39,7 @@ var _start_level_use_case
 var _save_gateway
 var _level_progress_use_case
 var _has_recorded_victory: bool = false
+var _has_requested_home: bool = false
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
@@ -45,6 +48,7 @@ func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
     _selected_position = Vector2i(-1, -1)
     _status_message = "Selecione duas pecas vizinhas para formar combinacoes."
     _has_recorded_victory = false
+    _has_requested_home = false
     _hide_end_state()
 
 
@@ -389,7 +393,8 @@ func _refresh_end_state() -> void:
         return
 
     if _session_state.status == "defeat":
-        _show_end_state("Fase perdida", "As jogadas acabaram. Tente novamente.", true, false)
+        _show_end_state("Fase perdida", "As jogadas acabaram. Voltando ao home.", true, false, "Voltar agora")
+        _request_home_return()
         return
 
     _hide_end_state()
@@ -403,17 +408,19 @@ func _handle_victory() -> void:
 
     var message: String = "Objetivos concluidos. Progresso salvo localmente."
     if next_level_id != "":
-        message += " A proxima fase ja foi desbloqueada."
-        _show_end_state("Fase vencida", message, false, true)
-        return
+        message += " A proxima fase ja foi desbloqueada no home."
+    else:
+        message += " Voce concluiu o pacote tecnico atual."
 
-    message += " Voce concluiu o pacote tecnico atual."
-    _show_end_state("Fase vencida", message, true, false)
+    message += " Voltando ao home."
+    _show_end_state("Fase vencida", message, true, false, "Voltar agora")
+    _request_home_return()
 
 
-func _show_end_state(title: String, message: String, show_restart: bool, show_next: bool) -> void:
+func _show_end_state(title: String, message: String, show_restart: bool, show_next: bool, restart_button_text: String = "Reiniciar") -> void:
     _end_state_title_label.text = title
     _end_state_message_label.text = message
+    _restart_button.text = restart_button_text
     _restart_button.visible = show_restart
     _restart_button.disabled = not show_restart
     _next_button.visible = show_next
@@ -427,6 +434,10 @@ func _hide_end_state() -> void:
 
 
 func _on_restart_pressed() -> void:
+    if _end_state_layer.visible and _session_state != null and _session_state.status != "playing":
+        _emit_home_requested()
+        return
+
     _load_level(String(_level_data.get("id", "level_001")))
 
 
@@ -446,6 +457,22 @@ func _load_level(level_id: String) -> void:
     _level_progress_use_case.record_opened_level(level_id)
     setup(payload["level_data"], payload["session_state"])
     _refresh_view()
+
+
+func _request_home_return() -> void:
+    if _has_requested_home:
+        return
+
+    _has_requested_home = true
+    var timer := get_tree().create_timer(1.2)
+    timer.timeout.connect(_emit_home_requested)
+
+
+func _emit_home_requested() -> void:
+    if not is_inside_tree():
+        return
+
+    emit_signal("home_requested")
 
 
 func _find_next_level_id(level_id: String) -> String:

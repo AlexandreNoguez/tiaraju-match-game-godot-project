@@ -166,6 +166,36 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Fases concluidas no aparelho: 0"
 
+[node name="EconomyPanel" type="PanelContainer" parent="MarginContainer/RootColumn"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/RootColumn/EconomyPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EconomyTitleLabel" type="Label" parent="MarginContainer/RootColumn/EconomyPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Economia placeholder"
+
+[node name="CoinsLabel" type="Label" parent="MarginContainer/RootColumn/EconomyPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Moedas: 0"
+
+[node name="EconomyBodyLabel" type="Label" parent="MarginContainer/RootColumn/EconomyPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 3
+text = "No pos-beta, as moedas serao ganhas na progressao e usadas para compras no shop offline."
+
+[node name="ShopButton" type="Button" parent="MarginContainer/RootColumn/EconomyPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_font_sizes/font_size = 22
+text = "Abrir shop"
+
 [node name="PlayButton" type="Button" parent="MarginContainer/RootColumn"]
 custom_minimum_size = Vector2(0, 84)
 layout_mode = 2

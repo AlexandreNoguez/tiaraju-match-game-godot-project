@@ -68,6 +68,7 @@ func _open_level(level_id: String) -> void:
         return
 
     board_screen.setup(payload["level_data"], payload["session_state"])
+    board_screen.home_requested.connect(_show_main_menu)
     _replace_active_screen(board_screen)
 
 

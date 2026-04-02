@@ -9,7 +9,7 @@ func _init(save_gateway: LocalSaveGateway) -> void:
 
 
 func load_start_level_id(default_level_id: String) -> String:
-    var payload: Dictionary = _save_gateway.load_progress()
+    var payload: Dictionary = load_progress_payload()
     var level_id: String = String(payload.get("highest_unlocked_level_id", ""))
     if level_id == "":
         level_id = String(payload.get("last_opened_level_id", default_level_id))
@@ -21,11 +21,22 @@ func load_start_level_id(default_level_id: String) -> String:
 
 
 func load_progress_payload() -> Dictionary:
-    return _save_gateway.load_progress()
+    var payload: Dictionary = _save_gateway.load_progress()
+    var normalized_payload: Dictionary = payload.duplicate(true)
+
+    if normalized_payload.get("completed_levels", null) is not Array:
+        normalized_payload["completed_levels"] = []
+
+    normalized_payload["coins"] = int(normalized_payload.get("coins", 0))
+    normalized_payload["last_opened_level_id"] = String(normalized_payload.get("last_opened_level_id", ""))
+    normalized_payload["last_completed_level_id"] = String(normalized_payload.get("last_completed_level_id", ""))
+    normalized_payload["highest_unlocked_level_id"] = String(normalized_payload.get("highest_unlocked_level_id", ""))
+
+    return normalized_payload
 
 
 func record_opened_level(level_id: String) -> void:
-    var payload: Dictionary = _save_gateway.load_progress()
+    var payload: Dictionary = load_progress_payload()
     payload["last_opened_level_id"] = level_id
 
     if String(payload.get("highest_unlocked_level_id", "")) == "":
@@ -35,7 +46,7 @@ func record_opened_level(level_id: String) -> void:
 
 
 func record_victory(level_id: String, next_level_id: String) -> void:
-    var payload: Dictionary = _save_gateway.load_progress()
+    var payload: Dictionary = load_progress_payload()
     var completed_levels: Array = payload.get("completed_levels", [])
     if not completed_levels.has(level_id):
         completed_levels.append(level_id)
