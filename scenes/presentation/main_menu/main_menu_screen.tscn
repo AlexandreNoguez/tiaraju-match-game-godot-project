@@ -1,0 +1,179 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/main_menu/main_menu_screen.gd" id="1"]
+
+[node name="MainMenuScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.94902, 0.905882, 0.780392, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 56
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 56
+
+[node name="RootColumn" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="HeaderRow" type="HBoxContainer" parent="MarginContainer/RootColumn"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleColumn" type="VBoxContainer" parent="MarginContainer/RootColumn/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="EyebrowLabel" type="Label" parent="MarginContainer/RootColumn/HeaderRow/TitleColumn"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Beta offline-first"
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/RootColumn/HeaderRow/TitleColumn"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Aldeia das Cores"
+
+[node name="SubtitleLabel" type="Label" parent="MarginContainer/RootColumn/HeaderRow/TitleColumn"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+autowrap_mode = 3
+text = "Restaure a vila fase por fase, com progresso linear e save local."
+
+[node name="SettingsButton" type="Button" parent="MarginContainer/RootColumn/HeaderRow"]
+custom_minimum_size = Vector2(180, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Configuracoes"
+
+[node name="ProfilePanel" type="PanelContainer" parent="MarginContainer/RootColumn"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/RootColumn/ProfilePanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="AvatarPlaceholder" type="Panel" parent="MarginContainer/RootColumn/ProfilePanel/HBoxContainer"]
+custom_minimum_size = Vector2(148, 148)
+layout_mode = 2
+
+[node name="AvatarLabel" type="Label" parent="MarginContainer/RootColumn/ProfilePanel/HBoxContainer/AvatarPlaceholder"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -49.0
+offset_top = -28.0
+offset_right = 49.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Avatar"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/RootColumn/ProfilePanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ProfileTitleLabel" type="Label" parent="MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Perfil placeholder"
+
+[node name="ProfileBodyLabel" type="Label" parent="MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 3
+text = "Sem login, sem foto e sem social nesta fase. O foco agora e manter a base enxuta e segura."
+
+[node name="ProfileButton" type="Button" parent="MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_font_sizes/font_size = 22
+text = "Abrir perfil"
+
+[node name="EventsPanel" type="PanelContainer" parent="MarginContainer/RootColumn"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/RootColumn/EventsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EventsTitleLabel" type="Label" parent="MarginContainer/RootColumn/EventsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Eventos placeholder"
+
+[node name="EventsBodyLabel" type="Label" parent="MarginContainer/RootColumn/EventsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 3
+text = "O beta continua offline e sem live-ops. Aqui fica reservado o espaco para eventos futuros."
+
+[node name="EventsButton" type="Button" parent="MarginContainer/RootColumn/EventsPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_font_sizes/font_size = 22
+text = "Ver eventos"
+
+[node name="CurrentLevelPanel" type="PanelContainer" parent="MarginContainer/RootColumn"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/RootColumn/CurrentLevelPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CurrentLevelTitleLabel" type="Label" parent="MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Continuar jornada"
+
+[node name="CurrentLevelLabel" type="Label" parent="MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Fase atual: 1 - Primeira fase"
+
+[node name="ProgressLabel" type="Label" parent="MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Fases concluidas no aparelho: 0"
+
+[node name="PlayButton" type="Button" parent="MarginContainer/RootColumn"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Jogar"
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/RootColumn"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 3
+text = "Beta offline-first: avatar, eventos, perfil e configuracoes seguem como placeholder."

@@ -10,11 +10,18 @@ func _init(save_gateway: LocalSaveGateway) -> void:
 
 func load_start_level_id(default_level_id: String) -> String:
     var payload: Dictionary = _save_gateway.load_progress()
-    var level_id: String = String(payload.get("last_opened_level_id", default_level_id))
+    var level_id: String = String(payload.get("highest_unlocked_level_id", ""))
+    if level_id == "":
+        level_id = String(payload.get("last_opened_level_id", default_level_id))
+
     if level_id == "":
         return default_level_id
 
     return level_id
+
+
+func load_progress_payload() -> Dictionary:
+    return _save_gateway.load_progress()
 
 
 func record_opened_level(level_id: String) -> void:

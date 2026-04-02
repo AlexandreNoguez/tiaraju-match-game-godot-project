@@ -1,0 +1,30 @@
+{
+  "id": "level_009",
+  "name": "Teste Diamante Aberto",
+  "moves": 24,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 3,
+  "seed": 1009,
+  "grid_mask": [
+    [0, 0, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [0, 1, 1, 1, 1, 1, 0],
+    [0, 0, 1, 1, 1, 0, 0]
+  ],
+  "goals": [
+    { "type": "break_obstacle", "obstacle_type": "box", "amount": 2 },
+    { "type": "break_obstacle", "obstacle_type": "ice", "amount": 2 },
+    { "type": "break_obstacle", "obstacle_type": "dense_grass", "amount": 2 }
+  ],
+  "obstacles": [
+    { "type": "box", "row": 0, "column": 2, "hit_points": 1 },
+    { "type": "box", "row": 0, "column": 4, "hit_points": 1 },
+    { "type": "ice", "row": 2, "column": 0, "hit_points": 1 },
+    { "type": "ice", "row": 2, "column": 6, "hit_points": 1 },
+    { "type": "dense_grass", "row": 6, "column": 2, "hit_points": 2 },
+    { "type": "dense_grass", "row": 6, "column": 4, "hit_points": 2 }
+  ]
+}

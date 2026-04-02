@@ -238,6 +238,18 @@ O modo infinito deve vir depois do beta e usar geracao hibrida:
 - orcamento de dificuldade por faixa
 - seeds reproduziveis
 
+### 10.4 Direcao de progressao do beta
+
+Para o fluxo principal do beta, seguimos estas regras:
+
+- progressao linear, sem voltar para fases antigas no caminho principal
+- o botao `Jogar` deve sempre abrir a fase atual desbloqueada
+- a tela principal deve existir desde ja, mesmo com avatar, eventos, perfil e configuracoes ainda como placeholder
+- o jogo deve continuar suportando grades com mascara nao quadrada
+- a cada 100 fases, entra uma nova familia de obstaculo
+
+Essas regras ajudam a manter o escopo enxuto, validam a arquitetura de progressao e evitam retrabalho quando o pacote de fases crescer.
+
 ## 11. Plano de Desenvolvimento Numerado para o Beta
 
 ### 11.1 Fase 0: preparacao

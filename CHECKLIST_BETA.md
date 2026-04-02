@@ -9,8 +9,8 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [ ] Definir ambientacao da vila ficcional
 - [ ] Definir direcao visual inicial
 - [ ] Confirmar que o protagonista sera ficcional e apenas inspirado em referencias historicas
-- [ ] Confirmar lista de mecanicas do beta
-- [ ] Confirmar lista de obstaculos do beta
+- [x] Confirmar lista de mecanicas do beta
+- [x] Confirmar lista de obstaculos do beta
 
 ## 2. Ferramentas
 
@@ -25,9 +25,9 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 ## 2.1 Seguranca e privacidade
 
-- [ ] Confirmar que o beta sera 100% offline
-- [ ] Confirmar que o beta nao tera login
-- [ ] Confirmar que o beta nao tera coleta de dados pessoais
+- [x] Confirmar que o beta sera 100% offline
+- [x] Confirmar que o beta nao tera login
+- [x] Confirmar que o beta nao tera coleta de dados pessoais
 - [ ] Revisar dependencias de terceiros antes de adicionar qualquer SDK
 - [x] Criar politica de nao versionar segredos no repositorio
 - [ ] Definir plano futuro para autenticacao segura, apenas quando houver backend
@@ -38,6 +38,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Definir regras que precisam ficar fora da UI
 - [x] Definir formato base de fase em JSON
 - [x] Definir estrategia de save local
+- [x] Confirmar suporte planejado a grids nao quadrados
 
 ## 3. Projeto base
 
@@ -97,13 +98,16 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Criar loader de fase
 - [x] Criar fase sandbox
 - [x] Criar 5 fases tecnicas de teste
+- [x] Adicionar 3 grids nao quadrados de teste
 - [ ] Criar 20 fases jogaveis do beta
 - [ ] Ajustar curva inicial de dificuldade
 
 ## 9. Interface e UX
 
-- [ ] Criar tela inicial
+- [x] Criar tela inicial
 - [ ] Criar tela de mapa ou selecao simples
+- [x] Exibir placeholders de avatar, eventos, perfil e configuracoes na tela principal
+- [x] Conectar botao Jogar a fase atual desbloqueada
 - [x] Criar tela de vitoria
 - [x] Criar tela de derrota
 - [ ] Criar tela de pausa
@@ -114,6 +118,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 - [x] Implementar save local
 - [x] Salvar fase desbloqueada
+- [x] Manter fluxo principal linear sem replay de fases antigas
 - [ ] Salvar configuracoes basicas
 - [x] Validar leitura do save apos fechar e abrir o jogo
 

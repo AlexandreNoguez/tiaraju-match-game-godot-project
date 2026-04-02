@@ -389,7 +389,7 @@ func _refresh_end_state() -> void:
         return
 
     if _session_state.status == "defeat":
-        _show_end_state("Fase perdida", "As jogadas acabaram. Tente novamente.", false)
+        _show_end_state("Fase perdida", "As jogadas acabaram. Tente novamente.", true, false)
         return
 
     _hide_end_state()
@@ -404,13 +404,18 @@ func _handle_victory() -> void:
     var message: String = "Objetivos concluidos. Progresso salvo localmente."
     if next_level_id != "":
         message += " A proxima fase ja foi desbloqueada."
+        _show_end_state("Fase vencida", message, false, true)
+        return
 
-    _show_end_state("Fase vencida", message, next_level_id != "")
+    message += " Voce concluiu o pacote tecnico atual."
+    _show_end_state("Fase vencida", message, true, false)
 
 
-func _show_end_state(title: String, message: String, show_next: bool) -> void:
+func _show_end_state(title: String, message: String, show_restart: bool, show_next: bool) -> void:
     _end_state_title_label.text = title
     _end_state_message_label.text = message
+    _restart_button.visible = show_restart
+    _restart_button.disabled = not show_restart
     _next_button.visible = show_next
     _next_button.disabled = not show_next
     _end_state_layer.visible = true
