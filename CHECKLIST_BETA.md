@@ -85,7 +85,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 ## 7. Obstaculos
 
 - [x] Implementar caixa
-- [ ] Implementar gelo
+- [x] Implementar gelo
 - [ ] Implementar grama
 - [ ] Implementar grama densa
 - [ ] Implementar sapo

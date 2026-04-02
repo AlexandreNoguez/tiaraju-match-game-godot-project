@@ -3,6 +3,7 @@ class_name BoardCell
 
 const OBSTACLE_NONE := ""
 const OBSTACLE_BOX := "box"
+const OBSTACLE_ICE := "ice"
 
 var row: int
 var column: int
@@ -30,7 +31,11 @@ func has_obstacle() -> bool:
 
 
 func can_hold_piece() -> bool:
-    return is_playable and not has_obstacle()
+    return is_playable and not blocks_piece_spawn()
+
+
+func blocks_piece_spawn() -> bool:
+    return obstacle_type == OBSTACLE_BOX and obstacle_hits_remaining > 0
 
 
 func damage() -> bool:

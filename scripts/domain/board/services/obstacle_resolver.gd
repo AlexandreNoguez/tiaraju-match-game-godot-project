@@ -17,12 +17,17 @@ func apply_damage(board_state: BoardState, direct_positions: Array, adjacent_dam
         direct_positions,
         adjacent_damage_sources
     )
+    var direct_position_lookup: Dictionary = _build_position_lookup(direct_positions)
+    var adjacent_position_lookup: Dictionary = _build_adjacent_lookup(board_state, adjacent_damage_sources)
     var removed_counts: Dictionary = {}
     var removed_positions: Array[Vector2i] = []
 
     for position in affected_positions:
         var cell: BoardCell = board_state.get_cell(position.y, position.x)
         if cell == null or not cell.has_obstacle():
+            continue
+
+        if not _should_damage_cell(cell, position, direct_position_lookup, adjacent_position_lookup):
             continue
 
         var obstacle_type: String = cell.obstacle_type
@@ -71,3 +76,42 @@ func _collect_affected_positions(
 func _mark_if_valid(board_state: BoardState, unique_positions: Dictionary, position: Vector2i) -> void:
     if board_state.has_cell(position.y, position.x):
         unique_positions[position] = true
+
+
+func _build_position_lookup(positions: Array) -> Dictionary:
+    var lookup: Dictionary = {}
+
+    for raw_position in positions:
+        if raw_position is Vector2i:
+            lookup[raw_position] = true
+
+    return lookup
+
+
+func _build_adjacent_lookup(board_state: BoardState, source_positions: Array) -> Dictionary:
+    var lookup: Dictionary = {}
+
+    for raw_position in source_positions:
+        if raw_position is not Vector2i:
+            continue
+
+        var position: Vector2i = raw_position
+        for direction in ORTHOGONAL_DIRECTIONS:
+            _mark_if_valid(board_state, lookup, position + direction)
+
+    return lookup
+
+
+func _should_damage_cell(
+    cell: BoardCell,
+    position: Vector2i,
+    direct_position_lookup: Dictionary,
+    adjacent_position_lookup: Dictionary
+) -> bool:
+    if cell.obstacle_type == BoardCell.OBSTACLE_BOX:
+        return direct_position_lookup.has(position) or adjacent_position_lookup.has(position)
+
+    if cell.obstacle_type == BoardCell.OBSTACLE_ICE:
+        return direct_position_lookup.has(position)
+
+    return direct_position_lookup.has(position)

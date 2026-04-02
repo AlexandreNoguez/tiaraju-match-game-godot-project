@@ -87,6 +87,7 @@ func _render_grid() -> void:
 func _build_piece_button(row: int, column: int) -> Button:
     var button: Button = Button.new()
     var piece = _session_state.board_state.get_piece(row, column)
+    var cell: BoardCell = _session_state.board_state.get_cell(row, column)
     var is_selected: bool = _selected_position == Vector2i(column, row)
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
@@ -95,7 +96,7 @@ func _build_piece_button(row: int, column: int) -> Button:
     button.disabled = not _session_state.can_accept_input()
     button.mouse_filter = Control.MOUSE_FILTER_STOP
     button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-    button.text = _piece_label(piece, is_selected)
+    button.text = _piece_label(piece, cell, is_selected)
 
     style.bg_color = _piece_color(piece)
     style.corner_radius_top_left = 16
@@ -106,12 +107,18 @@ func _build_piece_button(row: int, column: int) -> Button:
     style.border_width_top = 4
     style.border_width_right = 4
     style.border_width_bottom = 4
-    style.border_color = Color(1, 1, 1, 0.95) if is_selected else Color(0.08, 0.16, 0.12, 0.5)
+    if is_selected:
+        style.border_color = Color(1, 1, 1, 0.95)
+    elif cell != null and cell.obstacle_type == BoardCellScript.OBSTACLE_ICE and cell.has_obstacle():
+        style.border_color = Color("8bd3ff")
+        style.bg_color = style.bg_color.lerp(Color("dff4ff"), 0.35)
+    else:
+        style.border_color = Color(0.08, 0.16, 0.12, 0.5)
 
     button.add_theme_stylebox_override("normal", style)
     button.add_theme_stylebox_override("hover", style)
     button.add_theme_stylebox_override("pressed", style)
-    button.add_theme_font_size_override("font_size", 22)
+    button.add_theme_font_size_override("font_size", 18 if cell != null and cell.obstacle_type == BoardCellScript.OBSTACLE_ICE and cell.has_obstacle() else 22)
     button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
 
     return button
@@ -213,7 +220,7 @@ func _piece_color(piece) -> Color:
             return Color("d9d9d9")
 
 
-func _piece_label(piece, is_selected: bool) -> String:
+func _piece_label(piece, cell: BoardCell, is_selected: bool) -> String:
     if piece == null:
         return ""
 
@@ -226,6 +233,9 @@ func _piece_label(piece, is_selected: bool) -> String:
         symbol = "V"
     elif piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
         symbol = "*"
+
+    if cell != null and cell.obstacle_type == BoardCellScript.OBSTACLE_ICE and cell.has_obstacle():
+        symbol = "GE %s" % symbol
 
     return "%s%s" % [prefix, symbol]
 
@@ -252,13 +262,24 @@ func _build_goal_text() -> String:
             )
         elif goal.get("type", "") == "break_obstacle":
             parts.append(
-                "Caixas %s/%s" % [
+                "%s %s/%s" % [
+                    _obstacle_goal_name(String(goal.get("obstacle_type", ""))),
                     int(goal.get("current_amount", 0)),
                     int(goal.get("target_amount", 0))
                 ]
             )
 
     return "Objetivo: %s" % ", ".join(parts)
+
+
+func _obstacle_goal_name(obstacle_type: String) -> String:
+    if obstacle_type == BoardCellScript.OBSTACLE_BOX:
+        return "Caixas"
+
+    if obstacle_type == BoardCellScript.OBSTACLE_ICE:
+        return "Gelo"
+
+    return "Obstaculos"
 
 
 func _obstacle_label(cell: BoardCell) -> String:

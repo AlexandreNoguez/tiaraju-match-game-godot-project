@@ -23,6 +23,11 @@
       "type": "break_obstacle",
       "obstacle_type": "box",
       "amount": 4
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "ice",
+      "amount": 2
     }
   ],
   "obstacles": [
@@ -48,6 +53,18 @@
       "type": "box",
       "row": 4,
       "column": 4,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 0,
+      "column": 2,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 5,
+      "column": 3,
       "hit_points": 1
     }
   ]
