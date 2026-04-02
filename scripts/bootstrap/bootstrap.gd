@@ -45,11 +45,21 @@ func _show_main_menu() -> void:
 
     main_menu.setup(level_data, _progress_use_case.load_progress_payload())
     main_menu.play_requested.connect(_on_play_requested)
+    main_menu.reset_save_requested.connect(_on_reset_save_requested)
     _replace_active_screen(main_menu)
 
 
 func _on_play_requested(level_id: String) -> void:
     _open_level(level_id)
+
+
+func _on_reset_save_requested() -> void:
+    var reset_result: Error = _save_gateway.clear_progress()
+    if reset_result != OK:
+        push_error("Failed to clear local save data.")
+        return
+
+    _show_main_menu()
 
 
 func _open_level(level_id: String) -> void:

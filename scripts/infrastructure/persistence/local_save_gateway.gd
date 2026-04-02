@@ -23,3 +23,10 @@ func load_progress() -> Dictionary:
 
     var parsed: Variant = JSON.parse_string(file.get_as_text())
     return parsed if parsed is Dictionary else {}
+
+
+func clear_progress() -> Error:
+    if not FileAccess.file_exists(SAVE_PATH):
+        return OK
+
+    return DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))

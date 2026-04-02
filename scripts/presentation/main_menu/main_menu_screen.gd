@@ -2,6 +2,7 @@ extends Control
 class_name MainMenuScreen
 
 signal play_requested(level_id: String)
+signal reset_save_requested
 
 @onready var _background: ColorRect = $Background
 @onready var _ground_band: ColorRect = $GroundBand
@@ -21,6 +22,10 @@ signal play_requested(level_id: String)
 @onready var _events_button: Button = $MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsButton
 @onready var _shop_button: Button = $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/ShopButton
 @onready var _settings_button: Button = $MarginContainer/RootColumn/HeaderRow/SettingsButton
+@onready var _settings_layer: Control = $SettingsLayer
+@onready var _settings_message_label: Label = $SettingsLayer/PanelContainer/VBoxContainer/MessageLabel
+@onready var _settings_cancel_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/CancelButton
+@onready var _settings_reset_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/ResetButton
 @onready var _profile_panel: PanelContainer = $MarginContainer/RootColumn/ProfilePanel
 @onready var _events_panel: PanelContainer = $MarginContainer/RootColumn/EventsPanel
 @onready var _current_level_panel: PanelContainer = $MarginContainer/RootColumn/CurrentLevelPanel
@@ -44,6 +49,9 @@ func _ready() -> void:
     _events_button.pressed.connect(_on_events_pressed)
     _shop_button.pressed.connect(_on_shop_pressed)
     _settings_button.pressed.connect(_on_settings_pressed)
+    _settings_cancel_button.pressed.connect(_on_settings_cancel_pressed)
+    _settings_reset_button.pressed.connect(_on_settings_reset_pressed)
+    _hide_settings()
     _refresh_view()
 
 
@@ -108,8 +116,22 @@ func _on_shop_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
-    _status_message = "Configuracoes entram como placeholder nesta etapa. Save local continua sendo a fonte de progresso."
-    _refresh_view()
+    _settings_message_label.text = "Audio ainda nao foi implementado. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
+    _settings_layer.visible = true
+
+
+func _on_settings_cancel_pressed() -> void:
+    _hide_settings()
+
+
+func _on_settings_reset_pressed() -> void:
+    _hide_settings()
+    emit_signal("reset_save_requested")
+
+
+func _hide_settings() -> void:
+    if _settings_layer != null:
+        _settings_layer.visible = false
 
 
 func _apply_visual_theme() -> void:
@@ -150,6 +172,11 @@ func _apply_visual_theme() -> void:
 
     for button in [_play_button, _profile_button, _events_button, _shop_button, _settings_button]:
         _apply_button_style(button, palette["button"], palette["button_hover"], palette["button_pressed"], palette["button_text"])
+
+    _apply_panel_style($SettingsLayer/PanelContainer, Color(1, 0.97, 0.9, 0.95), palette["panel_border"], 28)
+    _settings_message_label.add_theme_color_override("font_color", palette["body"])
+    _apply_button_style(_settings_cancel_button, Color("8a6a4b"), Color("9d7b59"), Color("6e543d"), palette["button_text"])
+    _apply_button_style(_settings_reset_button, Color("b93c32"), Color("cf4c41"), Color("8f2c24"), palette["button_text"])
 
 
 func _apply_panel_style(target: Control, background_color: Color, border_color: Color, radius: int) -> void:

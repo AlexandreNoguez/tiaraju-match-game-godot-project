@@ -136,7 +136,7 @@ func _build_piece_button(row: int, column: int) -> Button:
     var is_selected: bool = _selected_position == Vector2i(column, row)
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
-    button.custom_minimum_size = Vector2(96, 96)
+    button.custom_minimum_size = Vector2(112, 112)
     button.focus_mode = Control.FOCUS_NONE
     button.disabled = not _session_state.can_accept_input()
     button.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -173,7 +173,7 @@ func _build_blocked_cell() -> Control:
     var panel: Panel = Panel.new()
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
-    panel.custom_minimum_size = Vector2(96, 96)
+    panel.custom_minimum_size = Vector2(112, 112)
     style.bg_color = Color(0.09, 0.16, 0.12, 0.45)
     style.corner_radius_top_left = 16
     style.corner_radius_top_right = 16
@@ -189,7 +189,7 @@ func _build_obstacle_cell(row: int, column: int) -> Control:
     var cell: BoardCell = _session_state.board_state.get_cell(row, column)
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
-    button.custom_minimum_size = Vector2(96, 96)
+    button.custom_minimum_size = Vector2(112, 112)
     button.focus_mode = Control.FOCUS_NONE
     button.disabled = true
     button.mouse_filter = Control.MOUSE_FILTER_STOP

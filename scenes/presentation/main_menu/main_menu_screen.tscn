@@ -252,3 +252,69 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 autowrap_mode = 3
 text = "Beta offline-first: avatar, eventos, perfil e configuracoes seguem como placeholder."
+
+[node name="SettingsLayer" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="SettingsLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.52)
+
+[node name="PanelContainer" type="PanelContainer" parent="SettingsLayer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -160.0
+offset_right = 270.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsLayer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="TitleLabel" type="Label" parent="SettingsLayer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+text = "Configuracoes"
+
+[node name="MessageLabel" type="Label" parent="SettingsLayer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+autowrap_mode = 3
+text = "Audio ainda nao foi implementado. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
+
+[node name="ButtonRow" type="HBoxContainer" parent="SettingsLayer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 14
+
+[node name="CancelButton" type="Button" parent="SettingsLayer/PanelContainer/VBoxContainer/ButtonRow"]
+custom_minimum_size = Vector2(180, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Cancelar"
+
+[node name="ResetButton" type="Button" parent="SettingsLayer/PanelContainer/VBoxContainer/ButtonRow"]
+custom_minimum_size = Vector2(220, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Resetar save"

@@ -54,15 +54,15 @@ grow_vertical = 2
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 32
+theme_override_constants/margin_bottom = 24
 
 [node name="RootColumn" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/RootColumn"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 38
+theme_override_font_sizes/font_size = 34
 text = "Aldeia das Cores"
 
 [node name="HudRow" type="HBoxContainer" parent="MarginContainer/RootColumn"]
@@ -72,19 +72,19 @@ theme_override_constants/separation = 16
 [node name="MovesLabel" type="Label" parent="MarginContainer/RootColumn/HudRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 22
 text = "Jogadas: 0"
 
 [node name="GoalLabel" type="Label" parent="MarginContainer/RootColumn/HudRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 22
 text = "Objetivo: -"
 horizontal_alignment = 2
 
 [node name="StatusLabel" type="Label" parent="MarginContainer/RootColumn"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 text = "Carregando tabuleiro..."
 autowrap_mode = 3
 
@@ -95,9 +95,9 @@ size_flags_vertical = 3
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/RootColumn/BoardShell"]
 layout_mode = 2
 theme_override_constants/margin_left = 22
-theme_override_constants/margin_top = 22
+theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 22
-theme_override_constants/margin_bottom = 22
+theme_override_constants/margin_bottom = 18
 
 [node name="BoardGrid" type="GridContainer" parent="MarginContainer/RootColumn/BoardShell/MarginContainer"]
 layout_mode = 2
