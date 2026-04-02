@@ -4,6 +4,7 @@
   "moves": 22,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 2,
+  "theme_id": "terra_quente",
   "seed": 1008,
   "grid_mask": [
     [1, 1, 1, 1, 1, 1, 1],

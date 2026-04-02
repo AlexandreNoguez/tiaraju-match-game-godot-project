@@ -20,6 +20,41 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.94902, 0.905882, 0.780392, 1)
 
+[node name="GroundBand" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -260.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.835294, 0.678431, 0.431373, 1)
+
+[node name="SunDisc" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 748.0
+offset_top = 96.0
+offset_right = 980.0
+offset_bottom = 328.0
+
+[node name="LeafClusterLeft" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = -28.0
+offset_top = 132.0
+offset_right = 240.0
+offset_bottom = 520.0
+
+[node name="LeafClusterRight" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 844.0
+offset_top = 408.0
+offset_right = 1128.0
+offset_bottom = 812.0
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15

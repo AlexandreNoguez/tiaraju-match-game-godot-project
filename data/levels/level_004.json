@@ -4,6 +4,7 @@
   "moves": 20,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 1,
+  "theme_id": "mata_clara",
   "seed": 1004,
   "grid_mask": [
     [1, 1, 1, 1, 1, 1],

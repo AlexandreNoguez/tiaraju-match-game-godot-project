@@ -207,6 +207,7 @@ Campos recomendados:
 - `obstacles`
 - `special_rules`
 - `difficulty_tier`
+- `theme_id`
 - `seed`
 
 ## 10. Progressao de Conteudo

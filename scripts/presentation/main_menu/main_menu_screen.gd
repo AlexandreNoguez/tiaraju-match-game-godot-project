@@ -3,6 +3,13 @@ class_name MainMenuScreen
 
 signal play_requested(level_id: String)
 
+@onready var _background: ColorRect = $Background
+@onready var _ground_band: ColorRect = $GroundBand
+@onready var _sun_disc: Panel = $SunDisc
+@onready var _leaf_cluster_left: Panel = $LeafClusterLeft
+@onready var _leaf_cluster_right: Panel = $LeafClusterRight
+@onready var _title_label: Label = $MarginContainer/RootColumn/HeaderRow/TitleColumn/TitleLabel
+@onready var _subtitle_label: Label = $MarginContainer/RootColumn/HeaderRow/TitleColumn/SubtitleLabel
 @onready var _current_level_label: Label = $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/CurrentLevelLabel
 @onready var _progress_label: Label = $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/ProgressLabel
 @onready var _coins_label: Label = $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/CoinsLabel
@@ -12,6 +19,11 @@ signal play_requested(level_id: String)
 @onready var _events_button: Button = $MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsButton
 @onready var _shop_button: Button = $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/ShopButton
 @onready var _settings_button: Button = $MarginContainer/RootColumn/HeaderRow/SettingsButton
+@onready var _profile_panel: PanelContainer = $MarginContainer/RootColumn/ProfilePanel
+@onready var _events_panel: PanelContainer = $MarginContainer/RootColumn/EventsPanel
+@onready var _current_level_panel: PanelContainer = $MarginContainer/RootColumn/CurrentLevelPanel
+@onready var _economy_panel: PanelContainer = $MarginContainer/RootColumn/EconomyPanel
+@onready var _avatar_placeholder: Panel = $MarginContainer/RootColumn/ProfilePanel/HBoxContainer/AvatarPlaceholder
 
 var _level_data: Dictionary = {}
 var _progress_payload: Dictionary = {}
@@ -24,6 +36,7 @@ func setup(level_data: Dictionary, progress_payload: Dictionary = {}) -> void:
 
 
 func _ready() -> void:
+    _apply_visual_theme()
     _play_button.pressed.connect(_on_play_pressed)
     _profile_button.pressed.connect(_on_profile_pressed)
     _events_button.pressed.connect(_on_events_pressed)
@@ -77,3 +90,85 @@ func _on_shop_pressed() -> void:
 func _on_settings_pressed() -> void:
     _status_message = "Configuracoes entram como placeholder nesta etapa. Save local continua sendo a fonte de progresso."
     _refresh_view()
+
+
+func _apply_visual_theme() -> void:
+    var palette: Dictionary = {
+        "background": Color("f4e0b4"),
+        "ground": Color("d18a4b"),
+        "sun": Color("ffd973"),
+        "leaf_primary": Color("4a8a53"),
+        "leaf_secondary": Color("2d5d3a"),
+        "panel": Color(1, 0.97, 0.9, 0.86),
+        "panel_border": Color("9a5b32"),
+        "title": Color("4a2917"),
+        "body": Color("6a4a33"),
+        "button": Color("c95f3d"),
+        "button_hover": Color("da724d"),
+        "button_pressed": Color("a94e32"),
+        "button_text": Color("fff9ef")
+    }
+
+    _background.color = palette["background"]
+    _ground_band.color = palette["ground"]
+    _title_label.add_theme_color_override("font_color", palette["title"])
+    _subtitle_label.add_theme_color_override("font_color", palette["body"])
+    _current_level_label.add_theme_color_override("font_color", palette["title"])
+    _progress_label.add_theme_color_override("font_color", palette["body"])
+    _coins_label.add_theme_color_override("font_color", palette["title"])
+    _status_label.add_theme_color_override("font_color", palette["body"])
+
+    _apply_panel_style(_sun_disc, palette["sun"], palette["sun"], 999)
+    _apply_panel_style(_leaf_cluster_left, palette["leaf_primary"], palette["leaf_primary"], 160)
+    _apply_panel_style(_leaf_cluster_right, palette["leaf_secondary"], palette["leaf_secondary"], 160)
+    _apply_panel_style(_avatar_placeholder, Color("f7c86a"), palette["panel_border"], 40)
+
+    for panel in [_profile_panel, _events_panel, _current_level_panel, _economy_panel]:
+        _apply_panel_style(panel, palette["panel"], palette["panel_border"], 28)
+
+    for button in [_play_button, _profile_button, _events_button, _shop_button, _settings_button]:
+        _apply_button_style(button, palette["button"], palette["button_hover"], palette["button_pressed"], palette["button_text"])
+
+
+func _apply_panel_style(target: Control, background_color: Color, border_color: Color, radius: int) -> void:
+    var style := StyleBoxFlat.new()
+    style.bg_color = background_color
+    style.border_color = border_color
+    style.border_width_left = 3
+    style.border_width_top = 3
+    style.border_width_right = 3
+    style.border_width_bottom = 3
+    style.corner_radius_top_left = radius
+    style.corner_radius_top_right = radius
+    style.corner_radius_bottom_right = radius
+    style.corner_radius_bottom_left = radius
+
+    var theme_key: String = "panel" if target is PanelContainer or target is Panel else "normal"
+    target.add_theme_stylebox_override(theme_key, style)
+
+
+func _apply_button_style(button: Button, base_color: Color, hover_color: Color, pressed_color: Color, text_color: Color) -> void:
+    var normal := StyleBoxFlat.new()
+    normal.bg_color = base_color
+    normal.border_color = base_color.darkened(0.25)
+    normal.border_width_left = 3
+    normal.border_width_top = 3
+    normal.border_width_right = 3
+    normal.border_width_bottom = 3
+    normal.corner_radius_top_left = 24
+    normal.corner_radius_top_right = 24
+    normal.corner_radius_bottom_right = 24
+    normal.corner_radius_bottom_left = 24
+
+    var hover := normal.duplicate()
+    hover.bg_color = hover_color
+
+    var pressed := normal.duplicate()
+    pressed.bg_color = pressed_color
+
+    button.add_theme_stylebox_override("normal", normal)
+    button.add_theme_stylebox_override("hover", hover)
+    button.add_theme_stylebox_override("pressed", pressed)
+    button.add_theme_color_override("font_color", text_color)
+    button.add_theme_color_override("font_hover_color", text_color)
+    button.add_theme_color_override("font_pressed_color", text_color)

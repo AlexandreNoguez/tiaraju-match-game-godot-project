@@ -17,14 +17,20 @@ const PossibleMoveFinderScript = preload("res://scripts/domain/board/services/po
 const SpecialPieceResolverScript = preload("res://scripts/domain/board/services/special_piece_resolver.gd")
 const StartLevelUseCaseScript = preload("res://scripts/application/use_cases/start_level_use_case.gd")
 
+@onready var _background: ColorRect = $Background
+@onready var _glow_orb: Panel = $GlowOrb
+@onready var _leaf_glow_left: Panel = $LeafGlowLeft
+@onready var _leaf_glow_right: Panel = $LeafGlowRight
 @onready var _title_label: Label = $MarginContainer/RootColumn/TitleLabel
 @onready var _moves_label: Label = $MarginContainer/RootColumn/HudRow/MovesLabel
 @onready var _goal_label: Label = $MarginContainer/RootColumn/HudRow/GoalLabel
 @onready var _status_label: Label = $MarginContainer/RootColumn/StatusLabel
-@onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardGrid
+@onready var _board_shell: PanelContainer = $MarginContainer/RootColumn/BoardShell
+@onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardShell/MarginContainer/BoardGrid
 @onready var _end_state_layer: Control = $EndStateLayer
 @onready var _end_state_title_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/TitleLabel
 @onready var _end_state_message_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/MessageLabel
+@onready var _end_state_panel: PanelContainer = $EndStateLayer/PanelContainer
 @onready var _restart_button: Button = $EndStateLayer/PanelContainer/VBoxContainer/ButtonRow/RestartButton
 @onready var _next_button: Button = $EndStateLayer/PanelContainer/VBoxContainer/ButtonRow/NextButton
 
@@ -50,12 +56,15 @@ func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
     _has_recorded_victory = false
     _has_requested_home = false
     _hide_end_state()
+    if is_node_ready():
+        _apply_level_theme()
 
 
 func _ready() -> void:
     _initialize_services()
     _restart_button.pressed.connect(_on_restart_pressed)
     _next_button.pressed.connect(_on_next_pressed)
+    _apply_level_theme()
     _refresh_view()
 
 
@@ -473,6 +482,140 @@ func _emit_home_requested() -> void:
         return
 
     emit_signal("home_requested")
+
+
+func _apply_level_theme() -> void:
+    if not is_node_ready():
+        return
+
+    var palette: Dictionary = _build_theme_palette(String(_level_data.get("theme_id", "mata_clara")))
+    _background.color = palette["background"]
+    _title_label.add_theme_color_override("font_color", palette["title"])
+    _moves_label.add_theme_color_override("font_color", palette["hud"])
+    _goal_label.add_theme_color_override("font_color", palette["hud"])
+    _status_label.add_theme_color_override("font_color", palette["body"])
+    _end_state_title_label.add_theme_color_override("font_color", palette["title"])
+    _end_state_message_label.add_theme_color_override("font_color", palette["body"])
+
+    _apply_panel_style(_glow_orb, palette["glow"], palette["glow"], 999)
+    _apply_panel_style(_leaf_glow_left, palette["leaf_primary"], palette["leaf_primary"], 180)
+    _apply_panel_style(_leaf_glow_right, palette["leaf_secondary"], palette["leaf_secondary"], 180)
+    _apply_panel_style(_board_shell, palette["board_panel"], palette["board_border"], 34)
+    _apply_panel_style(_end_state_panel, palette["overlay_panel"], palette["board_border"], 30)
+    _apply_button_style(_restart_button, palette["button"], palette["button_hover"], palette["button_pressed"], Color("fff8ef"))
+    _apply_button_style(_next_button, palette["button"], palette["button_hover"], palette["button_pressed"], Color("fff8ef"))
+
+
+func _build_theme_palette(theme_id: String) -> Dictionary:
+    match theme_id:
+        "rio_claro":
+            return {
+                "background": Color("cdeffd"),
+                "glow": Color("fef6b4"),
+                "leaf_primary": Color("57a6c7"),
+                "leaf_secondary": Color("2f6f8f"),
+                "board_panel": Color(1, 1, 1, 0.84),
+                "board_border": Color("2f6f8f"),
+                "overlay_panel": Color("f5fbff"),
+                "title": Color("1f4960"),
+                "hud": Color("245a73"),
+                "body": Color("315f75"),
+                "button": Color("2f89a8"),
+                "button_hover": Color("40a0c1"),
+                "button_pressed": Color("246d85")
+            }
+        "terra_quente":
+            return {
+                "background": Color("f4d2b2"),
+                "glow": Color("ffd48b"),
+                "leaf_primary": Color("bf6d43"),
+                "leaf_secondary": Color("7d4021"),
+                "board_panel": Color(1, 0.97, 0.93, 0.88),
+                "board_border": Color("8f4c2c"),
+                "overlay_panel": Color("fff7ef"),
+                "title": Color("5a2f1a"),
+                "hud": Color("6b3d25"),
+                "body": Color("79513a"),
+                "button": Color("bf5b32"),
+                "button_hover": Color("d56f45"),
+                "button_pressed": Color("994624")
+            }
+        "festa_noite":
+            return {
+                "background": Color("1c2048"),
+                "glow": Color("ffd166"),
+                "leaf_primary": Color("8844aa"),
+                "leaf_secondary": Color("2a8e8a"),
+                "board_panel": Color(0.13, 0.16, 0.29, 0.9),
+                "board_border": Color("ffd166"),
+                "overlay_panel": Color("24294f"),
+                "title": Color("fff0c2"),
+                "hud": Color("f7d98f"),
+                "body": Color("d0d7ff"),
+                "button": Color("ff7f50"),
+                "button_hover": Color("ff9469"),
+                "button_pressed": Color("d7643f")
+            }
+        _:
+            return {
+                "background": Color("dff1d0"),
+                "glow": Color("ffe88f"),
+                "leaf_primary": Color("67a55b"),
+                "leaf_secondary": Color("2f6b3e"),
+                "board_panel": Color(1, 1, 1, 0.84),
+                "board_border": Color("4c7c4b"),
+                "overlay_panel": Color("f8fff3"),
+                "title": Color("284728"),
+                "hud": Color("2f5a33"),
+                "body": Color("46604b"),
+                "button": Color("cc6a3b"),
+                "button_hover": Color("de7d4e"),
+                "button_pressed": Color("a6522d")
+            }
+
+
+func _apply_panel_style(target: Control, background_color: Color, border_color: Color, radius: int) -> void:
+    var style := StyleBoxFlat.new()
+    style.bg_color = background_color
+    style.border_color = border_color
+    style.border_width_left = 3
+    style.border_width_top = 3
+    style.border_width_right = 3
+    style.border_width_bottom = 3
+    style.corner_radius_top_left = radius
+    style.corner_radius_top_right = radius
+    style.corner_radius_bottom_right = radius
+    style.corner_radius_bottom_left = radius
+
+    var theme_key: String = "panel" if target is PanelContainer or target is Panel else "normal"
+    target.add_theme_stylebox_override(theme_key, style)
+
+
+func _apply_button_style(button: Button, base_color: Color, hover_color: Color, pressed_color: Color, text_color: Color) -> void:
+    var normal := StyleBoxFlat.new()
+    normal.bg_color = base_color
+    normal.border_color = base_color.darkened(0.25)
+    normal.border_width_left = 3
+    normal.border_width_top = 3
+    normal.border_width_right = 3
+    normal.border_width_bottom = 3
+    normal.corner_radius_top_left = 22
+    normal.corner_radius_top_right = 22
+    normal.corner_radius_bottom_right = 22
+    normal.corner_radius_bottom_left = 22
+
+    var hover := normal.duplicate()
+    hover.bg_color = hover_color
+
+    var pressed := normal.duplicate()
+    pressed.bg_color = pressed_color
+
+    button.add_theme_stylebox_override("normal", normal)
+    button.add_theme_stylebox_override("hover", hover)
+    button.add_theme_stylebox_override("pressed", pressed)
+    button.add_theme_color_override("font_color", text_color)
+    button.add_theme_color_override("font_hover_color", text_color)
+    button.add_theme_color_override("font_pressed_color", text_color)
 
 
 func _find_next_level_id(level_id: String) -> String:

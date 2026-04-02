@@ -4,6 +4,7 @@
   "moves": 20,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 2,
+  "theme_id": "rio_claro",
   "seed": 1007,
   "grid_mask": [
     [0, 1, 1, 1, 0],

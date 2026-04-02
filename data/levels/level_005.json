@@ -4,6 +4,7 @@
   "moves": 20,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 2,
+  "theme_id": "festa_noite",
   "seed": 1005,
   "grid_mask": [
     [1, 1, 1, 1, 1, 1],
