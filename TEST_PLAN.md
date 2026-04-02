@@ -142,6 +142,23 @@ Esse fluxo deve validar:
 - persistencia do save local entre sessoes
 - coerencia das informacoes exibidas no `home`
 
+## 6.3 Atalho de playtest em debug
+
+Em build de debug ou rodando pela Godot, o menu `Configuracoes` do `home` passa a exibir uma ferramenta de playtest.
+
+Usar quando:
+
+- precisar abrir rapidamente qualquer fase entre `001-029`
+- revisar a curva `010-029` sem vencer manualmente todas as anteriores
+- repetir uma fase varias vezes sem sujar o save principal
+
+Resultado esperado:
+
+- a fase selecionada abre normalmente
+- o tabuleiro indica que esta em modo playtest
+- vencer ou perder nao altera progresso salvo
+- ao voltar para o `home`, a fase atual do save continua intacta
+
 ## 7. Quando Usar VSCode, Android Studio e Docker
 
 ### 7.1 VSCode

@@ -107,6 +107,22 @@ No `home`, conferir:
 - informacoes de progresso atualizadas
 - botao `Jogar` sempre coerente com a fase atual
 
+## Caso 7: Atalho de Playtest em Debug
+
+Passos:
+
+1. Abrir `Configuracoes` no `home`.
+2. Confirmar que a ferramenta de playtest aparece apenas em debug.
+3. Selecionar uma fase como `010`, `020` ou `029`.
+4. Abrir a fase pelo atalho.
+5. Vencer ou perder e voltar ao `home`.
+
+Resultado esperado:
+
+- a fase escolhida abre corretamente
+- a mensagem da fase informa que o save nao sera alterado
+- ao voltar para o `home`, `Fase atual`, `Maior desbloqueada` e `Ultima concluida` continuam iguais ao save anterior
+
 ## Observacoes a Registrar
 
 Durante o teste, anotar:

@@ -34,6 +34,7 @@ Estado atual do desenvolvimento:
 - feedback visual de combo funcionando
 - efeitos sonoros básicos funcionando com assets gratuitos locais
 - músicas temporárias gratuitas tocando no home e nas fases
+- atalho de playtest em debug no menu de configurações para abrir fases sem alterar o save
 - 9 fases técnicas de teste já criadas
 - pacote inicial com 20 fases jogáveis criado
 - 29 fases totais disponíveis em dados
@@ -53,10 +54,10 @@ Decisões de produto:
 
 Próximos passos planejados:
 1. executar playtest das fases 010-029 e registrar onde a curva ainda quebra
-2. rodar o roteiro manual home -> fase -> home -> save no Godot do Windows
-3. validar no Android resolução, toque e performance
-4. adicionar controles básicos de áudio nas configurações e persistir preferências locais
-5. definir o desenho pós-beta da economia de moedas e do shop offline
+2. usar o atalho de playtest nas configurações em debug para acelerar a revisão da campanha sem poluir o save
+3. rodar o roteiro manual home -> fase -> home -> save no Godot do Windows
+4. validar no Android resolução, toque e performance
+5. adicionar controles básicos de áudio nas configurações e persistir preferências locais
 
 Antes de editar, leia:
 - GAME_PLAN.md

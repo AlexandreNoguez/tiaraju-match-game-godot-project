@@ -22,3 +22,27 @@ func fetch_by_id(level_id: String) -> Dictionary:
 
     push_warning("Invalid level JSON: %s" % level_path)
     return {}
+
+
+func list_level_ids() -> Array[String]:
+    var directory := DirAccess.open("res://data/levels")
+    var level_ids: Array[String] = []
+    if directory == null:
+        push_warning("Failed to open level directory: res://data/levels")
+        return level_ids
+
+    directory.list_dir_begin()
+    while true:
+        var file_name := directory.get_next()
+        if file_name == "":
+            break
+        if directory.current_is_dir():
+            continue
+        if not file_name.ends_with(".json"):
+            continue
+
+        level_ids.append(file_name.trim_suffix(".json"))
+
+    directory.list_dir_end()
+    level_ids.sort()
+    return level_ids

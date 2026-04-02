@@ -308,6 +308,33 @@ theme_override_font_sizes/font_size = 22
 autowrap_mode = 3
 text = "SFX e musicas temporarias ja usam assets gratuitos locais. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
 
+[node name="PlaytestSection" type="VBoxContainer" parent="SettingsLayer/PanelContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Ferramenta de playtest"
+
+[node name="BodyLabel" type="Label" parent="SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 3
+text = "Disponivel apenas em debug para revisar a campanha sem alterar o save principal."
+
+[node name="LevelSelect" type="OptionButton" parent="SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="OpenLevelButton" type="Button" parent="SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Abrir fase para playtest"
+
 [node name="ButtonRow" type="HBoxContainer" parent="SettingsLayer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 1

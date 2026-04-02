@@ -43,14 +43,27 @@ func _show_main_menu() -> void:
         push_error("Failed to instantiate the main menu screen.")
         return
 
-    main_menu.setup(level_data, _progress_use_case.load_progress_payload())
+    main_menu.setup(
+        level_data,
+        _progress_use_case.load_progress_payload(),
+        {
+            "enabled": OS.is_debug_build(),
+            "level_ids": _repository.list_level_ids(),
+            "selected_level_id": level_id
+        }
+    )
     main_menu.play_requested.connect(_on_play_requested)
+    main_menu.playtest_level_requested.connect(_on_playtest_level_requested)
     main_menu.reset_save_requested.connect(_on_reset_save_requested)
     _replace_active_screen(main_menu)
 
 
 func _on_play_requested(level_id: String) -> void:
     _open_level(level_id)
+
+
+func _on_playtest_level_requested(level_id: String) -> void:
+    _open_level(level_id, true)
 
 
 func _on_reset_save_requested() -> void:
@@ -62,7 +75,7 @@ func _on_reset_save_requested() -> void:
     _show_main_menu()
 
 
-func _open_level(level_id: String) -> void:
+func _open_level(level_id: String, playtest_mode: bool = false) -> void:
     var resolved_level_id: String = _resolve_existing_level_id(level_id)
     var payload: Dictionary = _start_level_use_case.execute(resolved_level_id)
 
@@ -70,14 +83,15 @@ func _open_level(level_id: String) -> void:
         push_error("Failed to load level: %s" % resolved_level_id)
         return
 
-    _progress_use_case.record_opened_level(resolved_level_id)
+    if not playtest_mode:
+        _progress_use_case.record_opened_level(resolved_level_id)
 
     var board_screen := BoardScreenScene.instantiate() as BoardScreen
     if board_screen == null:
         push_error("Failed to instantiate the board screen.")
         return
 
-    board_screen.setup(payload["level_data"], payload["session_state"])
+    board_screen.setup(payload["level_data"], payload["session_state"], {"playtest_mode": playtest_mode})
     board_screen.home_requested.connect(_show_main_menu)
     _replace_active_screen(board_screen)
 

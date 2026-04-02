@@ -67,9 +67,10 @@ var _has_requested_home: bool = false
 var _has_played_end_state_sound: bool = false
 var _is_paused: bool = false
 var _combo_feedback_base_position: Vector2 = Vector2.ZERO
+var _playtest_mode: bool = false
 
 
-func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
+func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
     _level_data = level_data
     _session_state = session_state
     _selected_position = Vector2i(-1, -1)
@@ -78,6 +79,9 @@ func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
     _has_requested_home = false
     _has_played_end_state_sound = false
     _is_paused = false
+    _playtest_mode = bool(runtime_options.get("playtest_mode", false))
+    if _playtest_mode:
+        _status_message = "Modo playtest: o save local nao sera alterado nesta fase."
     _hide_end_state()
     _hide_pause_layer()
     if is_node_ready():
@@ -450,15 +454,21 @@ func _refresh_end_state() -> void:
 
 func _handle_victory() -> void:
     var next_level_id: String = _find_next_level_id(_session_state.level_id)
-    if not _has_recorded_victory:
+    if not _playtest_mode and not _has_recorded_victory:
         _level_progress_use_case.record_victory(_session_state.level_id, next_level_id)
         _has_recorded_victory = true
 
-    var message: String = "Objetivos concluidos. Progresso salvo localmente."
-    if next_level_id != "":
-        message += " A proxima fase ja foi desbloqueada no home."
+    var message: String = ""
+    if _playtest_mode:
+        message = "Objetivos concluidos em modo playtest. O progresso local nao foi alterado."
+        if next_level_id != "":
+            message += " Use o home para abrir rapidamente a proxima fase que quiser revisar."
     else:
-        message += " Voce concluiu o pacote tecnico atual."
+        message = "Objetivos concluidos. Progresso salvo localmente."
+        if next_level_id != "":
+            message += " A proxima fase ja foi desbloqueada no home."
+        else:
+            message += " Voce concluiu o pacote tecnico atual."
 
     message += " Voltando ao home."
     _play_end_state_sound(true)
@@ -534,8 +544,10 @@ func _load_level(level_id: String) -> void:
         _refresh_view()
         return
 
-    _level_progress_use_case.record_opened_level(level_id)
-    setup(payload["level_data"], payload["session_state"])
+    if not _playtest_mode:
+        _level_progress_use_case.record_opened_level(level_id)
+
+    setup(payload["level_data"], payload["session_state"], {"playtest_mode": _playtest_mode})
     _refresh_view()
 
 

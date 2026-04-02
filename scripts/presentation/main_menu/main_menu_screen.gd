@@ -2,6 +2,7 @@ extends Control
 class_name MainMenuScreen
 
 signal play_requested(level_id: String)
+signal playtest_level_requested(level_id: String)
 signal reset_save_requested
 
 const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
@@ -30,6 +31,9 @@ const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/jingles_P
 @onready var _settings_button: Button = $MarginContainer/RootColumn/HeaderRow/SettingsButton
 @onready var _settings_layer: Control = $SettingsLayer
 @onready var _settings_message_label: Label = $SettingsLayer/PanelContainer/VBoxContainer/MessageLabel
+@onready var _playtest_section: VBoxContainer = $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection
+@onready var _playtest_level_select: OptionButton = $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/LevelSelect
+@onready var _playtest_open_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/OpenLevelButton
 @onready var _settings_cancel_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/CancelButton
 @onready var _settings_reset_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/ButtonRow/ResetButton
 @onready var _audio_player: AudioStreamPlayer = $AudioPlayer
@@ -42,12 +46,15 @@ const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/jingles_P
 
 var _level_data: Dictionary = {}
 var _progress_payload: Dictionary = {}
+var _playtest_payload: Dictionary = {}
+var _playtest_level_ids: Array[String] = []
 var _status_message: String = "Beta offline-first: avatar, eventos, perfil e configuracoes seguem como placeholder."
 
 
-func setup(level_data: Dictionary, progress_payload: Dictionary = {}) -> void:
+func setup(level_data: Dictionary, progress_payload: Dictionary = {}, playtest_payload: Dictionary = {}) -> void:
     _level_data = level_data.duplicate(true)
     _progress_payload = progress_payload.duplicate(true)
+    _playtest_payload = playtest_payload.duplicate(true)
 
 
 func _ready() -> void:
@@ -60,7 +67,9 @@ func _ready() -> void:
     _settings_button.pressed.connect(_on_settings_pressed)
     _settings_cancel_button.pressed.connect(_on_settings_cancel_pressed)
     _settings_reset_button.pressed.connect(_on_settings_reset_pressed)
+    _playtest_open_button.pressed.connect(_on_playtest_open_pressed)
     _hide_settings()
+    _configure_playtest_tools()
     _refresh_view()
 
 
@@ -145,9 +154,49 @@ func _on_settings_reset_pressed() -> void:
     emit_signal("reset_save_requested")
 
 
+func _on_playtest_open_pressed() -> void:
+    if not _playtest_section.visible:
+        return
+
+    var selected_index: int = _playtest_level_select.get_selected_id()
+    if selected_index < 0 or selected_index >= _playtest_level_ids.size():
+        return
+
+    _play_sound(SOUND_CLICK_B, 1.04)
+    _hide_settings()
+    emit_signal("playtest_level_requested", _playtest_level_ids[selected_index])
+
+
 func _hide_settings() -> void:
     if _settings_layer != null:
         _settings_layer.visible = false
+
+
+func _configure_playtest_tools() -> void:
+    var is_enabled: bool = bool(_playtest_payload.get("enabled", false))
+    _playtest_section.visible = is_enabled
+    if not is_enabled:
+        return
+
+    _playtest_level_ids.clear()
+    _playtest_level_select.clear()
+
+    var level_ids_variant: Variant = _playtest_payload.get("level_ids", [])
+    for level_id in level_ids_variant:
+        _playtest_level_ids.append(String(level_id))
+
+    for index in range(_playtest_level_ids.size()):
+        _playtest_level_select.add_item(_build_level_id_label(_playtest_level_ids[index]), index)
+
+    var selected_level_id: String = String(_playtest_payload.get("selected_level_id", String(_level_data.get("id", "level_001"))))
+    var selected_index: int = _playtest_level_ids.find(selected_level_id)
+    if selected_index == -1:
+        selected_index = _playtest_level_ids.find("level_010")
+    if selected_index == -1 and not _playtest_level_ids.is_empty():
+        selected_index = 0
+
+    if selected_index >= 0:
+        _playtest_level_select.select(selected_index)
 
 
 func _apply_visual_theme() -> void:
@@ -191,6 +240,10 @@ func _apply_visual_theme() -> void:
 
     _apply_panel_style($SettingsLayer/PanelContainer, Color(1, 0.97, 0.9, 0.95), palette["panel_border"], 28)
     _settings_message_label.add_theme_color_override("font_color", palette["body"])
+    $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel.add_theme_color_override("font_color", palette["title"])
+    $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel.add_theme_color_override("font_color", palette["body"])
+    _playtest_level_select.add_theme_color_override("font_color", palette["title"])
+    _apply_button_style(_playtest_open_button, Color("8e5a34"), Color("a56b42"), Color("6d4428"), palette["button_text"])
     _apply_button_style(_settings_cancel_button, Color("8a6a4b"), Color("9d7b59"), Color("6e543d"), palette["button_text"])
     _apply_button_style(_settings_reset_button, Color("b93c32"), Color("cf4c41"), Color("8f2c24"), palette["button_text"])
 
