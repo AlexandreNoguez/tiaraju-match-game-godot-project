@@ -3,6 +3,10 @@ class_name BoardScreen
 
 signal home_requested
 
+const BOARD_CELL_SIZE := Vector2(112, 112)
+const BOARD_CELL_SPACING := 10.0
+const DROP_ANIMATION_MAX_DURATION := 0.38
+const DROP_ANIMATION_MIN_DURATION := 0.16
 const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
@@ -68,6 +72,8 @@ var _has_played_end_state_sound: bool = false
 var _is_paused: bool = false
 var _combo_feedback_base_position: Vector2 = Vector2.ZERO
 var _playtest_mode: bool = false
+var _is_drop_animating: bool = false
+var _pending_drop_animation: Dictionary = {}
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
@@ -79,6 +85,8 @@ func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_opt
     _has_requested_home = false
     _has_played_end_state_sound = false
     _is_paused = false
+    _is_drop_animating = false
+    _pending_drop_animation.clear()
     _playtest_mode = bool(runtime_options.get("playtest_mode", false))
     if _playtest_mode:
         _status_message = "Modo playtest: o save local nao sera alterado nesta fase."
@@ -145,7 +153,7 @@ func _refresh_view() -> void:
     _moves_label.text = "Jogadas: %s" % _session_state.moves_remaining
     _goal_label.text = _build_goal_text()
     _status_label.text = _status_message
-    _pause_button.disabled = _session_state.status != "playing" or _is_paused
+    _pause_button.disabled = _session_state.status != "playing" or _is_paused or _is_drop_animating
     _render_grid()
     _refresh_end_state()
 
@@ -165,6 +173,9 @@ func _render_grid() -> void:
             else:
                 _board_grid.add_child(_build_blocked_cell())
 
+    if not _pending_drop_animation.is_empty():
+        _play_pending_drop_animation.call_deferred()
+
 
 func _build_piece_button(row: int, column: int) -> Button:
     var button: Button = Button.new()
@@ -173,9 +184,9 @@ func _build_piece_button(row: int, column: int) -> Button:
     var is_selected: bool = _selected_position == Vector2i(column, row)
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
-    button.custom_minimum_size = Vector2(112, 112)
+    button.custom_minimum_size = BOARD_CELL_SIZE
     button.focus_mode = Control.FOCUS_NONE
-    button.disabled = _is_paused or not _session_state.can_accept_input()
+    button.disabled = _is_paused or _is_drop_animating or not _session_state.can_accept_input()
     button.mouse_filter = Control.MOUSE_FILTER_STOP
     button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
     button.text = _piece_label(piece, cell, is_selected)
@@ -201,6 +212,7 @@ func _build_piece_button(row: int, column: int) -> Button:
     button.add_theme_stylebox_override("hover", style)
     button.add_theme_stylebox_override("pressed", style)
     button.add_theme_font_size_override("font_size", 18 if cell != null and cell.has_obstacle() else 22)
+    button.set_meta("board_position", Vector2i(column, row))
     button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
 
     return button
@@ -210,7 +222,7 @@ func _build_blocked_cell() -> Control:
     var panel: Panel = Panel.new()
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
-    panel.custom_minimum_size = Vector2(112, 112)
+    panel.custom_minimum_size = BOARD_CELL_SIZE
     style.bg_color = Color(0.09, 0.16, 0.12, 0.45)
     style.corner_radius_top_left = 16
     style.corner_radius_top_right = 16
@@ -226,7 +238,7 @@ func _build_obstacle_cell(row: int, column: int) -> Control:
     var cell: BoardCell = _session_state.board_state.get_cell(row, column)
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
-    button.custom_minimum_size = Vector2(112, 112)
+    button.custom_minimum_size = BOARD_CELL_SIZE
     button.focus_mode = Control.FOCUS_NONE
     button.disabled = true
     button.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -251,7 +263,7 @@ func _build_obstacle_cell(row: int, column: int) -> Control:
 
 
 func _on_piece_pressed(position: Vector2i) -> void:
-    if _is_paused or not _session_state.can_accept_input():
+    if _is_paused or _is_drop_animating or not _session_state.can_accept_input():
         return
 
     if _selected_position == Vector2i(-1, -1):
@@ -275,9 +287,13 @@ func _on_piece_pressed(position: Vector2i) -> void:
         _refresh_view()
         return
 
+    var previous_piece_positions: Dictionary = _capture_piece_positions(_session_state.board_state)
     var result: Dictionary = _apply_swap_use_case.execute(_session_state, _selected_position, position)
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
+    if bool(result.get("accepted", false)):
+        _pending_drop_animation = _build_drop_animation(previous_piece_positions, _session_state.board_state)
+        _is_drop_animating = not _pending_drop_animation.is_empty()
     _play_resolution_sound(result)
     _show_combo_feedback(result)
     _refresh_view()
@@ -622,6 +638,100 @@ func _play_music_from_file(resource_path: String, volume_db: float) -> void:
         return
 
     _play_music(music_stream, volume_db)
+
+
+func _capture_piece_positions(board_state: BoardState) -> Dictionary:
+    var positions: Dictionary = {}
+
+    for row in range(board_state.height):
+        for column in range(board_state.width):
+            var piece = board_state.get_piece(row, column)
+            if piece == null:
+                continue
+
+            positions[piece.get_instance_id()] = Vector2i(column, row)
+
+    return positions
+
+
+func _build_drop_animation(previous_piece_positions: Dictionary, board_state: BoardState) -> Dictionary:
+    var animation_map: Dictionary = {}
+    var spawned_rows_by_column: Dictionary = {}
+
+    for row in range(board_state.height):
+        for column in range(board_state.width):
+            var piece = board_state.get_piece(row, column)
+            if piece == null:
+                continue
+
+            var target_position: Vector2i = Vector2i(column, row)
+            var piece_id: int = piece.get_instance_id()
+            if previous_piece_positions.has(piece_id):
+                var previous_position: Vector2i = previous_piece_positions[piece_id]
+                if previous_position.y < row:
+                    animation_map[target_position] = previous_position.y
+                continue
+
+            if not spawned_rows_by_column.has(column):
+                spawned_rows_by_column[column] = []
+
+            var spawned_rows: Array = spawned_rows_by_column[column]
+            spawned_rows.append(row)
+
+    for column in spawned_rows_by_column.keys():
+        var spawned_rows: Array = spawned_rows_by_column[column]
+        spawned_rows.sort()
+        var total_spawned: int = spawned_rows.size()
+        for index in range(total_spawned):
+            var row: int = spawned_rows[index]
+            animation_map[Vector2i(column, row)] = -total_spawned + index
+
+    return animation_map
+
+
+func _play_pending_drop_animation() -> void:
+    if _pending_drop_animation.is_empty() or not is_inside_tree():
+        return
+
+    await get_tree().process_frame
+    if not is_inside_tree():
+        return
+
+    var tween := create_tween()
+    tween.set_parallel(true)
+    _is_drop_animating = true
+
+    for child in _board_grid.get_children():
+        if not (child is Button):
+            continue
+        if not child.has_meta("board_position"):
+            continue
+
+        var board_position: Vector2i = child.get_meta("board_position")
+        if not _pending_drop_animation.has(board_position):
+            continue
+
+        var start_row: int = int(_pending_drop_animation[board_position])
+        var row_distance: int = max(1, board_position.y - start_row)
+        var target_position: Vector2 = child.position
+        var start_position := Vector2(
+            target_position.x,
+            target_position.y - (float(row_distance) * (BOARD_CELL_SIZE.y + BOARD_CELL_SPACING))
+        )
+        var duration: float = min(DROP_ANIMATION_MAX_DURATION, DROP_ANIMATION_MIN_DURATION + (0.03 * row_distance))
+
+        child.position = start_position
+        child.modulate = Color(1, 1, 1, 0.72)
+        tween.tween_property(child, "position", target_position, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+        tween.tween_property(child, "modulate:a", 1.0, duration * 0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+    tween.finished.connect(_on_drop_animation_finished)
+
+
+func _on_drop_animation_finished() -> void:
+    _is_drop_animating = false
+    _pending_drop_animation.clear()
+    _refresh_view()
 
 
 func _show_combo_feedback(result: Dictionary) -> void:

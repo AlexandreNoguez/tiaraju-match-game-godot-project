@@ -34,6 +34,7 @@ Estado atual do desenvolvimento:
 - feedback visual de combo funcionando
 - efeitos sonoros básicos funcionando com assets gratuitos locais
 - músicas temporárias gratuitas tocando no home e nas fases
+- animação inicial de queda das peças funcionando no tabuleiro
 - atalho de playtest em debug no menu de configurações para abrir fases sem alterar o save
 - 9 fases técnicas de teste já criadas
 - pacote inicial com 20 fases jogáveis criado
