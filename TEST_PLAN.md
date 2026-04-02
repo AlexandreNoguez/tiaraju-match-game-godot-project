@@ -159,6 +159,28 @@ Resultado esperado:
 - vencer ou perder nao altera progresso salvo
 - ao voltar para o `home`, a fase atual do save continua intacta
 
+## 6.4 Regressao de moedas, chains e save
+
+Depois das ultimas mudancas no tabuleiro, este pacote de regressao deve ser rodado no desktop e no Android:
+
+1. entrar em uma fase
+2. gerar uma combinacao simples
+3. confirmar que so a combinacao atual some primeiro
+4. confirmar a queda das pecas restantes
+5. confirmar que a chain seguinte so desaparece depois de se formar
+6. verificar o feedback visual de `Chain x2`, `Chain x3` e `+moedas`
+7. concluir ou perder a fase
+8. voltar ao `home`
+9. confirmar que o total de moedas mudou como esperado
+10. fechar e abrir o jogo para validar persistencia do saldo
+
+Resultado esperado:
+
+- pecas nao afetadas nao animam de novo
+- nenhuma peca invade a area fora do grid
+- moedas por chain aparecem de forma compreensivel
+- saldo continua salvo entre sessoes
+
 ## 7. Quando Usar VSCode, Android Studio e Docker
 
 ### 7.1 VSCode
@@ -204,3 +226,9 @@ Para este projeto, a melhor combinacao e:
 4. `celular real` para aprovacao final
 
 Se voce tiver que escolher apenas uma ferramenta adicional alem do VSCode, escolha `Android Studio`.
+
+## 10. Guia Rapido para Aparelho Real
+
+Usar tambem:
+
+- [ANDROID_REAL_DEVICE_TEST.md](/mnt/c/workspaces/tiaraju-match-game-godot-project/docs/ANDROID_REAL_DEVICE_TEST.md)

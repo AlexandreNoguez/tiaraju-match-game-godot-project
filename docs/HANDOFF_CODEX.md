@@ -39,6 +39,7 @@ Estado atual do desenvolvimento:
 - efeito de pop antes da remoção das combinações funcionando
 - moedas sendo ganhas por chain e salvas localmente
 - atalho de playtest em debug no menu de configurações para abrir fases sem alterar o save
+- guia de teste em aparelho Android real documentado
 - 9 fases técnicas de teste já criadas
 - pacote inicial com 20 fases jogáveis criado
 - 29 fases totais disponíveis em dados
@@ -58,11 +59,11 @@ Decisões de produto:
 - se houver conta no futuro, precisamos prever exclusão de conta e dados conforme exigências do Google Play
 
 Próximos passos planejados:
-1. executar playtest das fases 010-029 e registrar onde a curva ainda quebra
-2. usar o atalho de playtest nas configurações em debug para acelerar a revisão da campanha sem poluir o save
-3. rodar o roteiro manual home -> fase -> home -> save no Godot do Windows
-4. validar no Android resolução, toque e performance
-5. adicionar controles básicos de áudio nas configurações e persistir preferências locais
+1. rodar a regressao manual de moedas, chains, save e animacoes no desktop
+2. validar no Android resolução, toque, performance e persistencia do save
+3. usar o atalho de playtest nas configurações em debug para acelerar a revisão da campanha sem poluir o save
+4. adicionar controles básicos de áudio nas configurações e persistir preferências locais
+5. voltar ao balanceamento fino da curva das fases 010-029
 
 Antes de editar, leia:
 - GAME_PLAN.md
