@@ -676,7 +676,7 @@ func _capture_piece_positions(board_state: BoardState) -> Dictionary:
             if piece == null:
                 continue
 
-            positions[piece.get_instance_id()] = Vector2i(column, row)
+            positions[piece.uid] = Vector2i(column, row)
 
     return positions
 
@@ -693,7 +693,7 @@ func _build_drop_animation(previous_state: BoardState, current_state: BoardState
                 continue
 
             var target_position: Vector2i = Vector2i(column, row)
-            var piece_id: int = piece.get_instance_id()
+            var piece_id: int = piece.uid
             if previous_piece_positions.has(piece_id):
                 var previous_position: Vector2i = previous_piece_positions[piece_id]
                 if previous_position.y < row:
