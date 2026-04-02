@@ -114,4 +114,10 @@ func _should_damage_cell(
     if cell.obstacle_type == BoardCell.OBSTACLE_ICE:
         return direct_position_lookup.has(position)
 
+    if cell.obstacle_type == BoardCell.OBSTACLE_GRASS:
+        return direct_position_lookup.has(position)
+
+    if cell.obstacle_type == BoardCell.OBSTACLE_DENSE_GRASS:
+        return direct_position_lookup.has(position)
+
     return direct_position_lookup.has(position)

@@ -4,6 +4,8 @@ class_name BoardCell
 const OBSTACLE_NONE := ""
 const OBSTACLE_BOX := "box"
 const OBSTACLE_ICE := "ice"
+const OBSTACLE_GRASS := "grass"
+const OBSTACLE_DENSE_GRASS := "dense_grass"
 
 var row: int
 var column: int

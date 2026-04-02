@@ -1,0 +1,30 @@
+{
+  "id": "level_003",
+  "name": "Teste de Grama",
+  "moves": 18,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 1,
+  "seed": 1003,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "grass",
+      "amount": 5
+    }
+  ],
+  "obstacles": [
+    { "type": "grass", "row": 0, "column": 1, "hit_points": 1 },
+    { "type": "grass", "row": 1, "column": 3, "hit_points": 1 },
+    { "type": "grass", "row": 2, "column": 5, "hit_points": 1 },
+    { "type": "grass", "row": 4, "column": 2, "hit_points": 1 },
+    { "type": "grass", "row": 5, "column": 4, "hit_points": 1 }
+  ]
+}

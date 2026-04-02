@@ -86,8 +86,8 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 - [x] Implementar caixa
 - [x] Implementar gelo
-- [ ] Implementar grama
-- [ ] Implementar grama densa
+- [x] Implementar grama
+- [x] Implementar grama densa
 - [ ] Implementar sapo
 - [ ] Validar interacao dos obstaculos com especiais
 
@@ -96,7 +96,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Definir formato de arquivo de fase
 - [x] Criar loader de fase
 - [x] Criar fase sandbox
-- [ ] Criar 5 fases tecnicas de teste
+- [x] Criar 5 fases tecnicas de teste
 - [ ] Criar 20 fases jogaveis do beta
 - [ ] Ajustar curva inicial de dificuldade
 
@@ -104,18 +104,18 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 - [ ] Criar tela inicial
 - [ ] Criar tela de mapa ou selecao simples
-- [ ] Criar tela de vitoria
-- [ ] Criar tela de derrota
+- [x] Criar tela de vitoria
+- [x] Criar tela de derrota
 - [ ] Criar tela de pausa
 - [ ] Adicionar feedback visual de combo
 - [ ] Adicionar efeitos sonoros basicos
 
 ## 10. Save e progresso
 
-- [ ] Implementar save local
-- [ ] Salvar fase desbloqueada
+- [x] Implementar save local
+- [x] Salvar fase desbloqueada
 - [ ] Salvar configuracoes basicas
-- [ ] Validar leitura do save apos fechar e abrir o jogo
+- [x] Validar leitura do save apos fechar e abrir o jogo
 
 ## 11. Android
 

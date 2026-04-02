@@ -6,16 +6,25 @@ const BoardGeneratorScript = preload("res://scripts/domain/board/services/board_
 const BoardCellScript = preload("res://scripts/domain/board/models/board_cell.gd")
 const BoardPieceScript = preload("res://scripts/domain/board/models/board_piece.gd")
 const GravityResolverScript = preload("res://scripts/domain/board/services/gravity_resolver.gd")
+const LevelProgressUseCaseScript = preload("res://scripts/application/use_cases/level_progress_use_case.gd")
+const LevelRepositoryScript = preload("res://scripts/infrastructure/levels/level_repository.gd")
+const LocalSaveGatewayScript = preload("res://scripts/infrastructure/persistence/local_save_gateway.gd")
 const MatchFinderScript = preload("res://scripts/domain/board/services/match_finder.gd")
 const ObstacleResolverScript = preload("res://scripts/domain/board/services/obstacle_resolver.gd")
 const PossibleMoveFinderScript = preload("res://scripts/domain/board/services/possible_move_finder.gd")
 const SpecialPieceResolverScript = preload("res://scripts/domain/board/services/special_piece_resolver.gd")
+const StartLevelUseCaseScript = preload("res://scripts/application/use_cases/start_level_use_case.gd")
 
 @onready var _title_label: Label = $MarginContainer/RootColumn/TitleLabel
 @onready var _moves_label: Label = $MarginContainer/RootColumn/HudRow/MovesLabel
 @onready var _goal_label: Label = $MarginContainer/RootColumn/HudRow/GoalLabel
 @onready var _status_label: Label = $MarginContainer/RootColumn/StatusLabel
 @onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardGrid
+@onready var _end_state_layer: Control = $EndStateLayer
+@onready var _end_state_title_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/TitleLabel
+@onready var _end_state_message_label: Label = $EndStateLayer/PanelContainer/VBoxContainer/MessageLabel
+@onready var _restart_button: Button = $EndStateLayer/PanelContainer/VBoxContainer/ButtonRow/RestartButton
+@onready var _next_button: Button = $EndStateLayer/PanelContainer/VBoxContainer/ButtonRow/NextButton
 
 var _session_state: LevelSessionState
 var _level_data: Dictionary = {}
@@ -23,22 +32,44 @@ var _selected_position: Vector2i = Vector2i(-1, -1)
 var _status_message: String = "Carregando tabuleiro..."
 var _board_generator
 var _apply_swap_use_case
+var _level_repository
+var _start_level_use_case
+var _save_gateway
+var _level_progress_use_case
+var _has_recorded_victory: bool = false
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState) -> void:
     _level_data = level_data
     _session_state = session_state
+    _selected_position = Vector2i(-1, -1)
     _status_message = "Selecione duas pecas vizinhas para formar combinacoes."
+    _has_recorded_victory = false
+    _hide_end_state()
 
 
 func _ready() -> void:
     _initialize_services()
+    _restart_button.pressed.connect(_on_restart_pressed)
+    _next_button.pressed.connect(_on_next_pressed)
     _refresh_view()
 
 
 func _initialize_services() -> void:
     if _board_generator == null:
         _board_generator = BoardGeneratorScript.new()
+
+    if _level_repository == null:
+        _level_repository = LevelRepositoryScript.new()
+
+    if _start_level_use_case == null:
+        _start_level_use_case = StartLevelUseCaseScript.new(_level_repository, _board_generator)
+
+    if _save_gateway == null:
+        _save_gateway = LocalSaveGatewayScript.new()
+
+    if _level_progress_use_case == null:
+        _level_progress_use_case = LevelProgressUseCaseScript.new(_save_gateway)
 
     if _apply_swap_use_case == null:
         var match_finder = MatchFinderScript.new()
@@ -66,6 +97,7 @@ func _refresh_view() -> void:
     _goal_label.text = _build_goal_text()
     _status_label.text = _status_message
     _render_grid()
+    _refresh_end_state()
 
 
 func _render_grid() -> void:
@@ -109,16 +141,16 @@ func _build_piece_button(row: int, column: int) -> Button:
     style.border_width_bottom = 4
     if is_selected:
         style.border_color = Color(1, 1, 1, 0.95)
-    elif cell != null and cell.obstacle_type == BoardCellScript.OBSTACLE_ICE and cell.has_obstacle():
-        style.border_color = Color("8bd3ff")
-        style.bg_color = style.bg_color.lerp(Color("dff4ff"), 0.35)
+    elif cell != null and cell.has_obstacle():
+        style.border_color = _overlay_border_color(cell)
+        style.bg_color = style.bg_color.lerp(_overlay_tint_color(cell), 0.35)
     else:
         style.border_color = Color(0.08, 0.16, 0.12, 0.5)
 
     button.add_theme_stylebox_override("normal", style)
     button.add_theme_stylebox_override("hover", style)
     button.add_theme_stylebox_override("pressed", style)
-    button.add_theme_font_size_override("font_size", 18 if cell != null and cell.obstacle_type == BoardCellScript.OBSTACLE_ICE and cell.has_obstacle() else 22)
+    button.add_theme_font_size_override("font_size", 18 if cell != null and cell.has_obstacle() else 22)
     button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
 
     return button
@@ -234,10 +266,49 @@ func _piece_label(piece, cell: BoardCell, is_selected: bool) -> String:
     elif piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
         symbol = "*"
 
-    if cell != null and cell.obstacle_type == BoardCellScript.OBSTACLE_ICE and cell.has_obstacle():
-        symbol = "GE %s" % symbol
+    if cell != null and cell.has_obstacle():
+        symbol = "%s %s" % [_overlay_label(cell), symbol]
 
     return "%s%s" % [prefix, symbol]
+
+
+func _overlay_label(cell: BoardCell) -> String:
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_ICE:
+        return "GE"
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_GRASS:
+        return "GR"
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_DENSE_GRASS:
+        return "G%s" % cell.obstacle_hits_remaining
+
+    return "OB"
+
+
+func _overlay_border_color(cell: BoardCell) -> Color:
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_ICE:
+        return Color("8bd3ff")
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_GRASS:
+        return Color("72c24d")
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_DENSE_GRASS:
+        return Color("2f9e44")
+
+    return Color(0.08, 0.16, 0.12, 0.5)
+
+
+func _overlay_tint_color(cell: BoardCell) -> Color:
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_ICE:
+        return Color("dff4ff")
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_GRASS:
+        return Color("d7f7c2")
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_DENSE_GRASS:
+        return Color("b7ef8a")
+
+    return Color(1, 1, 1, 1)
 
 
 func _is_adjacent(first_position: Vector2i, second_position: Vector2i) -> bool:
@@ -279,6 +350,12 @@ func _obstacle_goal_name(obstacle_type: String) -> String:
     if obstacle_type == BoardCellScript.OBSTACLE_ICE:
         return "Gelo"
 
+    if obstacle_type == BoardCellScript.OBSTACLE_GRASS:
+        return "Grama"
+
+    if obstacle_type == BoardCellScript.OBSTACLE_DENSE_GRASS:
+        return "Grama densa"
+
     return "Obstaculos"
 
 
@@ -300,3 +377,80 @@ func _obstacle_color(cell: BoardCell) -> Color:
         return Color("a86a3a")
 
     return Color(0.24, 0.18, 0.11)
+
+
+func _refresh_end_state() -> void:
+    if _session_state == null:
+        _hide_end_state()
+        return
+
+    if _session_state.status == "victory":
+        _handle_victory()
+        return
+
+    if _session_state.status == "defeat":
+        _show_end_state("Fase perdida", "As jogadas acabaram. Tente novamente.", false)
+        return
+
+    _hide_end_state()
+
+
+func _handle_victory() -> void:
+    var next_level_id: String = _find_next_level_id(_session_state.level_id)
+    if not _has_recorded_victory:
+        _level_progress_use_case.record_victory(_session_state.level_id, next_level_id)
+        _has_recorded_victory = true
+
+    var message: String = "Objetivos concluidos. Progresso salvo localmente."
+    if next_level_id != "":
+        message += " A proxima fase ja foi desbloqueada."
+
+    _show_end_state("Fase vencida", message, next_level_id != "")
+
+
+func _show_end_state(title: String, message: String, show_next: bool) -> void:
+    _end_state_title_label.text = title
+    _end_state_message_label.text = message
+    _next_button.visible = show_next
+    _next_button.disabled = not show_next
+    _end_state_layer.visible = true
+
+
+func _hide_end_state() -> void:
+    if _end_state_layer != null:
+        _end_state_layer.visible = false
+
+
+func _on_restart_pressed() -> void:
+    _load_level(String(_level_data.get("id", "level_001")))
+
+
+func _on_next_pressed() -> void:
+    var next_level_id: String = _find_next_level_id(String(_level_data.get("id", "")))
+    if next_level_id != "":
+        _load_level(next_level_id)
+
+
+func _load_level(level_id: String) -> void:
+    var payload: Dictionary = _start_level_use_case.execute(level_id)
+    if payload.is_empty():
+        _status_message = "Falha ao carregar a fase %s." % level_id
+        _refresh_view()
+        return
+
+    _level_progress_use_case.record_opened_level(level_id)
+    setup(payload["level_data"], payload["session_state"])
+    _refresh_view()
+
+
+func _find_next_level_id(level_id: String) -> String:
+    if not level_id.begins_with("level_"):
+        return ""
+
+    var numeric_part: String = level_id.trim_prefix("level_")
+    if not numeric_part.is_valid_int():
+        return ""
+
+    var next_level_id: String = "level_%03d" % [int(numeric_part) + 1]
+    var next_level_data: Dictionary = _level_repository.fetch_by_id(next_level_id)
+    return next_level_id if not next_level_data.is_empty() else ""
