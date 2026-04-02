@@ -1,7 +1,7 @@
 {
   "id": "level_017",
   "name": "Passarela Fria",
-  "moves": 20,
+  "moves": 22,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 2,
   "theme_id": "rio_claro",

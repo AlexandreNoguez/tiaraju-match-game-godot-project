@@ -1,7 +1,7 @@
 {
   "id": "level_024",
   "name": "Arco da Aldeia",
-  "moves": 23,
+  "moves": 24,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 2,
   "theme_id": "terra_quente",

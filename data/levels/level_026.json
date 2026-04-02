@@ -1,7 +1,7 @@
 {
   "id": "level_026",
   "name": "Corredor Apertado",
-  "moves": 24,
+  "moves": 26,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 3,
   "theme_id": "festa_noite",

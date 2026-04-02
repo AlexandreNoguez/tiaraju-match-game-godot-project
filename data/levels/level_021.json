@@ -1,7 +1,7 @@
 {
   "id": "level_021",
   "name": "Ponte de Madeira",
-  "moves": 22,
+  "moves": 23,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 2,
   "theme_id": "terra_quente",

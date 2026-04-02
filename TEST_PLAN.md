@@ -110,6 +110,27 @@ Cada build nova deve passar nestes testes:
 10. fechar e abrir o jogo para validar save
 11. repetir tudo no Android
 
+## 6.1 Roteiro de curva para o pacote 010-029
+
+Ao revisar a campanha inicial, testar nesta ordem:
+
+1. `010-011`: onboarding de coleta de cor
+2. `012-015`: introducao de caixa, gelo, grama e grama densa
+3. `016-020`: consolidacao com tabuleiros maiores ou nao quadrados
+4. `021-024`: layouts apertados e mistura de obstaculos
+5. `025-029`: fechamento do pacote inicial com pico de dificuldade
+
+Para cada fase, anotar:
+
+- venceu ou perdeu
+- numero de tentativas
+- quantidade de movimentos restantes na vitoria
+- se a fase foi facil, justa ou frustrante
+- se o objetivo ficou claro
+
+Se uma fase falhar repetidamente por falta de movimentos, primeiro ajustar `moves`.
+Se a fase parecer caotica mesmo com muitas jogadas, revisar obstaculos e layout.
+
 ## 7. Quando Usar VSCode, Android Studio e Docker
 
 ### 7.1 VSCode

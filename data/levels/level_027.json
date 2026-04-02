@@ -1,7 +1,7 @@
 {
   "id": "level_027",
   "name": "Jardins do Centro",
-  "moves": 25,
+  "moves": 26,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 3,
   "theme_id": "mata_clara",

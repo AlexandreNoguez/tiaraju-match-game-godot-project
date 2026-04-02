@@ -1,7 +1,7 @@
 {
   "id": "level_023",
   "name": "Trilha da Mata",
-  "moves": 23,
+  "moves": 24,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 2,
   "theme_id": "mata_clara",

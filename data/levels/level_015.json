@@ -1,7 +1,7 @@
 {
   "id": "level_015",
   "name": "Raizes Resistentes",
-  "moves": 20,
+  "moves": 21,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 1,
   "theme_id": "mata_clara",

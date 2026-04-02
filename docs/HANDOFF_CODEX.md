@@ -33,6 +33,7 @@ Estado atual do desenvolvimento:
 - 9 fases técnicas de teste já criadas
 - pacote inicial com 20 fases jogáveis criado
 - 29 fases totais disponíveis em dados
+- curva inicial revisada heurísticamente e documentada para playtest
 - testes manuais no Godot do Windows passaram
 
 Decisões de produto:
@@ -46,8 +47,8 @@ Decisões de produto:
 - se houver conta no futuro, precisamos prever exclusão de conta e dados conforme exigências do Google Play
 
 Próximos passos planejados:
-1. ajustar e validar a curva inicial de dificuldade das 20 fases jogáveis
-2. montar roteiro de teste manual cobrindo home -> fase -> home
+1. executar playtest das fases 010-029 e registrar onde a curva ainda quebra
+2. montar e rodar roteiro manual cobrindo home -> fase -> home -> save
 3. adicionar pausa, feedback visual e áudio básico
 4. validar no Android resolução, toque e performance
 5. definir o desenho pós-beta da economia de moedas e do shop offline

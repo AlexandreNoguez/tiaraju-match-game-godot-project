@@ -1,7 +1,7 @@
 {
   "id": "level_029",
   "name": "Ritmo da Vila",
-  "moves": 26,
+  "moves": 28,
   "allowed_colors": ["yellow", "red", "blue", "green"],
   "difficulty_tier": 3,
   "theme_id": "festa_noite",
