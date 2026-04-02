@@ -1,0 +1,29 @@
+{
+  "id": "level_020",
+  "name": "Mutirao da Praca",
+  "moves": 22,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 2,
+  "theme_id": "terra_quente",
+  "seed": 1020,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    { "type": "collect_color", "color": "yellow", "amount": 18 },
+    { "type": "collect_color", "color": "green", "amount": 18 },
+    { "type": "break_obstacle", "obstacle_type": "box", "amount": 4 }
+  ],
+  "obstacles": [
+    { "type": "box", "row": 1, "column": 1, "hit_points": 1 },
+    { "type": "box", "row": 1, "column": 5, "hit_points": 1 },
+    { "type": "box", "row": 5, "column": 1, "hit_points": 1 },
+    { "type": "box", "row": 5, "column": 5, "hit_points": 1 }
+  ]
+}

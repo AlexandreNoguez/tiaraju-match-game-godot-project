@@ -1,0 +1,27 @@
+{
+  "id": "level_012",
+  "name": "Primeiras Caixas",
+  "moves": 18,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 1,
+  "theme_id": "terra_quente",
+  "seed": 1012,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    { "type": "break_obstacle", "obstacle_type": "box", "amount": 4 },
+    { "type": "collect_color", "color": "green", "amount": 12 }
+  ],
+  "obstacles": [
+    { "type": "box", "row": 1, "column": 1, "hit_points": 1 },
+    { "type": "box", "row": 1, "column": 4, "hit_points": 1 },
+    { "type": "box", "row": 4, "column": 1, "hit_points": 1 },
+    { "type": "box", "row": 4, "column": 4, "hit_points": 1 }
+  ]
+}

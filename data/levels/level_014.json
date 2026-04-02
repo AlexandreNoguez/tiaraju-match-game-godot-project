@@ -1,0 +1,29 @@
+{
+  "id": "level_014",
+  "name": "Jardim Acordando",
+  "moves": 19,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 1,
+  "theme_id": "mata_clara",
+  "seed": 1014,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    { "type": "break_obstacle", "obstacle_type": "grass", "amount": 6 },
+    { "type": "collect_color", "color": "yellow", "amount": 12 }
+  ],
+  "obstacles": [
+    { "type": "grass", "row": 0, "column": 1, "hit_points": 1 },
+    { "type": "grass", "row": 1, "column": 4, "hit_points": 1 },
+    { "type": "grass", "row": 2, "column": 2, "hit_points": 1 },
+    { "type": "grass", "row": 3, "column": 5, "hit_points": 1 },
+    { "type": "grass", "row": 4, "column": 0, "hit_points": 1 },
+    { "type": "grass", "row": 5, "column": 3, "hit_points": 1 }
+  ]
+}

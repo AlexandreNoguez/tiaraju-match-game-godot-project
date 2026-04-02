@@ -99,7 +99,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Criar fase sandbox
 - [x] Criar 5 fases tecnicas de teste
 - [x] Adicionar 3 grids nao quadrados de teste
-- [ ] Criar 20 fases jogaveis do beta
+- [x] Criar 20 fases jogaveis do beta
 - [ ] Ajustar curva inicial de dificuldade
 
 ## 9. Interface e UX

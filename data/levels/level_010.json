@@ -1,0 +1,22 @@
+{
+  "id": "level_010",
+  "name": "Boas-vindas da Vila",
+  "moves": 16,
+  "allowed_colors": ["yellow", "red", "blue"],
+  "difficulty_tier": 1,
+  "theme_id": "mata_clara",
+  "seed": 1010,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    { "type": "collect_color", "color": "red", "amount": 15 },
+    { "type": "collect_color", "color": "yellow", "amount": 15 }
+  ],
+  "obstacles": []
+}

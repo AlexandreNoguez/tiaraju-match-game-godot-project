@@ -1,0 +1,21 @@
+{
+  "id": "level_011",
+  "name": "Margem do Rio",
+  "moves": 17,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 1,
+  "theme_id": "rio_claro",
+  "seed": 1011,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    { "type": "collect_color", "color": "blue", "amount": 20 }
+  ],
+  "obstacles": []
+}

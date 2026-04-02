@@ -1,0 +1,38 @@
+{
+  "id": "level_029",
+  "name": "Ritmo da Vila",
+  "moves": 26,
+  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "difficulty_tier": 3,
+  "theme_id": "festa_noite",
+  "seed": 1029,
+  "grid_mask": [
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1]
+  ],
+  "goals": [
+    { "type": "break_obstacle", "obstacle_type": "box", "amount": 3 },
+    { "type": "break_obstacle", "obstacle_type": "ice", "amount": 3 },
+    { "type": "break_obstacle", "obstacle_type": "grass", "amount": 3 },
+    { "type": "break_obstacle", "obstacle_type": "dense_grass", "amount": 3 }
+  ],
+  "obstacles": [
+    { "type": "box", "row": 0, "column": 0, "hit_points": 1 },
+    { "type": "box", "row": 0, "column": 6, "hit_points": 1 },
+    { "type": "box", "row": 6, "column": 3, "hit_points": 1 },
+    { "type": "ice", "row": 0, "column": 3, "hit_points": 1 },
+    { "type": "ice", "row": 3, "column": 0, "hit_points": 1 },
+    { "type": "ice", "row": 3, "column": 6, "hit_points": 1 },
+    { "type": "grass", "row": 1, "column": 2, "hit_points": 1 },
+    { "type": "grass", "row": 1, "column": 4, "hit_points": 1 },
+    { "type": "grass", "row": 5, "column": 3, "hit_points": 1 },
+    { "type": "dense_grass", "row": 2, "column": 3, "hit_points": 2 },
+    { "type": "dense_grass", "row": 4, "column": 2, "hit_points": 2 },
+    { "type": "dense_grass", "row": 4, "column": 4, "hit_points": 2 }
+  ]
+}

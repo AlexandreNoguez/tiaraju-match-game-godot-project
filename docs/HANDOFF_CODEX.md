@@ -31,6 +31,8 @@ Estado atual do desenvolvimento:
 - home com placeholders de avatar, eventos, perfil, configurações, moedas e shop
 - fim de fase retornando ao home
 - 9 fases técnicas de teste já criadas
+- pacote inicial com 20 fases jogáveis criado
+- 29 fases totais disponíveis em dados
 - testes manuais no Godot do Windows passaram
 
 Decisões de produto:
@@ -44,7 +46,7 @@ Decisões de produto:
 - se houver conta no futuro, precisamos prever exclusão de conta e dados conforme exigências do Google Play
 
 Próximos passos planejados:
-1. criar pacote inicial de 20 fases jogáveis
+1. ajustar e validar a curva inicial de dificuldade das 20 fases jogáveis
 2. montar roteiro de teste manual cobrindo home -> fase -> home
 3. adicionar pausa, feedback visual e áudio básico
 4. validar no Android resolução, toque e performance
