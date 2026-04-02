@@ -9,6 +9,8 @@ const DROP_ANIMATION_MAX_DURATION := 0.80
 const DROP_ANIMATION_MIN_DURATION := 0.50
 const SWAP_ANIMATION_DURATION := 0.16
 const CASCADE_STEP_PAUSE := 0.06
+const POP_ANIMATION_GROW_DURATION := 0.08
+const POP_ANIMATION_SHRINK_DURATION := 0.12
 const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
@@ -43,6 +45,7 @@ const StartLevelUseCaseScript = preload("res://scripts/application/use_cases/sta
 @onready var _board_shell: PanelContainer = $MarginContainer/RootColumn/BoardShell
 @onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardShell/MarginContainer/BoardGrid
 @onready var _combo_feedback_label: Label = $MarginContainer/RootColumn/ComboFeedbackLabel
+@onready var _coins_feedback_label: Label = $MarginContainer/RootColumn/CoinsFeedbackLabel
 @onready var _audio_player: AudioStreamPlayer = $AudioPlayer
 @onready var _music_player: AudioStreamPlayer = $MusicPlayer
 @onready var _pause_layer: Control = $PauseLayer
@@ -73,14 +76,12 @@ var _has_requested_home: bool = false
 var _has_played_end_state_sound: bool = false
 var _is_paused: bool = false
 var _combo_feedback_base_position: Vector2 = Vector2.ZERO
+var _coins_feedback_base_position: Vector2 = Vector2.ZERO
 var _playtest_mode: bool = false
 var _is_drop_animating: bool = false
 var _is_swap_animating: bool = false
 var _pending_drop_animation: Dictionary = {}
 var _visual_board_state: BoardState
-var _cascade_animation_base_snapshot: BoardState
-var _cascade_animation_snapshots: Array = []
-var _cascade_animation_step_index: int = -1
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
@@ -96,9 +97,6 @@ func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_opt
     _is_swap_animating = false
     _pending_drop_animation.clear()
     _visual_board_state = null
-    _cascade_animation_base_snapshot = null
-    _cascade_animation_snapshots.clear()
-    _cascade_animation_step_index = -1
     _playtest_mode = bool(runtime_options.get("playtest_mode", false))
     if _playtest_mode:
         _status_message = "Modo playtest: o save local nao sera alterado nesta fase."
@@ -116,7 +114,9 @@ func _ready() -> void:
     _pause_resume_button.pressed.connect(_on_pause_resume_pressed)
     _pause_home_button.pressed.connect(_on_pause_home_pressed)
     _combo_feedback_base_position = _combo_feedback_label.position
+    _coins_feedback_base_position = _coins_feedback_label.position
     _combo_feedback_label.modulate.a = 0.0
+    _coins_feedback_label.modulate.a = 0.0
     _hide_pause_layer()
     _play_music_from_file(MUSIC_BOARD_PATH, -20.0)
     _apply_level_theme()
@@ -306,17 +306,16 @@ func _on_piece_pressed(position: Vector2i) -> void:
     var result: Dictionary = _apply_swap_use_case.execute(_session_state, first_position, position)
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
+    _play_resolution_sound(result)
     if bool(result.get("accepted", false)):
-        _queue_cascade_animation(
-            result.get("animation_base_snapshot", null),
-            result.get("cascade_snapshots", [])
-        )
+        if not _playtest_mode:
+            _level_progress_use_case.award_coins(int(result.get("coins_earned", 0)))
+
+        await _play_cascade_resolution(result.get("cascade_steps", []))
     elif not swap_targets.is_empty():
         await _play_swap_return_animation(swap_targets)
 
     _is_swap_animating = false
-    _play_resolution_sound(result)
-    _show_combo_feedback(result)
     _refresh_view()
 
 
@@ -718,37 +717,67 @@ func _build_drop_animation(previous_state: BoardState, current_state: BoardState
     return animation_map
 
 
-func _queue_cascade_animation(base_snapshot, cascade_snapshots: Array) -> void:
-    _visual_board_state = null
-    _cascade_animation_base_snapshot = base_snapshot
-    _cascade_animation_snapshots = cascade_snapshots.duplicate()
-    _cascade_animation_step_index = -1
+func _play_cascade_resolution(cascade_steps: Array) -> void:
+    if cascade_steps.is_empty():
+        return
+
+    _is_drop_animating = true
+    for raw_step in cascade_steps:
+        if raw_step is not Dictionary:
+            continue
+
+        var step: Dictionary = raw_step
+        var before_clear_snapshot: BoardState = step.get("before_clear_snapshot", null)
+        var after_clear_snapshot: BoardState = step.get("after_clear_snapshot", null)
+        var after_fall_snapshot: BoardState = step.get("after_fall_snapshot", null)
+        var cleared_positions: Array = step.get("cleared_positions", [])
+
+        _visual_board_state = before_clear_snapshot
+        _refresh_view()
+        _show_chain_step_feedback(step)
+        await _play_pop_clear_animation(cleared_positions)
+
+        _visual_board_state = after_clear_snapshot
+        _refresh_view()
+        await get_tree().create_timer(CASCADE_STEP_PAUSE).timeout
+
+        _visual_board_state = after_fall_snapshot
+        _pending_drop_animation = _build_drop_animation(after_clear_snapshot, after_fall_snapshot)
+        _refresh_view()
+        await _play_pending_drop_animation()
+        await get_tree().create_timer(CASCADE_STEP_PAUSE).timeout
+
+    _is_drop_animating = false
     _pending_drop_animation.clear()
-    _is_drop_animating = not _cascade_animation_snapshots.is_empty()
-
-    if _is_drop_animating:
-        _advance_cascade_animation_step()
-
-
-func _advance_cascade_animation_step() -> void:
-    if _cascade_animation_snapshots.is_empty():
-        _finish_cascade_animation()
-        return
-
-    _cascade_animation_step_index += 1
-    if _cascade_animation_step_index >= _cascade_animation_snapshots.size():
-        _finish_cascade_animation()
-        return
-
-    var current_snapshot = _cascade_animation_snapshots[_cascade_animation_step_index]
-    var previous_snapshot = _cascade_animation_base_snapshot if _cascade_animation_step_index == 0 else _cascade_animation_snapshots[_cascade_animation_step_index - 1]
-    _visual_board_state = current_snapshot
-    _pending_drop_animation = _build_drop_animation(previous_snapshot, current_snapshot)
+    _visual_board_state = null
     _refresh_view()
 
-    if _pending_drop_animation.is_empty():
-        var timer := get_tree().create_timer(CASCADE_STEP_PAUSE)
-        timer.timeout.connect(_on_drop_animation_finished)
+
+func _play_pop_clear_animation(cleared_positions: Array) -> void:
+    if cleared_positions.is_empty():
+        return
+
+    await get_tree().process_frame
+    if not is_inside_tree():
+        return
+
+    var tween := create_tween()
+    tween.set_parallel(true)
+    for raw_position in cleared_positions:
+        if raw_position is not Vector2i:
+            continue
+
+        var piece_button: Button = _find_piece_button(raw_position)
+        if piece_button == null:
+            continue
+
+        piece_button.scale = Vector2.ONE
+        piece_button.modulate = Color(1, 1, 1, 1)
+        tween.tween_property(piece_button, "scale", Vector2(1.08, 1.08), POP_ANIMATION_GROW_DURATION).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+        tween.tween_property(piece_button, "scale", Vector2(0.22, 0.22), POP_ANIMATION_SHRINK_DURATION).set_delay(POP_ANIMATION_GROW_DURATION).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+        tween.tween_property(piece_button, "modulate:a", 0.0, POP_ANIMATION_GROW_DURATION + POP_ANIMATION_SHRINK_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+    await tween.finished
 
 
 func _play_pending_drop_animation() -> void:
@@ -781,31 +810,13 @@ func _play_pending_drop_animation() -> void:
         var duration: float = min(DROP_ANIMATION_MAX_DURATION, DROP_ANIMATION_MIN_DURATION + (0.03 * row_distance))
 
         child.position = start_position
+        child.scale = Vector2.ONE
         child.modulate = Color(1, 1, 1, 0.72)
         tween.tween_property(child, "position", target_position, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
         tween.tween_property(child, "modulate:a", 1.0, duration * 0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
-    tween.finished.connect(_on_drop_animation_finished)
-
-
-func _on_drop_animation_finished() -> void:
+    await tween.finished
     _pending_drop_animation.clear()
-    if _cascade_animation_step_index >= 0 and _cascade_animation_step_index < _cascade_animation_snapshots.size() - 1:
-        var timer := get_tree().create_timer(CASCADE_STEP_PAUSE)
-        timer.timeout.connect(_advance_cascade_animation_step)
-        return
-
-    _finish_cascade_animation()
-
-
-func _finish_cascade_animation() -> void:
-    _is_drop_animating = false
-    _pending_drop_animation.clear()
-    _visual_board_state = null
-    _cascade_animation_base_snapshot = null
-    _cascade_animation_snapshots.clear()
-    _cascade_animation_step_index = -1
-    _refresh_view()
 
 
 func _play_swap_animation(first_position: Vector2i, second_position: Vector2i) -> Dictionary:
@@ -859,6 +870,24 @@ func _find_piece_button(board_position: Vector2i) -> Button:
     return null
 
 
+func _show_chain_step_feedback(step: Dictionary) -> void:
+    var cascade_index: int = int(step.get("cascade_index", 1))
+    var removed_count: int = int(step.get("removed_count", 0))
+    var coins_earned: int = int(step.get("coins_earned", 0))
+    var chain_message: String = "Combinacao!"
+
+    if cascade_index >= 3:
+        chain_message = "Chain x%s" % cascade_index
+    elif cascade_index == 2:
+        chain_message = "Chain x2"
+    elif removed_count >= 8:
+        chain_message = "Boa jogada!"
+
+    _show_feedback_label(_combo_feedback_label, _combo_feedback_base_position, chain_message)
+    if coins_earned > 0:
+        _show_feedback_label(_coins_feedback_label, _coins_feedback_base_position, "+%s moedas" % coins_earned)
+
+
 func _show_combo_feedback(result: Dictionary) -> void:
     if not bool(result.get("accepted", false)):
         return
@@ -892,6 +921,22 @@ func _show_combo_feedback(result: Dictionary) -> void:
     tween.tween_property(_combo_feedback_label, "position:y", _combo_feedback_base_position.y - 12.0, 0.28)
 
 
+func _show_feedback_label(target: Label, base_position: Vector2, message: String) -> void:
+    target.text = message
+    target.position = base_position
+    target.modulate = Color(1, 1, 1, 0)
+    target.scale = Vector2(0.92, 0.92)
+
+    var tween := create_tween()
+    tween.set_parallel(true)
+    tween.tween_property(target, "modulate:a", 1.0, 0.12)
+    tween.tween_property(target, "scale", Vector2(1, 1), 0.16)
+    tween.chain().tween_interval(0.55)
+    tween.chain().set_parallel(true)
+    tween.tween_property(target, "modulate:a", 0.0, 0.28)
+    tween.tween_property(target, "position:y", base_position.y - 12.0, 0.28)
+
+
 func _apply_level_theme() -> void:
     if not is_node_ready():
         return
@@ -903,6 +948,7 @@ func _apply_level_theme() -> void:
     _goal_label.add_theme_color_override("font_color", palette["hud"])
     _status_label.add_theme_color_override("font_color", palette["body"])
     _combo_feedback_label.add_theme_color_override("font_color", palette["title"])
+    _coins_feedback_label.add_theme_color_override("font_color", Color("f7c948"))
     _pause_title_label.add_theme_color_override("font_color", palette["title"])
     _pause_message_label.add_theme_color_override("font_color", palette["body"])
     _end_state_title_label.add_theme_color_override("font_color", palette["title"])

@@ -107,6 +107,13 @@ theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 text = "Combo x2"
 
+[node name="CoinsFeedbackLabel" type="Label" parent="MarginContainer/RootColumn"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+text = "+3 moedas"
+
 [node name="BoardShell" type="PanelContainer" parent="MarginContainer/RootColumn"]
 layout_mode = 2
 size_flags_vertical = 3

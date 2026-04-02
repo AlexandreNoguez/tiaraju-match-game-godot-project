@@ -1,6 +1,8 @@
 extends RefCounted
 class_name ApplySwapUseCase
 
+const BoardPiece = preload("res://scripts/domain/board/models/board_piece.gd")
+
 var _match_finder: MatchFinder
 var _gravity_resolver: GravityResolver
 var _obstacle_resolver
@@ -57,11 +59,12 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
     var removed_color_counts: Dictionary = {}
     var removed_obstacle_counts: Dictionary = {}
     var special_message: String = ""
-    var animation_base_snapshot: BoardState = board_state.duplicate_state()
-    var cascade_snapshots: Array = []
+    var cascade_steps: Array = []
+    var coins_earned: int = 0
 
     while true:
         cascade_count += 1
+        var before_clear_snapshot: BoardState = board_state.duplicate_state()
         var positions_to_clear: Array = []
         var adjacent_damage_sources: Array = []
         var spawned_specials: Dictionary = {}
@@ -86,11 +89,25 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
             adjacent_damage_sources
         )
         _merge_color_counts(removed_obstacle_counts, obstacle_resolution.get("removed_counts", {}))
+        var after_clear_snapshot: BoardState = _build_after_clear_snapshot(board_state, positions_to_clear, spawned_specials)
         var resolution: Dictionary = _gravity_resolver.clear_positions_and_refill(board_state, positions_to_clear, spawned_specials)
         var cleared_positions: Array = resolution.get("positions", [])
         removed_count += cleared_positions.size()
         _merge_color_counts(removed_color_counts, resolution.get("color_counts", {}))
-        cascade_snapshots.append(board_state.duplicate_state())
+        var after_fall_snapshot: BoardState = board_state.duplicate_state()
+        var cascade_coins: int = _coins_for_cascade(cascade_count, cleared_positions.size())
+        coins_earned += cascade_coins
+        cascade_steps.append(
+            {
+                "cascade_index": cascade_count,
+                "cleared_positions": cleared_positions,
+                "removed_count": cleared_positions.size(),
+                "coins_earned": cascade_coins,
+                "before_clear_snapshot": before_clear_snapshot,
+                "after_clear_snapshot": after_clear_snapshot,
+                "after_fall_snapshot": after_fall_snapshot
+            }
+        )
         matches = _match_finder.find_matches(board_state)
 
         if matches.is_empty():
@@ -104,7 +121,6 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
     if not _possible_move_finder.has_possible_moves(board_state):
         _board_generator.reroll_board(board_state)
         board_rerolled = true
-        cascade_snapshots.append(board_state.duplicate_state())
 
     session_state.update_status_after_turn()
 
@@ -127,8 +143,8 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
         "removed_color_counts": removed_color_counts,
         "removed_obstacle_counts": removed_obstacle_counts,
         "board_rerolled": board_rerolled,
-        "animation_base_snapshot": animation_base_snapshot,
-        "cascade_snapshots": cascade_snapshots,
+        "cascade_steps": cascade_steps,
+        "coins_earned": coins_earned,
         "status": session_state.status,
         "moves_remaining": session_state.moves_remaining,
         "message": message
@@ -166,6 +182,37 @@ func _collect_cleared_positions(matches: Array, spawned_specials: Dictionary) ->
                     positions.append(position)
 
     return positions
+
+
+func _build_after_clear_snapshot(board_state: BoardState, positions_to_clear: Array, spawned_specials: Dictionary) -> BoardState:
+    var snapshot: BoardState = board_state.duplicate_state()
+    for raw_position in positions_to_clear:
+        if raw_position is not Vector2i:
+            continue
+
+        var position: Vector2i = raw_position
+        snapshot.set_piece(position.y, position.x, null)
+
+    for raw_position in spawned_specials.keys():
+        var position: Vector2i = raw_position
+        var special_data: Dictionary = spawned_specials[raw_position]
+        snapshot.set_piece(
+            position.y,
+            position.x,
+            BoardPiece.new(
+                String(special_data.get("color_id", "yellow")),
+                String(special_data.get("special_type", BoardPiece.SPECIAL_NONE))
+            )
+        )
+
+    return snapshot
+
+
+func _coins_for_cascade(cascade_index: int, cleared_count: int) -> int:
+    var coins: int = max(1, cascade_index)
+    if cleared_count >= 8:
+        coins += 1
+    return coins
 
 
 func _rejected(reason: String, message: String) -> Dictionary:

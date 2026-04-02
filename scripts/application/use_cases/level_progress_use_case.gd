@@ -63,6 +63,15 @@ func record_victory(level_id: String, next_level_id: String) -> void:
     _save_gateway.save_progress(payload)
 
 
+func award_coins(amount: int) -> void:
+    if amount <= 0:
+        return
+
+    var payload: Dictionary = load_progress_payload()
+    payload["coins"] = int(payload.get("coins", 0)) + amount
+    _save_gateway.save_progress(payload)
+
+
 func _level_number(level_id: String) -> int:
     if not level_id.begins_with("level_"):
         return 0

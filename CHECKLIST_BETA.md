@@ -164,8 +164,8 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 ## 14. Pos-beta e backlog
 
-- [ ] Definir como o jogador ganha moedas
-- [ ] Implementar saldo real de moedas no save local
+- [x] Definir como o jogador ganha moedas
+- [x] Implementar saldo real de moedas no save local
 - [ ] Implementar shop offline
 - [ ] Definir primeiros itens compraveis
 - [ ] Balancear a economia das compras

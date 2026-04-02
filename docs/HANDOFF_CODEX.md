@@ -36,6 +36,8 @@ Estado atual do desenvolvimento:
 - músicas temporárias gratuitas tocando no home e nas fases
 - animação de troca lateral entre peças funcionando
 - animação de queda das peças funcionando com cascatas reproduzidas por etapas
+- efeito de pop antes da remoção das combinações funcionando
+- moedas sendo ganhas por chain e salvas localmente
 - atalho de playtest em debug no menu de configurações para abrir fases sem alterar o save
 - 9 fases técnicas de teste já criadas
 - pacote inicial com 20 fases jogáveis criado
@@ -50,7 +52,8 @@ Decisões de produto:
 - queremos suportar grids não quadrados
 - queremos uma tela principal com botão Jogar, avatar placeholder, eventos placeholder, perfil placeholder, moedas placeholder, shop placeholder e configurações
 - ao terminar cada fase, o jogador volta para o home
-- moedas e shop ficam como placeholders no beta e entram de verdade no pós-beta
+- shop fica como placeholder no beta
+- moedas ja podem ser acumuladas localmente a partir de chains, mas a economia ainda e provisoria
 - login, perfil funcional, foto e social ficam para pós-beta
 - se houver conta no futuro, precisamos prever exclusão de conta e dados conforme exigências do Google Play
 
