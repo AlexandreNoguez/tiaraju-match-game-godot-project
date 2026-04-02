@@ -5,8 +5,8 @@ signal home_requested
 
 const BOARD_CELL_SIZE := Vector2(112, 112)
 const BOARD_CELL_SPACING := 10.0
-const DROP_ANIMATION_MAX_DURATION := 0.38
-const DROP_ANIMATION_MIN_DURATION := 0.16
+const DROP_ANIMATION_MAX_DURATION := 0.80
+const DROP_ANIMATION_MIN_DURATION := 0.50
 const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
@@ -182,13 +182,14 @@ func _build_piece_button(row: int, column: int) -> Button:
     var piece = _session_state.board_state.get_piece(row, column)
     var cell: BoardCell = _session_state.board_state.get_cell(row, column)
     var is_selected: bool = _selected_position == Vector2i(column, row)
+    var is_interaction_locked: bool = _is_paused or _is_drop_animating or not _session_state.can_accept_input()
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
     button.custom_minimum_size = BOARD_CELL_SIZE
     button.focus_mode = Control.FOCUS_NONE
-    button.disabled = _is_paused or _is_drop_animating or not _session_state.can_accept_input()
-    button.mouse_filter = Control.MOUSE_FILTER_STOP
-    button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+    button.disabled = false
+    button.mouse_filter = Control.MOUSE_FILTER_IGNORE if is_interaction_locked else Control.MOUSE_FILTER_STOP
+    button.mouse_default_cursor_shape = Control.CURSOR_ARROW if is_interaction_locked else Control.CURSOR_POINTING_HAND
     button.text = _piece_label(piece, cell, is_selected)
 
     style.bg_color = _piece_color(piece)
