@@ -25,3 +25,7 @@ func is_missile() -> bool:
 
 func is_rainbow() -> bool:
     return special_type == SPECIAL_RAINBOW
+
+
+func duplicate_piece() -> BoardPiece:
+    return BoardPiece.new(color_id, special_type)

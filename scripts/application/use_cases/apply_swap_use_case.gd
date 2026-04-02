@@ -57,6 +57,8 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
     var removed_color_counts: Dictionary = {}
     var removed_obstacle_counts: Dictionary = {}
     var special_message: String = ""
+    var animation_base_snapshot: BoardState = board_state.duplicate_state()
+    var cascade_snapshots: Array = []
 
     while true:
         cascade_count += 1
@@ -88,6 +90,7 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
         var cleared_positions: Array = resolution.get("positions", [])
         removed_count += cleared_positions.size()
         _merge_color_counts(removed_color_counts, resolution.get("color_counts", {}))
+        cascade_snapshots.append(board_state.duplicate_state())
         matches = _match_finder.find_matches(board_state)
 
         if matches.is_empty():
@@ -101,6 +104,7 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
     if not _possible_move_finder.has_possible_moves(board_state):
         _board_generator.reroll_board(board_state)
         board_rerolled = true
+        cascade_snapshots.append(board_state.duplicate_state())
 
     session_state.update_status_after_turn()
 
@@ -123,6 +127,8 @@ func execute(session_state: LevelSessionState, first_position: Vector2i, second_
         "removed_color_counts": removed_color_counts,
         "removed_obstacle_counts": removed_obstacle_counts,
         "board_rerolled": board_rerolled,
+        "animation_base_snapshot": animation_base_snapshot,
+        "cascade_snapshots": cascade_snapshots,
         "status": session_state.status,
         "moves_remaining": session_state.moves_remaining,
         "message": message

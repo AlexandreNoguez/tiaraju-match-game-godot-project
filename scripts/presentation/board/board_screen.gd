@@ -7,6 +7,8 @@ const BOARD_CELL_SIZE := Vector2(112, 112)
 const BOARD_CELL_SPACING := 10.0
 const DROP_ANIMATION_MAX_DURATION := 0.80
 const DROP_ANIMATION_MIN_DURATION := 0.50
+const SWAP_ANIMATION_DURATION := 0.16
+const CASCADE_STEP_PAUSE := 0.06
 const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
@@ -73,7 +75,12 @@ var _is_paused: bool = false
 var _combo_feedback_base_position: Vector2 = Vector2.ZERO
 var _playtest_mode: bool = false
 var _is_drop_animating: bool = false
+var _is_swap_animating: bool = false
 var _pending_drop_animation: Dictionary = {}
+var _visual_board_state: BoardState
+var _cascade_animation_base_snapshot: BoardState
+var _cascade_animation_snapshots: Array = []
+var _cascade_animation_step_index: int = -1
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
@@ -86,7 +93,12 @@ func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_opt
     _has_played_end_state_sound = false
     _is_paused = false
     _is_drop_animating = false
+    _is_swap_animating = false
     _pending_drop_animation.clear()
+    _visual_board_state = null
+    _cascade_animation_base_snapshot = null
+    _cascade_animation_snapshots.clear()
+    _cascade_animation_step_index = -1
     _playtest_mode = bool(runtime_options.get("playtest_mode", false))
     if _playtest_mode:
         _status_message = "Modo playtest: o save local nao sera alterado nesta fase."
@@ -153,23 +165,27 @@ func _refresh_view() -> void:
     _moves_label.text = "Jogadas: %s" % _session_state.moves_remaining
     _goal_label.text = _build_goal_text()
     _status_label.text = _status_message
-    _pause_button.disabled = _session_state.status != "playing" or _is_paused or _is_drop_animating
+    _pause_button.disabled = _session_state.status != "playing" or _is_paused or _is_drop_animating or _is_swap_animating
     _render_grid()
     _refresh_end_state()
 
 
 func _render_grid() -> void:
+    var board_state: BoardState = _get_render_board_state()
+
     for child in _board_grid.get_children():
         child.queue_free()
 
-    _board_grid.columns = _session_state.board_state.width
+    _board_grid.columns = board_state.width
 
-    for row in range(_session_state.board_state.height):
-        for column in range(_session_state.board_state.width):
-            if _session_state.board_state.can_hold_piece(row, column):
-                _board_grid.add_child(_build_piece_button(row, column))
-            elif _session_state.board_state.has_cell(row, column):
-                _board_grid.add_child(_build_obstacle_cell(row, column))
+    for row in range(board_state.height):
+        for column in range(board_state.width):
+            var cell: BoardCell = board_state.get_cell(row, column)
+            var piece = board_state.get_piece(row, column)
+            if board_state.can_hold_piece(row, column):
+                _board_grid.add_child(_build_piece_button(row, column, piece, cell))
+            elif board_state.has_cell(row, column):
+                _board_grid.add_child(_build_obstacle_cell(cell))
             else:
                 _board_grid.add_child(_build_blocked_cell())
 
@@ -177,12 +193,10 @@ func _render_grid() -> void:
         _play_pending_drop_animation.call_deferred()
 
 
-func _build_piece_button(row: int, column: int) -> Button:
+func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Button:
     var button: Button = Button.new()
-    var piece = _session_state.board_state.get_piece(row, column)
-    var cell: BoardCell = _session_state.board_state.get_cell(row, column)
     var is_selected: bool = _selected_position == Vector2i(column, row)
-    var is_interaction_locked: bool = _is_paused or _is_drop_animating or not _session_state.can_accept_input()
+    var is_interaction_locked: bool = _is_paused or _is_drop_animating or _is_swap_animating or not _session_state.can_accept_input()
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
     button.custom_minimum_size = BOARD_CELL_SIZE
@@ -234,9 +248,8 @@ func _build_blocked_cell() -> Control:
     return panel
 
 
-func _build_obstacle_cell(row: int, column: int) -> Control:
+func _build_obstacle_cell(cell: BoardCell) -> Control:
     var button: Button = Button.new()
-    var cell: BoardCell = _session_state.board_state.get_cell(row, column)
     var style: StyleBoxFlat = StyleBoxFlat.new()
 
     button.custom_minimum_size = BOARD_CELL_SIZE
@@ -264,7 +277,7 @@ func _build_obstacle_cell(row: int, column: int) -> Control:
 
 
 func _on_piece_pressed(position: Vector2i) -> void:
-    if _is_paused or _is_drop_animating or not _session_state.can_accept_input():
+    if _is_paused or _is_drop_animating or _is_swap_animating or not _session_state.can_accept_input():
         return
 
     if _selected_position == Vector2i(-1, -1):
@@ -288,13 +301,20 @@ func _on_piece_pressed(position: Vector2i) -> void:
         _refresh_view()
         return
 
-    var previous_piece_positions: Dictionary = _capture_piece_positions(_session_state.board_state)
-    var result: Dictionary = _apply_swap_use_case.execute(_session_state, _selected_position, position)
+    var first_position: Vector2i = _selected_position
+    var swap_targets: Dictionary = await _play_swap_animation(first_position, position)
+    var result: Dictionary = _apply_swap_use_case.execute(_session_state, first_position, position)
     _selected_position = Vector2i(-1, -1)
     _status_message = String(result.get("message", "Jogada processada."))
     if bool(result.get("accepted", false)):
-        _pending_drop_animation = _build_drop_animation(previous_piece_positions, _session_state.board_state)
-        _is_drop_animating = not _pending_drop_animation.is_empty()
+        _queue_cascade_animation(
+            result.get("animation_base_snapshot", null),
+            result.get("cascade_snapshots", [])
+        )
+    elif not swap_targets.is_empty():
+        await _play_swap_return_animation(swap_targets)
+
+    _is_swap_animating = false
     _play_resolution_sound(result)
     _show_combo_feedback(result)
     _refresh_view()
@@ -641,6 +661,13 @@ func _play_music_from_file(resource_path: String, volume_db: float) -> void:
     _play_music(music_stream, volume_db)
 
 
+func _get_render_board_state() -> BoardState:
+    if _visual_board_state != null:
+        return _visual_board_state
+
+    return _session_state.board_state
+
+
 func _capture_piece_positions(board_state: BoardState) -> Dictionary:
     var positions: Dictionary = {}
 
@@ -655,13 +682,14 @@ func _capture_piece_positions(board_state: BoardState) -> Dictionary:
     return positions
 
 
-func _build_drop_animation(previous_piece_positions: Dictionary, board_state: BoardState) -> Dictionary:
+func _build_drop_animation(previous_state: BoardState, current_state: BoardState) -> Dictionary:
+    var previous_piece_positions: Dictionary = _capture_piece_positions(previous_state)
     var animation_map: Dictionary = {}
     var spawned_rows_by_column: Dictionary = {}
 
-    for row in range(board_state.height):
-        for column in range(board_state.width):
-            var piece = board_state.get_piece(row, column)
+    for row in range(current_state.height):
+        for column in range(current_state.width):
+            var piece = current_state.get_piece(row, column)
             if piece == null:
                 continue
 
@@ -690,6 +718,39 @@ func _build_drop_animation(previous_piece_positions: Dictionary, board_state: Bo
     return animation_map
 
 
+func _queue_cascade_animation(base_snapshot, cascade_snapshots: Array) -> void:
+    _visual_board_state = null
+    _cascade_animation_base_snapshot = base_snapshot
+    _cascade_animation_snapshots = cascade_snapshots.duplicate()
+    _cascade_animation_step_index = -1
+    _pending_drop_animation.clear()
+    _is_drop_animating = not _cascade_animation_snapshots.is_empty()
+
+    if _is_drop_animating:
+        _advance_cascade_animation_step()
+
+
+func _advance_cascade_animation_step() -> void:
+    if _cascade_animation_snapshots.is_empty():
+        _finish_cascade_animation()
+        return
+
+    _cascade_animation_step_index += 1
+    if _cascade_animation_step_index >= _cascade_animation_snapshots.size():
+        _finish_cascade_animation()
+        return
+
+    var current_snapshot = _cascade_animation_snapshots[_cascade_animation_step_index]
+    var previous_snapshot = _cascade_animation_base_snapshot if _cascade_animation_step_index == 0 else _cascade_animation_snapshots[_cascade_animation_step_index - 1]
+    _visual_board_state = current_snapshot
+    _pending_drop_animation = _build_drop_animation(previous_snapshot, current_snapshot)
+    _refresh_view()
+
+    if _pending_drop_animation.is_empty():
+        var timer := get_tree().create_timer(CASCADE_STEP_PAUSE)
+        timer.timeout.connect(_on_drop_animation_finished)
+
+
 func _play_pending_drop_animation() -> void:
     if _pending_drop_animation.is_empty() or not is_inside_tree():
         return
@@ -700,8 +761,6 @@ func _play_pending_drop_animation() -> void:
 
     var tween := create_tween()
     tween.set_parallel(true)
-    _is_drop_animating = true
-
     for child in _board_grid.get_children():
         if not (child is Button):
             continue
@@ -730,9 +789,74 @@ func _play_pending_drop_animation() -> void:
 
 
 func _on_drop_animation_finished() -> void:
+    _pending_drop_animation.clear()
+    if _cascade_animation_step_index >= 0 and _cascade_animation_step_index < _cascade_animation_snapshots.size() - 1:
+        var timer := get_tree().create_timer(CASCADE_STEP_PAUSE)
+        timer.timeout.connect(_advance_cascade_animation_step)
+        return
+
+    _finish_cascade_animation()
+
+
+func _finish_cascade_animation() -> void:
     _is_drop_animating = false
     _pending_drop_animation.clear()
+    _visual_board_state = null
+    _cascade_animation_base_snapshot = null
+    _cascade_animation_snapshots.clear()
+    _cascade_animation_step_index = -1
     _refresh_view()
+
+
+func _play_swap_animation(first_position: Vector2i, second_position: Vector2i) -> Dictionary:
+    var first_button: Button = _find_piece_button(first_position)
+    var second_button: Button = _find_piece_button(second_position)
+    if first_button == null or second_button == null:
+        return {}
+
+    _is_swap_animating = true
+    var first_origin: Vector2 = first_button.position
+    var second_origin: Vector2 = second_button.position
+    var tween := create_tween()
+    tween.set_parallel(true)
+    tween.tween_property(first_button, "position", second_origin, SWAP_ANIMATION_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+    tween.tween_property(second_button, "position", first_origin, SWAP_ANIMATION_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+    await tween.finished
+
+    return {
+        "first_button": first_button,
+        "second_button": second_button,
+        "first_origin": first_origin,
+        "second_origin": second_origin
+    }
+
+
+func _play_swap_return_animation(swap_targets: Dictionary) -> void:
+    if swap_targets.is_empty():
+        return
+
+    var first_button: Button = swap_targets.get("first_button", null)
+    var second_button: Button = swap_targets.get("second_button", null)
+    if first_button == null or second_button == null:
+        return
+
+    var tween := create_tween()
+    tween.set_parallel(true)
+    tween.tween_property(first_button, "position", swap_targets.get("first_origin", first_button.position), SWAP_ANIMATION_DURATION * 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+    tween.tween_property(second_button, "position", swap_targets.get("second_origin", second_button.position), SWAP_ANIMATION_DURATION * 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+    await tween.finished
+
+
+func _find_piece_button(board_position: Vector2i) -> Button:
+    for child in _board_grid.get_children():
+        if child is not Button:
+            continue
+        if not child.has_meta("board_position"):
+            continue
+        if child.get_meta("board_position") == board_position:
+            return child
+
+    return null
 
 
 func _show_combo_feedback(result: Dictionary) -> void:

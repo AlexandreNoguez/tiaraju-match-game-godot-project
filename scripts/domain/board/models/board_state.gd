@@ -112,3 +112,18 @@ func draw_random_color() -> String:
 
     var random_index: int = random_generator.randi_range(0, allowed_colors.size() - 1)
     return allowed_colors[random_index]
+
+
+func duplicate_state() -> BoardState:
+    var duplicated_cells: Array[BoardCell] = []
+    for cell in playable_cells:
+        duplicated_cells.append(cell.duplicate_cell())
+
+    var duplicated_state := BoardState.new(width, height, duplicated_cells, allowed_colors, 1)
+    for row in range(height):
+        for column in range(width):
+            var piece = get_piece(row, column)
+            if piece != null:
+                duplicated_state.set_piece(row, column, piece.duplicate_piece())
+
+    return duplicated_state

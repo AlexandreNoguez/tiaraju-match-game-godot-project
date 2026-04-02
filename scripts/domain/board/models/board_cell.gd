@@ -50,3 +50,7 @@ func damage() -> bool:
         return true
 
     return false
+
+
+func duplicate_cell() -> BoardCell:
+    return BoardCell.new(row, column, is_playable, obstacle_type, obstacle_hits_remaining)
