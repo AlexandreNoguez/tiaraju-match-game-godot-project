@@ -159,7 +159,7 @@ func _on_shop_pressed() -> void:
 func _on_settings_pressed() -> void:
     _play_sound(SOUND_SWITCH_A, 1.0)
     _refresh_settings_controls()
-    _settings_message_label.text = "Musica e SFX podem ser ligados ou desligados agora e ficam salvos no aparelho. O reset de save tambem apaga esse progresso local e nao pode ser desfeito."
+    _settings_message_label.text = "Musica e SFX podem ser ligados ou desligados agora e ficam salvos no aparelho. O reset de save tambem apaga esse progresso local e nao pode ser desfeito.\n\nAgradecimentos do beta: pack de gems da pasta Sylly por Andrew Tidey (Gem Match Three, CC0) e UI, fontes, SFX e musicas temporarias da Kenney."
     _settings_layer.visible = true
 
 
@@ -313,10 +313,10 @@ func _apply_visual_theme() -> void:
         _apply_texture_panel_style(panel)
 
     _apply_kenney_button_style(_play_button, KENNEY_BUTTON_PRIMARY, palette["button_text"])
-    _apply_kenney_button_style(_profile_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
-    _apply_kenney_button_style(_events_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
-    _apply_kenney_button_style(_shop_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
-    _apply_kenney_button_style(_settings_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_profile_button, KENNEY_BUTTON_SECONDARY, palette["title"])
+    _apply_kenney_button_style(_events_button, KENNEY_BUTTON_SECONDARY, palette["title"])
+    _apply_kenney_button_style(_shop_button, KENNEY_BUTTON_SECONDARY, palette["title"])
+    _apply_kenney_button_style(_settings_button, KENNEY_BUTTON_SECONDARY, palette["title"])
     _play_button.icon = KENNEY_ICON_PLAY
 
     _apply_texture_panel_style($SettingsLayer/PanelContainer)
@@ -332,10 +332,10 @@ func _apply_visual_theme() -> void:
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel.add_theme_color_override("font_color", palette["title"])
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel.add_theme_color_override("font_color", palette["body"])
     _playtest_level_select.add_theme_color_override("font_color", palette["title"])
-    _apply_kenney_button_style(_settings_music_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
-    _apply_kenney_button_style(_settings_sfx_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_settings_music_button, KENNEY_BUTTON_SECONDARY, palette["title"])
+    _apply_kenney_button_style(_settings_sfx_button, KENNEY_BUTTON_SECONDARY, palette["title"])
     _apply_kenney_button_style(_playtest_open_button, KENNEY_BUTTON_PRIMARY, palette["button_text"])
-    _apply_kenney_button_style(_settings_cancel_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_settings_cancel_button, KENNEY_BUTTON_SECONDARY, palette["title"])
     _apply_kenney_button_style(_settings_reset_button, KENNEY_BUTTON_DANGER, palette["button_text"])
     _playtest_open_button.icon = KENNEY_ICON_PLAY
     _settings_reset_button.icon = KENNEY_ICON_REPEAT

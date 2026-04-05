@@ -4,6 +4,7 @@
 assets/third_party/kenney/**/*.import
 assets/third_party/kenney/downloads/
 assets/third_party/**/*.url
+assets/third_party/**/*.import
 export_presets.cfg
 *.translation
 *.apk

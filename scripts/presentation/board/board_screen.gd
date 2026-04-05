@@ -26,6 +26,19 @@ const KENNEY_BUTTON_DANGER = preload("res://assets/third_party/kenney/ui-pack/PN
 const KENNEY_ICON_PLAY = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_play_dark.png")
 const KENNEY_ICON_REPEAT = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_repeat_dark.png")
 const KENNEY_ICON_ARROW_LEFT = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_w.png")
+const GEM_YELLOW = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Yellow.png")
+const GEM_RED = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Red.png")
+const GEM_GREEN = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Green.png")
+const GEM_BLUE = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Blue.png")
+const GEM_YELLOW_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Yellow.png")
+const GEM_RED_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Red.png")
+const GEM_GREEN_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Green.png")
+const GEM_BLUE_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Blue.png")
+const GEM_YELLOW_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Yellow.png")
+const GEM_RED_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Red.png")
+const GEM_GREEN_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Green.png")
+const GEM_BLUE_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Blue.png")
+const GEM_RAINBOW = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type4 Purple.png")
 const MUSIC_BOARD_PATHS := [
     "res://assets/third_party/kenney/music-jingles/fase-1.ogg",
     "res://assets/third_party/kenney/music-jingles/fase-2.ogg"
@@ -221,9 +234,12 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
     button.disabled = false
     button.mouse_filter = Control.MOUSE_FILTER_IGNORE if is_interaction_locked else Control.MOUSE_FILTER_STOP
     button.mouse_default_cursor_shape = Control.CURSOR_ARROW if is_interaction_locked else Control.CURSOR_POINTING_HAND
-    button.text = _piece_label(piece, cell, is_selected)
+    button.text = ""
+    button.icon = _piece_texture(piece)
+    button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    button.expand_icon = false
 
-    style.bg_color = _piece_color(piece)
+    style.bg_color = Color(0.15, 0.22, 0.19, 0.82)
     style.corner_radius_top_left = 16
     style.corner_radius_top_right = 16
     style.corner_radius_bottom_right = 16
@@ -243,9 +259,9 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
     button.add_theme_stylebox_override("normal", style)
     button.add_theme_stylebox_override("hover", style)
     button.add_theme_stylebox_override("pressed", style)
-    button.add_theme_font_size_override("font_size", 18 if cell != null and cell.has_obstacle() else 22)
     button.set_meta("board_position", Vector2i(column, row))
     button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
+    _add_piece_overlay(button, piece, cell)
 
     return button
 
@@ -378,6 +394,95 @@ func _piece_label(piece, cell: BoardCell, is_selected: bool) -> String:
         symbol = "%s %s" % [_overlay_label(cell), symbol]
 
     return "%s%s" % [prefix, symbol]
+
+
+func _piece_texture(piece) -> Texture2D:
+    if piece == null:
+        return null
+
+    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_HORIZONTAL:
+        return _piece_texture_for_color(piece.color_id, "horizontal")
+
+    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_VERTICAL:
+        return _piece_texture_for_color(piece.color_id, "vertical")
+
+    if piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
+        return GEM_RAINBOW
+
+    return _piece_texture_for_color(piece.color_id, "normal")
+
+
+func _piece_texture_for_color(color_id: String, variant: String) -> Texture2D:
+    match variant:
+        "horizontal":
+            match color_id:
+                "yellow":
+                    return GEM_YELLOW_HORIZONTAL
+                "red":
+                    return GEM_RED_HORIZONTAL
+                "green":
+                    return GEM_GREEN_HORIZONTAL
+                "blue":
+                    return GEM_BLUE_HORIZONTAL
+        "vertical":
+            match color_id:
+                "yellow":
+                    return GEM_YELLOW_VERTICAL
+                "red":
+                    return GEM_RED_VERTICAL
+                "green":
+                    return GEM_GREEN_VERTICAL
+                "blue":
+                    return GEM_BLUE_VERTICAL
+        _:
+            match color_id:
+                "yellow":
+                    return GEM_YELLOW
+                "red":
+                    return GEM_RED
+                "green":
+                    return GEM_GREEN
+                "blue":
+                    return GEM_BLUE
+
+    return GEM_YELLOW
+
+
+func _add_piece_overlay(button: Button, piece, cell: BoardCell) -> void:
+    var overlay_text: String = _piece_overlay_text(piece, cell)
+    if overlay_text == "":
+        return
+
+    var overlay_label := Label.new()
+    overlay_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    overlay_label.text = overlay_text
+    overlay_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+    overlay_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+    overlay_label.add_theme_font_override("font", KENNEY_FONT_BODY)
+    overlay_label.add_theme_font_size_override("font_size", 17 if cell != null and cell.has_obstacle() else 15)
+    overlay_label.add_theme_color_override("font_color", Color("fffaf1"))
+    overlay_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+    overlay_label.add_theme_constant_override("shadow_offset_x", 1)
+    overlay_label.add_theme_constant_override("shadow_offset_y", 1)
+    overlay_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    overlay_label.offset_left = 8
+    overlay_label.offset_top = 6
+    overlay_label.offset_right = -8
+    overlay_label.offset_bottom = -6
+    button.add_child(overlay_label)
+
+
+func _piece_overlay_text(piece, cell: BoardCell) -> String:
+    if cell != null and cell.has_obstacle():
+        return _overlay_label(cell)
+
+    if piece == null:
+        return ""
+
+    if piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
+        return "*"
+
+    return ""
 
 
 func _overlay_label(cell: BoardCell) -> String:

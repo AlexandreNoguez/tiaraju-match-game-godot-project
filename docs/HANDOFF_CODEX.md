@@ -37,6 +37,8 @@ Estado atual do desenvolvimento:
 - fases sorteando aleatoriamente entre duas musicas locais a cada entrada
 - configuracoes do home controlando `Musica` e `SFX` com persistencia local
 - interface do `home`, pausa e fim de fase recebeu uma primeira passada visual usando `Kenney UI Pack`
+- board passou a usar o novo set de gems da pasta `assets/third_party/Sylly`
+- configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
 - animação de troca lateral entre peças funcionando
 - animação de queda das peças funcionando com cascatas reproduzidas por etapas
 - efeito de pop antes da remoção das combinações funcionando
