@@ -41,6 +41,7 @@ Estado atual do desenvolvimento:
 - atalho de playtest em debug no menu de configurações para abrir fases sem alterar o save
 - guia de teste em aparelho Android real documentado
 - documentacao reforca que Godot, Java SDK e Android SDK precisam ficar no mesmo lado do ambiente ao exportar
+- documentacao registra o caso real em que `adb` funciona no WSL, mas a exportacao da Godot do Windows continua exigindo SDK/JDK no Windows
 - 9 fases técnicas de teste já criadas
 - pacote inicial com 20 fases jogáveis criado
 - 29 fases totais disponíveis em dados

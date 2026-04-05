@@ -55,6 +55,14 @@ Misturar `Godot Windows` com SDK do WSL costuma gerar exatamente estes erros:
 - `build-tools absent`
 - `apksigner` nao encontrado
 
+Tambem e normal encontrar esta situacao:
+
+- `adb devices` funciona no WSL
+- o aparelho aparece como `device`
+- mas a exportacao Android ainda falha na `Godot do Windows`
+
+Quando isso acontecer, o problema nao e mais o cabo nem o `adb`; o problema passa a ser configuracao de `Java SDK` e `Android SDK` no Windows.
+
 ## 1. Pre-requisitos no Windows
 
 Segundo a documentacao da Microsoft, apps GUI no WSL exigem:
@@ -283,6 +291,7 @@ Observacao pratica:
 
 - `usbipd` roda no Windows PowerShell, nao no Ubuntu
 - `adb` pode rodar no WSL depois que o dispositivo ja estiver anexado
+- o fato de `adb` nao existir no PowerShell do Windows nao impede esse fluxo
 
 ## 7.4 Recomendacao final para este projeto
 

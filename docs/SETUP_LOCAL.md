@@ -70,3 +70,10 @@ Se misturar os lados, a exportacao Android pode acusar:
 - `Java SDK invalido`
 - `platform-tools absent`
 - `build-tools absent`
+
+Exemplo pratico:
+
+- `adb devices` no WSL encontra o aparelho
+- mas a `Godot do Windows` ainda nao exporta
+
+Nesse caso, a prioridade e corrigir `Java SDK` e `Android SDK` no Windows, nao mexer mais no cabo ou no `adb`.

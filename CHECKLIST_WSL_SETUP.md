@@ -69,6 +69,7 @@ Marque com `[x]` quando concluir cada etapa.
 - [ ] Se usar a Godot do Windows, configurar `Java SDK` e `Android SDK` no Windows
 - [ ] Se usar a Godot do WSL, configurar `Java SDK` e `Android SDK` no WSL
 - [ ] Evitar misturar Godot Windows com SDK/JDK do WSL
+- [ ] Lembrar que `usbipd` roda no Windows e `adb` pode continuar no WSL
 
 ## 8. Validacao final
 

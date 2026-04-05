@@ -57,6 +57,12 @@ No estado atual do projeto, a recomendacao mais segura para exportar e instalar 
 3. manter `Java SDK`, `Android SDK` e export templates configurados no Windows
 4. usar o `adb` no WSL apenas como apoio, se o dispositivo ja estiver conectado
 
+Exemplo real do fluxo que encontramos:
+
+- `java` e `adb` podem funcionar perfeitamente no WSL
+- o aparelho pode aparecer no `adb devices` do WSL
+- mas a `Godot do Windows` ainda assim falha na exportacao se o `Java SDK` e o `Android SDK` nao estiverem configurados no Windows
+
 ## 3. Conectar o aparelho
 
 ### 3.1 Via USB
@@ -104,6 +110,12 @@ usbipd attach --wsl --busid <BUSID>
 ```bash
 adb devices
 ```
+
+Observacao pratica:
+
+- `usbipd` roda no `PowerShell do Windows`
+- `adb` pode ser usado no `WSL`
+- nao tente instalar ou rodar `usbipd` dentro do Ubuntu para esse passo
 
 ## 4. Exportar a build debug na Godot
 
@@ -213,6 +225,12 @@ Depois de instalar:
 - isso e esperado quando a `Godot do Windows` esta sendo usada com `SDK/JDK` apenas no WSL
 - a correcao e configurar `Java SDK` e `Android SDK` no mesmo lado do editor que esta exportando
 - no nosso fluxo atual, preferir exportar pelo Windows para evitar retrabalho
+
+### `adb` nao existe no PowerShell do Windows
+
+- isso nao bloqueia a etapa de anexar o aparelho ao WSL
+- para o USB no WSL, o importante no Windows e ter `usbipd-win`
+- depois que o aparelho estiver anexado, o `adb` pode continuar sendo usado no WSL
 
 ## 9. Resultado esperado desta etapa
 
