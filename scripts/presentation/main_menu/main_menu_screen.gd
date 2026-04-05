@@ -19,6 +19,7 @@ const KENNEY_BUTTON_SECONDARY = preload("res://assets/third_party/kenney/ui-pack
 const KENNEY_BUTTON_DANGER = preload("res://assets/third_party/kenney/ui-pack/PNG/Red/Default/button_rectangle_depth_gloss.png")
 const KENNEY_ICON_PLAY = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_play_dark.png")
 const KENNEY_ICON_REPEAT = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_repeat_dark.png")
+const BUTTON_TEXT_DARK = Color("2a1b12")
 
 @onready var _background: ColorRect = $Background
 @onready var _ground_band: ColorRect = $GroundBand
@@ -312,11 +313,11 @@ func _apply_visual_theme() -> void:
     for panel in [_profile_panel, _events_panel, _current_level_panel, _economy_panel]:
         _apply_texture_panel_style(panel)
 
-    _apply_kenney_button_style(_play_button, KENNEY_BUTTON_PRIMARY, palette["button_text"])
-    _apply_kenney_button_style(_profile_button, KENNEY_BUTTON_SECONDARY, palette["title"])
-    _apply_kenney_button_style(_events_button, KENNEY_BUTTON_SECONDARY, palette["title"])
-    _apply_kenney_button_style(_shop_button, KENNEY_BUTTON_SECONDARY, palette["title"])
-    _apply_kenney_button_style(_settings_button, KENNEY_BUTTON_SECONDARY, palette["title"])
+    _apply_kenney_button_style(_play_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_profile_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_events_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_shop_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_settings_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
     _play_button.icon = KENNEY_ICON_PLAY
 
     _apply_texture_panel_style($SettingsLayer/PanelContainer)
@@ -332,11 +333,11 @@ func _apply_visual_theme() -> void:
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel.add_theme_color_override("font_color", palette["title"])
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel.add_theme_color_override("font_color", palette["body"])
     _playtest_level_select.add_theme_color_override("font_color", palette["title"])
-    _apply_kenney_button_style(_settings_music_button, KENNEY_BUTTON_SECONDARY, palette["title"])
-    _apply_kenney_button_style(_settings_sfx_button, KENNEY_BUTTON_SECONDARY, palette["title"])
-    _apply_kenney_button_style(_playtest_open_button, KENNEY_BUTTON_PRIMARY, palette["button_text"])
-    _apply_kenney_button_style(_settings_cancel_button, KENNEY_BUTTON_SECONDARY, palette["title"])
-    _apply_kenney_button_style(_settings_reset_button, KENNEY_BUTTON_DANGER, palette["button_text"])
+    _apply_kenney_button_style(_settings_music_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_settings_sfx_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_playtest_open_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_settings_cancel_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_settings_reset_button, KENNEY_BUTTON_DANGER, BUTTON_TEXT_DARK)
     _playtest_open_button.icon = KENNEY_ICON_PLAY
     _settings_reset_button.icon = KENNEY_ICON_REPEAT
 

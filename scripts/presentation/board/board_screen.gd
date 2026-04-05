@@ -26,6 +26,7 @@ const KENNEY_BUTTON_DANGER = preload("res://assets/third_party/kenney/ui-pack/PN
 const KENNEY_ICON_PLAY = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_play_dark.png")
 const KENNEY_ICON_REPEAT = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_repeat_dark.png")
 const KENNEY_ICON_ARROW_LEFT = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_w.png")
+const BUTTON_TEXT_DARK = Color("2a1b12")
 const GEM_YELLOW = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Yellow.png")
 const GEM_RED = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Red.png")
 const GEM_GREEN = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Green.png")
@@ -1139,11 +1140,11 @@ func _apply_level_theme() -> void:
     _apply_texture_panel_style(_board_shell)
     _apply_texture_panel_style(_pause_panel)
     _apply_texture_panel_style(_end_state_panel)
-    _apply_kenney_button_style(_pause_button, KENNEY_BUTTON_SECONDARY, Color("2b3245"))
-    _apply_kenney_button_style(_pause_resume_button, KENNEY_BUTTON_PRIMARY, Color("fff8ef"))
-    _apply_kenney_button_style(_pause_home_button, KENNEY_BUTTON_SECONDARY, Color("2b3245"))
-    _apply_kenney_button_style(_restart_button, KENNEY_BUTTON_PRIMARY, Color("fff8ef"))
-    _apply_kenney_button_style(_next_button, KENNEY_BUTTON_DANGER, Color("fff8ef"))
+    _apply_kenney_button_style(_pause_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_pause_resume_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_pause_home_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_restart_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
+    _apply_kenney_button_style(_next_button, KENNEY_BUTTON_DANGER, BUTTON_TEXT_DARK)
     _pause_resume_button.icon = KENNEY_ICON_PLAY
     _pause_home_button.icon = KENNEY_ICON_ARROW_LEFT
     _restart_button.icon = KENNEY_ICON_ARROW_LEFT
