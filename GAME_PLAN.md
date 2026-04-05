@@ -258,6 +258,22 @@ No pos-beta, a tela principal deve evoluir para um hub mais completo. A direcao 
 
 - exibir saldo de moedas no `home`
 - manter moedas no save local enquanto o jogo continuar offline
+
+### 10.6 Direcao de polimento
+
+Depois do beta tecnico estavel, o foco principal passa a ser:
+
+- aumentar `juice` do tabuleiro com mais impacto visual
+- melhorar HUD e telas finais para uma sensacao mais premium
+- criar mapa de progressao visual
+- dar utilidade real para moedas e `shop`
+- consolidar uma direcao de arte mais forte para gems, especiais, obstaculos, icones e fontes
+
+Leitura pratica:
+
+- o jogo ja precisa ser divertido e estavel antes de tentar parecer premium
+- quando esse nucleo estiver firme, a prioridade vira apresentacao, conteudo e meta game
+- a documentacao detalhada dessa frente fica em `docs/GAME_POLISH_PLAN.md`
 - usar moedas para compras em um `shop` proprio do jogo
 - definir a economia so depois de validar loop principal, curva de fases e recompensas
 - adiar qualquer monetizacao real, login ou sincronizacao online para uma fase posterior

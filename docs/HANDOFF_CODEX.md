@@ -39,7 +39,9 @@ Estado atual do desenvolvimento:
 - interface do `home`, pausa e fim de fase recebeu uma primeira passada visual usando `Kenney UI Pack`
 - board passou a usar o novo set de gems da pasta `assets/third_party/Sylly`
 - board agora separa visualmente forma base por cor, badge de especial e badge de obstaculo
+- vitoria agora abre um overlay mais celebratorio com `Parabens!`, efeito leve no titulo e botao unico `Continuar`
 - configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
+- frente de polimento do jogo foi documentada em `docs/GAME_POLISH_PLAN.md`
 - animação de troca lateral entre peças funcionando
 - animação de queda das peças funcionando com cascatas reproduzidas por etapas
 - efeito de pop antes da remoção das combinações funcionando
@@ -71,7 +73,7 @@ Próximos passos planejados:
 2. validar no Android resolução, toque, performance e persistencia do save, preferindo exportacao pela Godot do Windows com SDK/JDK no Windows
 3. usar o atalho de playtest nas configurações em debug para acelerar a revisão da campanha sem poluir o save
 4. voltar ao balanceamento fino da curva das fases 010-029
-5. decidir o proximo passo de UX entre HUD de moedas mais evidente, iconografia do board ou primeiros elementos reais do shop offline
+5. planejar e executar a primeira passada de polimento premium: HUD, fontes, iconografia, mapa e `juice`
 
 Antes de editar, leia:
 - GAME_PLAN.md

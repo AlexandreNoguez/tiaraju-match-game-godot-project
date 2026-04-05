@@ -47,6 +47,16 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
   - musica do `home` usando `home.ogg`
   - musica das fases sorteada entre `fase-1.ogg` e `fase-2.ogg`
 
+### Sylly / Gem Match Three
+
+- origem: `assets/third_party/Sylly/License.txt`
+- autor creditado no pack: `Andrew Tidey`
+- licenca: `CC0`
+- pasta: `assets/third_party/Sylly`
+- uso sugerido:
+  - formas base das gems
+  - referencia para evoluir especiais e obstaculos
+
 ## Regras de uso no projeto
 
 1. Priorizar assets `CC0` ou licencas claramente permissivas.
@@ -56,6 +66,12 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
 5. Personagens principais e identidade cultural do projeto devem ser autorais.
 
 ## Fontes recomendadas para os proximos assets gratuitos
+
+### Fontes para testar na UI
+
+- Fredoka: https://fonts.google.com/specimen/Fredoka
+- Baloo 2: https://fonts.google.com/specimen/Baloo+2
+- Bungee: https://fonts.google.com/specimen/Bungee
 
 ### Audio e SFX
 
@@ -75,6 +91,26 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
 - usar SFX gratuitos locais antes de baixar novos packs
 - usar musica temporaria gratuita e simples no `home` e nas fases enquanto a direcao final de audio nao estiver fechada
 - evitar adicionar muitos packs ao mesmo tempo para nao inchar o beta
+
+## Referencias para assets premium ou semi-premium
+
+### Match-3 e casual mobile
+
+- itch.io game assets: https://itch.io/game-assets
+- QuillGrafit Match 3 Flat Gems Asset Pack: https://quillgrafit.itch.io/match-3-flat-gems-asset-pack
+- PixMeUp Flat Vector Match-3 Asset Pack: https://pixmeup.itch.io/pixmeup-fvs-match-3-game-assets
+- HypeSupply: https://hypesupply.itch.io/
+- CraftPix: https://craftpix.net/
+- CraftPix Match 3 Game Asset Set: https://craftpix.net/product/match-3-game-asset-set/
+- CraftPix Match 3 Game Locations: https://craftpix.net/product/match-3-game-locations/
+- CraftPix Match 3 Game Kit: https://craftpix.net/sets/match-3-game-kit-asset/
+
+## Regra para adotar packs novos
+
+1. verificar licenca antes de baixar ou comprar
+2. registrar origem e licenca neste arquivo
+3. testar primeiro em uma tela ou fluxo pequeno
+4. evitar misturar packs com direcoes artisticas conflitantes
 
 ## O que nao versionamos
 
