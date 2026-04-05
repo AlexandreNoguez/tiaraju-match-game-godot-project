@@ -13,9 +13,9 @@ Da para trabalhar com quase tudo dentro do WSL, mas no Windows 10 ha duas observ
 
 ### Recomendacao mais segura para o seu caso
 
-- codigo e ferramentas Linux dentro do WSL
-- Godot rodando no WSL
-- Android SDK e ADB no WSL
+- codigo pode ficar no WSL
+- testes de CLI e `adb` podem acontecer no WSL
+- mas, se voce for usar a `Godot do Windows` para exportar Android, mantenha `Java SDK` e `Android SDK` no Windows
 - testes Android preferencialmente em aparelho real
 
 ### Inference importante
@@ -28,9 +28,32 @@ Nao encontrei uma documentacao oficial do Android recomendando explicitamente um
 
 Por isso, a recomendacao mais segura e pratica para este projeto e:
 
-- usar `WSL + Godot + ADB + dispositivo real`
+- usar `WSL` para codigo, terminal e automacao
+- usar `Godot do Windows` para exportar Android
+- manter `Java SDK` e `Android SDK` no mesmo lado da Godot usada para exportar
 - tratar `Android Studio dentro do WSL` como opcional
 - evitar depender do emulador dentro do WSL nesta fase
+
+## Regra de ouro para evitar confusao
+
+O editor que exporta o APK precisa enxergar diretamente:
+
+- `Java SDK`
+- `Android SDK`
+- `build-tools`
+- `platform-tools`
+
+Entao:
+
+- `Godot Windows` -> `SDK/JDK Windows`
+- `Godot WSL/Linux` -> `SDK/JDK WSL/Linux`
+
+Misturar `Godot Windows` com SDK do WSL costuma gerar exatamente estes erros:
+
+- `Java SDK invalido`
+- `platform-tools absent`
+- `build-tools absent`
+- `apksigner` nao encontrado
 
 ## 1. Pre-requisitos no Windows
 
@@ -152,7 +175,7 @@ godot project.godot
 
 ## 6. Android SDK no WSL
 
-Para exportar Android com Godot, a doc oficial recomenda `OpenJDK 17` e Android SDK. O SDK pode ser instalado via Android Studio ou via command-line tools.
+Para exportar Android com Godot Linux no WSL, a doc oficial recomenda `OpenJDK 17` e Android SDK. O SDK pode ser instalado via Android Studio ou via command-line tools.
 
 ### 6.1 Caminhos recomendados
 
@@ -255,6 +278,20 @@ No Ubuntu WSL:
 lsusb
 adb devices
 ```
+
+Observacao pratica:
+
+- `usbipd` roda no Windows PowerShell, nao no Ubuntu
+- `adb` pode rodar no WSL depois que o dispositivo ja estiver anexado
+
+## 7.4 Recomendacao final para este projeto
+
+Hoje, o caminho com menos atrito e:
+
+1. editar no WSL ou Windows
+2. usar `adb` no WSL se quiser
+3. usar a `Godot do Windows` para exportar
+4. configurar `Java SDK` e `Android SDK` no Windows quando exportar pela interface do Windows
 
 ### 7.3 Ubuntu e ADB no aparelho
 

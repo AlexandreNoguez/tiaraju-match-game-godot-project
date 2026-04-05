@@ -38,6 +38,25 @@ Se estiver usando este fluxo com WSL, seguir tambem:
 - [CHECKLIST_WSL_SETUP.md](/mnt/c/workspaces/tiaraju-match-game-godot-project/CHECKLIST_WSL_SETUP.md)
 - [WSL_WINDOWS10_SETUP.md](/mnt/c/workspaces/tiaraju-match-game-godot-project/docs/WSL_WINDOWS10_SETUP.md)
 
+## 2.1 Regra pratica importante
+
+Para evitar confusao na exportacao Android:
+
+- se voce abre o projeto na `Godot do Windows`, configure `Java SDK` e `Android SDK` no Windows
+- se voce abre o projeto na `Godot do WSL/Linux`, configure `Java SDK` e `Android SDK` no WSL
+
+Nao misture:
+
+- `Godot do Windows` com `SDK/JDK` do WSL
+- `Godot do WSL` com `SDK/JDK` do Windows
+
+No estado atual do projeto, a recomendacao mais segura para exportar e instalar no celular real e:
+
+1. editar codigo onde preferir
+2. usar a `Godot do Windows` para exportar Android
+3. manter `Java SDK`, `Android SDK` e export templates configurados no Windows
+4. usar o `adb` no WSL apenas como apoio, se o dispositivo ja estiver conectado
+
 ## 3. Conectar o aparelho
 
 ### 3.1 Via USB
@@ -95,6 +114,37 @@ Na Godot:
 3. abrir `Project -> Export`
 4. criar ou revisar o preset `Android`
 5. exportar um `APK` debug
+
+### 4.1 Se estiver usando a Godot do Windows
+
+Os caminhos precisam apontar para pastas do Windows, nao do WSL.
+
+Exemplo de erro comum:
+
+- `java` e `adb` funcionam no Ubuntu/WSL
+- mas a `Godot do Windows` continua reclamando que `Java SDK` e `Android SDK` estao invalidos
+
+Motivo:
+
+- o editor do Windows nao enxerga automaticamente os caminhos Linux como `/home/alexandre/Android/Sdk`
+
+Entao, nesse caso, configure:
+
+- `Java SDK Path` no Windows
+- `Android SDK Path` no Windows
+
+### 4.2 Erros comuns ao criar o preset Android
+
+Se a tela de export mostrar mensagens como:
+
+- `Um caminho valido para o Java SDK e necessario`
+- `Caminho do Android SDK invalido`
+- `platform-tools absent`
+- `build-tools absent`
+
+isso normalmente significa que a Godot e o SDK/JDK estao em lados diferentes do ambiente.
+
+Se voce estiver exportando pela interface do Windows, corrija tudo no Windows.
 
 ## 5. Instalar no aparelho
 
@@ -157,6 +207,12 @@ Depois de instalar:
 - apagar versao anterior do app
 - garantir espaco livre no aparelho
 - verificar se a build foi exportada em modo debug
+
+### A Godot reclama de SDK invalido, mas `adb` funciona no WSL
+
+- isso e esperado quando a `Godot do Windows` esta sendo usada com `SDK/JDK` apenas no WSL
+- a correcao e configurar `Java SDK` e `Android SDK` no mesmo lado do editor que esta exportando
+- no nosso fluxo atual, preferir exportar pelo Windows para evitar retrabalho
 
 ## 9. Resultado esperado desta etapa
 

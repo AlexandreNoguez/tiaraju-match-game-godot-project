@@ -59,10 +59,16 @@ Marque com `[x]` quando concluir cada etapa.
 ## 7. Godot para Android
 
 - [ ] Baixar ou instalar os export templates da Godot
-- [ ] Configurar os caminhos Android nas configuracoes da Godot
+- [ ] Configurar os caminhos Android nas configuracoes da Godot no mesmo lado do editor usado para exportar
 - [ ] Criar preset Android de export
 - [ ] Gerar build debug
 - [ ] Instalar build no aparelho
+
+## 7.1 Regra pratica
+
+- [ ] Se usar a Godot do Windows, configurar `Java SDK` e `Android SDK` no Windows
+- [ ] Se usar a Godot do WSL, configurar `Java SDK` e `Android SDK` no WSL
+- [ ] Evitar misturar Godot Windows com SDK/JDK do WSL
 
 ## 8. Validacao final
 

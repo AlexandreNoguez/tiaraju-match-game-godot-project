@@ -54,7 +54,19 @@ Como o projeto ainda esta no comeco, a prioridade nao e performance extrema, e s
 
 No seu caso, a recomendacao principal e:
 
-1. usar `Godot` no WSL
-2. usar `Android SDK` e `ADB` no WSL
-3. testar em `aparelho Android real`
-4. tratar `Android Studio` e `Emulator` como opcionais
+1. usar `WSL` para codigo, terminal e automacao
+2. usar a `Godot do Windows` para exportar Android se esse for o editor principal
+3. manter `Java SDK` e `Android SDK` no mesmo lado da Godot usada para exportar
+4. testar em `aparelho Android real`
+5. tratar `Android Studio` e `Emulator` como opcionais
+
+## Regra de compatibilidade
+
+- `Godot Windows` precisa de `Java SDK` e `Android SDK` do Windows
+- `Godot WSL/Linux` precisa de `Java SDK` e `Android SDK` do WSL/Linux
+
+Se misturar os lados, a exportacao Android pode acusar:
+
+- `Java SDK invalido`
+- `platform-tools absent`
+- `build-tools absent`
