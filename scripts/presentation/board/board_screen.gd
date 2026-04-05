@@ -27,18 +27,16 @@ const KENNEY_ICON_PLAY = preload("res://assets/third_party/kenney/ui-pack/PNG/Ex
 const KENNEY_ICON_REPEAT = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_repeat_dark.png")
 const KENNEY_ICON_ARROW_LEFT = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_w.png")
 const GEM_YELLOW = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Yellow.png")
-const GEM_RED = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Red.png")
-const GEM_GREEN = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Green.png")
-const GEM_BLUE = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Blue.png")
-const GEM_YELLOW_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Yellow.png")
-const GEM_RED_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Red.png")
-const GEM_GREEN_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Green.png")
-const GEM_BLUE_HORIZONTAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Blue.png")
-const GEM_YELLOW_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Yellow.png")
-const GEM_RED_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Red.png")
-const GEM_GREEN_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Green.png")
-const GEM_BLUE_VERTICAL = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Blue.png")
-const GEM_RAINBOW = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type4 Purple.png")
+const GEM_RED = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Red.png")
+const GEM_GREEN = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Green.png")
+const GEM_BLUE = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type4 Blue.png")
+const SPECIAL_BADGE_FOUR_HORIZONTAL = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_e_small.png")
+const SPECIAL_BADGE_FOUR_VERTICAL = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_n_small.png")
+const SPECIAL_BADGE_FIVE = preload("res://assets/third_party/kenney/ui-pack/PNG/Yellow/Default/star.png")
+const OBSTACLE_BADGE_BOX = preload("res://assets/third_party/kenney/ui-pack/PNG/Grey/Default/icon_square.png")
+const OBSTACLE_BADGE_ICE = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/icon_circle.png")
+const OBSTACLE_BADGE_GRASS = preload("res://assets/third_party/kenney/ui-pack/PNG/Green/Default/icon_checkmark.png")
+const OBSTACLE_BADGE_DENSE_GRASS = preload("res://assets/third_party/kenney/ui-pack/PNG/Red/Default/icon_cross.png")
 const MUSIC_BOARD_PATHS := [
     "res://assets/third_party/kenney/music-jingles/fase-1.ogg",
     "res://assets/third_party/kenney/music-jingles/fase-2.ogg"
@@ -261,7 +259,7 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
     button.add_theme_stylebox_override("pressed", style)
     button.set_meta("board_position", Vector2i(column, row))
     button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
-    _add_piece_overlay(button, piece, cell)
+    _add_piece_overlays(button, piece, cell)
 
     return button
 
@@ -289,7 +287,7 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
     button.focus_mode = Control.FOCUS_NONE
     button.disabled = true
     button.mouse_filter = Control.MOUSE_FILTER_STOP
-    button.text = _obstacle_label(cell)
+    button.text = ""
 
     style.bg_color = _obstacle_color(cell)
     style.corner_radius_top_left = 16
@@ -304,7 +302,31 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
 
     button.add_theme_stylebox_override("normal", style)
     button.add_theme_stylebox_override("disabled", style)
-    button.add_theme_font_size_override("font_size", 20)
+    var obstacle_badge: Texture2D = _obstacle_badge_texture(cell)
+    if obstacle_badge != null:
+        var centered_badge := TextureRect.new()
+        centered_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        centered_badge.texture = obstacle_badge
+        centered_badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        centered_badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        centered_badge.custom_minimum_size = Vector2(44, 44)
+        centered_badge.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+        centered_badge.position -= centered_badge.custom_minimum_size * 0.5
+        button.add_child(centered_badge)
+
+    if cell != null and cell.obstacle_type == BoardCellScript.OBSTACLE_DENSE_GRASS:
+        var hits_label := Label.new()
+        hits_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        hits_label.text = str(cell.obstacle_hits_remaining)
+        hits_label.add_theme_font_override("font", KENNEY_FONT_TITLE)
+        hits_label.add_theme_font_size_override("font_size", 18)
+        hits_label.add_theme_color_override("font_color", Color("fffaf1"))
+        hits_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+        hits_label.add_theme_constant_override("shadow_offset_x", 1)
+        hits_label.add_theme_constant_override("shadow_offset_y", 1)
+        hits_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+        hits_label.position += Vector2(-12, -12)
+        button.add_child(hits_label)
 
     return button
 
@@ -400,89 +422,78 @@ func _piece_texture(piece) -> Texture2D:
     if piece == null:
         return null
 
-    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_HORIZONTAL:
-        return _piece_texture_for_color(piece.color_id, "horizontal")
-
-    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_VERTICAL:
-        return _piece_texture_for_color(piece.color_id, "vertical")
-
-    if piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
-        return GEM_RAINBOW
-
-    return _piece_texture_for_color(piece.color_id, "normal")
+    return _piece_texture_for_color(piece.color_id)
 
 
-func _piece_texture_for_color(color_id: String, variant: String) -> Texture2D:
-    match variant:
-        "horizontal":
-            match color_id:
-                "yellow":
-                    return GEM_YELLOW_HORIZONTAL
-                "red":
-                    return GEM_RED_HORIZONTAL
-                "green":
-                    return GEM_GREEN_HORIZONTAL
-                "blue":
-                    return GEM_BLUE_HORIZONTAL
-        "vertical":
-            match color_id:
-                "yellow":
-                    return GEM_YELLOW_VERTICAL
-                "red":
-                    return GEM_RED_VERTICAL
-                "green":
-                    return GEM_GREEN_VERTICAL
-                "blue":
-                    return GEM_BLUE_VERTICAL
-        _:
-            match color_id:
-                "yellow":
-                    return GEM_YELLOW
-                "red":
-                    return GEM_RED
-                "green":
-                    return GEM_GREEN
-                "blue":
-                    return GEM_BLUE
+func _piece_texture_for_color(color_id: String) -> Texture2D:
+    match color_id:
+        "yellow":
+            return GEM_YELLOW
+        "red":
+            return GEM_RED
+        "green":
+            return GEM_GREEN
+        "blue":
+            return GEM_BLUE
 
     return GEM_YELLOW
 
 
-func _add_piece_overlay(button: Button, piece, cell: BoardCell) -> void:
-    var overlay_text: String = _piece_overlay_text(piece, cell)
-    if overlay_text == "":
-        return
+func _add_piece_overlays(button: Button, piece, cell: BoardCell) -> void:
+    var special_badge: Texture2D = _piece_special_badge_texture(piece)
+    if special_badge != null:
+        button.add_child(_build_badge_texture_rect(special_badge, true))
 
-    var overlay_label := Label.new()
-    overlay_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    overlay_label.text = overlay_text
-    overlay_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-    overlay_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-    overlay_label.add_theme_font_override("font", KENNEY_FONT_BODY)
-    overlay_label.add_theme_font_size_override("font_size", 17 if cell != null and cell.has_obstacle() else 15)
-    overlay_label.add_theme_color_override("font_color", Color("fffaf1"))
-    overlay_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
-    overlay_label.add_theme_constant_override("shadow_offset_x", 1)
-    overlay_label.add_theme_constant_override("shadow_offset_y", 1)
-    overlay_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    overlay_label.offset_left = 8
-    overlay_label.offset_top = 6
-    overlay_label.offset_right = -8
-    overlay_label.offset_bottom = -6
-    button.add_child(overlay_label)
+    var obstacle_badge: Texture2D = _obstacle_badge_texture(cell)
+    if obstacle_badge != null:
+        button.add_child(_build_badge_texture_rect(obstacle_badge, false))
 
 
-func _piece_overlay_text(piece, cell: BoardCell) -> String:
-    if cell != null and cell.has_obstacle():
-        return _overlay_label(cell)
-
+func _piece_special_badge_texture(piece) -> Texture2D:
     if piece == null:
-        return ""
+        return null
+
+    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_HORIZONTAL:
+        return SPECIAL_BADGE_FOUR_HORIZONTAL
+
+    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_VERTICAL:
+        return SPECIAL_BADGE_FOUR_VERTICAL
 
     if piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
-        return "*"
+        return SPECIAL_BADGE_FIVE
 
-    return ""
+    return null
+
+
+func _obstacle_badge_texture(cell: BoardCell) -> Texture2D:
+    if cell == null or not cell.has_obstacle():
+        return null
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_BOX:
+        return OBSTACLE_BADGE_BOX
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_ICE:
+        return OBSTACLE_BADGE_ICE
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_GRASS:
+        return OBSTACLE_BADGE_GRASS
+
+    if cell.obstacle_type == BoardCellScript.OBSTACLE_DENSE_GRASS:
+        return OBSTACLE_BADGE_DENSE_GRASS
+
+    return OBSTACLE_BADGE_BOX
+
+
+func _build_badge_texture_rect(texture: Texture2D, align_right: bool) -> TextureRect:
+    var badge := TextureRect.new()
+    badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    badge.texture = texture
+    badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    badge.custom_minimum_size = Vector2(24, 24)
+    badge.position = Vector2(82, 6) if align_right else Vector2(6, 6)
+    badge.size = Vector2(24, 24)
+    return badge
 
 
 func _overlay_label(cell: BoardCell) -> String:
