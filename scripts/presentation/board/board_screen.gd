@@ -252,18 +252,10 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
 
 
 func _build_blocked_cell() -> Control:
-	var panel: Panel = Panel.new()
-	var style: StyleBoxFlat = StyleBoxFlat.new()
-
-	panel.custom_minimum_size = _active_board_cell_size
-	style.bg_color = Color(0.09, 0.16, 0.12, 0.45)
-	style.corner_radius_top_left = 16
-	style.corner_radius_top_right = 16
-	style.corner_radius_bottom_right = 16
-	style.corner_radius_bottom_left = 16
-	panel.add_theme_stylebox_override("panel", style)
-
-	return panel
+	var spacer := Control.new()
+	spacer.custom_minimum_size = _active_board_cell_size
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return spacer
 
 
 func _build_obstacle_cell(cell: BoardCell) -> Control:

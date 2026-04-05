@@ -44,6 +44,9 @@ Estado atual do desenvolvimento:
 - Fredoka virou a fonte padrao dos textos do jogo no `home`, HUD, pausa e fim de fase
 - todas as fases atuais foram reencaixadas em um canvas de `8x12`, preservando variacoes de silhueta dentro desse tamanho
 - HUD da fase agora usa cards visuais para objetivos e jogadas, em vez de texto corrido
+- gems do board foram ajustadas para tamanho visual fixo `72x72`
+- area de clique das gems foi ampliada para uma tolerancia visual de `72x72`
+- celulas fora da mascara do level agora ficam invisiveis, preservando o layout sem mostrar blocos cinza
 - vitoria agora abre um overlay mais celebratorio com `Parabens!` e botao unico `Continuar`
 - configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
 - frente de polimento do jogo foi documentada em `docs/GAME_POLISH_PLAN.md`
