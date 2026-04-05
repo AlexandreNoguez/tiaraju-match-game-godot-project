@@ -42,6 +42,7 @@ Estado atual do desenvolvimento:
 - especiais de 4 e 5 gemas agora usam icones dedicados do `Kenney Particle Pack` em vez de badge sobre a gema
 - obstaculos continuam com icones dedicados e a troca de pack ficou concentrada no catalogo visual
 - Fredoka virou a fonte padrao dos textos do jogo no `home`, HUD, pausa e fim de fase
+- todas as fases atuais foram reencaixadas em um canvas de `8x12`, preservando variacoes de silhueta dentro desse tamanho
 - vitoria agora abre um overlay mais celebratorio com `Parabens!` e botao unico `Continuar`
 - configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
 - frente de polimento do jogo foi documentada em `docs/GAME_POLISH_PLAN.md`

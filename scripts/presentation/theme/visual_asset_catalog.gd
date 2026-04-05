@@ -17,8 +17,8 @@ const GEM_RED_TEXTURE = preload("res://assets/third_party/Sylly/PNG/Medium/Gem T
 const GEM_GREEN_TEXTURE = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Green.png")
 const GEM_BLUE_TEXTURE = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type4 Blue.png")
 
-const SPECIAL_HORIZONTAL_TEXTURE_PATH := "res://assets/third_party/kenney/particle-pack/PNG (Transparent)/trace_05.png"
-const SPECIAL_VERTICAL_TEXTURE_PATH := "res://assets/third_party/kenney/particle-pack/PNG (Transparent)/Rotated/trace_05_rotated.png"
+const SPECIAL_HORIZONTAL_TEXTURE_PATH := "res://assets/third_party/kenney/particle-pack/PNG (Transparent)/Rotated/trace_05_rotated.png"
+const SPECIAL_VERTICAL_TEXTURE_PATH := "res://assets/third_party/kenney/particle-pack/PNG (Transparent)/trace_05.png"
 const SPECIAL_RAINBOW_TEXTURE_PATH := "res://assets/third_party/kenney/particle-pack/PNG (Transparent)/magic_05.png"
 
 const OBSTACLE_BOX_TEXTURE = preload("res://assets/third_party/kenney/ui-pack/PNG/Grey/Default/icon_square.png")

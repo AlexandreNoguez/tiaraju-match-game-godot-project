@@ -2,17 +2,136 @@
   "id": "level_001",
   "name": "Teste de Caixa",
   "moves": 18,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 1,
   "theme_id": "terra_quente",
   "seed": 1001,
   "grid_mask": [
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
     {
@@ -22,9 +141,29 @@
     }
   ],
   "obstacles": [
-    { "type": "box", "row": 1, "column": 1, "hit_points": 1 },
-    { "type": "box", "row": 1, "column": 4, "hit_points": 1 },
-    { "type": "box", "row": 4, "column": 1, "hit_points": 1 },
-    { "type": "box", "row": 4, "column": 4, "hit_points": 1 }
+    {
+      "type": "box",
+      "row": 4,
+      "column": 2,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 4,
+      "column": 5,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 7,
+      "column": 2,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 7,
+      "column": 5,
+      "hit_points": 1
+    }
   ]
 }

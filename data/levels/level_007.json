@@ -2,30 +2,191 @@
   "id": "level_007",
   "name": "Teste Cruz Vertical",
   "moves": 20,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 2,
   "theme_id": "rio_claro",
   "seed": 1007,
   "grid_mask": [
-    [0, 1, 1, 1, 0],
-    [0, 1, 1, 1, 0],
-    [1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1],
-    [0, 1, 1, 1, 0],
-    [0, 1, 1, 1, 0]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "break_obstacle", "obstacle_type": "ice", "amount": 4 },
-    { "type": "break_obstacle", "obstacle_type": "grass", "amount": 3 }
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "ice",
+      "amount": 4
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "grass",
+      "amount": 3
+    }
   ],
   "obstacles": [
-    { "type": "ice", "row": 0, "column": 2, "hit_points": 1 },
-    { "type": "ice", "row": 2, "column": 0, "hit_points": 1 },
-    { "type": "ice", "row": 3, "column": 4, "hit_points": 1 },
-    { "type": "ice", "row": 6, "column": 2, "hit_points": 1 },
-    { "type": "grass", "row": 2, "column": 2, "hit_points": 1 },
-    { "type": "grass", "row": 3, "column": 2, "hit_points": 1 },
-    { "type": "grass", "row": 4, "column": 2, "hit_points": 1 }
+    {
+      "type": "ice",
+      "row": 2,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 4,
+      "column": 1,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 5,
+      "column": 5,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 8,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 4,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 5,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 6,
+      "column": 3,
+      "hit_points": 1
+    }
   ]
 }

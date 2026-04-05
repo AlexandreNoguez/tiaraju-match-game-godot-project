@@ -2,34 +2,214 @@
   "id": "level_027",
   "name": "Jardins do Centro",
   "moves": 26,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 3,
   "theme_id": "mata_clara",
   "seed": 1027,
   "grid_mask": [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "break_obstacle", "obstacle_type": "grass", "amount": 6 },
-    { "type": "break_obstacle", "obstacle_type": "dense_grass", "amount": 4 },
-    { "type": "collect_color", "color": "yellow", "amount": 14 }
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "grass",
+      "amount": 6
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "dense_grass",
+      "amount": 4
+    },
+    {
+      "type": "collect_color",
+      "color": "yellow",
+      "amount": 14
+    }
   ],
   "obstacles": [
-    { "type": "grass", "row": 1, "column": 1, "hit_points": 1 },
-    { "type": "grass", "row": 1, "column": 5, "hit_points": 1 },
-    { "type": "grass", "row": 3, "column": 0, "hit_points": 1 },
-    { "type": "grass", "row": 3, "column": 6, "hit_points": 1 },
-    { "type": "grass", "row": 5, "column": 1, "hit_points": 1 },
-    { "type": "grass", "row": 5, "column": 5, "hit_points": 1 },
-    { "type": "dense_grass", "row": 2, "column": 2, "hit_points": 2 },
-    { "type": "dense_grass", "row": 2, "column": 4, "hit_points": 2 },
-    { "type": "dense_grass", "row": 4, "column": 2, "hit_points": 2 },
-    { "type": "dense_grass", "row": 4, "column": 4, "hit_points": 2 }
+    {
+      "type": "grass",
+      "row": 3,
+      "column": 1,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 3,
+      "column": 5,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 5,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 5,
+      "column": 6,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 7,
+      "column": 1,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 7,
+      "column": 5,
+      "hit_points": 1
+    },
+    {
+      "type": "dense_grass",
+      "row": 4,
+      "column": 2,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 4,
+      "column": 4,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 6,
+      "column": 2,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 6,
+      "column": 4,
+      "hit_points": 2
+    }
   ]
 }

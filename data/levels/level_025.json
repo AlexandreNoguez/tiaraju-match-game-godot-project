@@ -2,23 +2,153 @@
   "id": "level_025",
   "name": "Noite de Festa",
   "moves": 24,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 3,
   "theme_id": "festa_noite",
   "seed": 1025,
   "grid_mask": [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "collect_color", "color": "red", "amount": 12 },
-    { "type": "collect_color", "color": "blue", "amount": 12 },
-    { "type": "collect_color", "color": "green", "amount": 12 }
+    {
+      "type": "collect_color",
+      "color": "red",
+      "amount": 12
+    },
+    {
+      "type": "collect_color",
+      "color": "blue",
+      "amount": 12
+    },
+    {
+      "type": "collect_color",
+      "color": "green",
+      "amount": 12
+    }
   ],
   "obstacles": []
 }

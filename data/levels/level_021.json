@@ -2,29 +2,191 @@
   "id": "level_021",
   "name": "Ponte de Madeira",
   "moves": 23,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 2,
   "theme_id": "terra_quente",
   "seed": 1021,
   "grid_mask": [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 0, 1, 1, 1],
-    [1, 1, 1, 0, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "break_obstacle", "obstacle_type": "box", "amount": 4 },
-    { "type": "break_obstacle", "obstacle_type": "dense_grass", "amount": 3 }
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "box",
+      "amount": 4
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "dense_grass",
+      "amount": 3
+    }
   ],
   "obstacles": [
-    { "type": "box", "row": 0, "column": 0, "hit_points": 1 },
-    { "type": "box", "row": 0, "column": 6, "hit_points": 1 },
-    { "type": "box", "row": 3, "column": 3, "hit_points": 1 },
-    { "type": "box", "row": 5, "column": 3, "hit_points": 1 },
-    { "type": "dense_grass", "row": 2, "column": 2, "hit_points": 2 },
-    { "type": "dense_grass", "row": 2, "column": 4, "hit_points": 2 },
-    { "type": "dense_grass", "row": 4, "column": 3, "hit_points": 2 }
+    {
+      "type": "box",
+      "row": 3,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 3,
+      "column": 6,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 6,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 8,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "dense_grass",
+      "row": 5,
+      "column": 2,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 5,
+      "column": 4,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 7,
+      "column": 3,
+      "hit_points": 2
+    }
   ]
 }

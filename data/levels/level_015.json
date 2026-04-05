@@ -2,25 +2,168 @@
   "id": "level_015",
   "name": "Raizes Resistentes",
   "moves": 21,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 1,
   "theme_id": "mata_clara",
   "seed": 1015,
   "grid_mask": [
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "break_obstacle", "obstacle_type": "dense_grass", "amount": 4 }
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "dense_grass",
+      "amount": 4
+    }
   ],
   "obstacles": [
-    { "type": "dense_grass", "row": 1, "column": 2, "hit_points": 2 },
-    { "type": "dense_grass", "row": 2, "column": 4, "hit_points": 2 },
-    { "type": "dense_grass", "row": 4, "column": 1, "hit_points": 2 },
-    { "type": "dense_grass", "row": 5, "column": 3, "hit_points": 2 }
+    {
+      "type": "dense_grass",
+      "row": 4,
+      "column": 3,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 5,
+      "column": 5,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 7,
+      "column": 2,
+      "hit_points": 2
+    },
+    {
+      "type": "dense_grass",
+      "row": 8,
+      "column": 4,
+      "hit_points": 2
+    }
   ]
 }

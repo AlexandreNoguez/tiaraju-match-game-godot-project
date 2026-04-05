@@ -2,30 +2,197 @@
   "id": "level_017",
   "name": "Passarela Fria",
   "moves": 22,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 2,
   "theme_id": "rio_claro",
   "seed": 1017,
   "grid_mask": [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 0, 1, 1, 1],
-    [1, 1, 1, 0, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "break_obstacle", "obstacle_type": "ice", "amount": 4 },
-    { "type": "break_obstacle", "obstacle_type": "box", "amount": 4 }
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "ice",
+      "amount": 4
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "box",
+      "amount": 4
+    }
   ],
   "obstacles": [
-    { "type": "box", "row": 0, "column": 0, "hit_points": 1 },
-    { "type": "box", "row": 0, "column": 6, "hit_points": 1 },
-    { "type": "box", "row": 3, "column": 3, "hit_points": 1 },
-    { "type": "box", "row": 5, "column": 3, "hit_points": 1 },
-    { "type": "ice", "row": 1, "column": 2, "hit_points": 1 },
-    { "type": "ice", "row": 1, "column": 4, "hit_points": 1 },
-    { "type": "ice", "row": 4, "column": 3, "hit_points": 1 },
-    { "type": "ice", "row": 5, "column": 2, "hit_points": 1 }
+    {
+      "type": "box",
+      "row": 3,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 3,
+      "column": 6,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 6,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 8,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 4,
+      "column": 2,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 4,
+      "column": 4,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 7,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 8,
+      "column": 2,
+      "hit_points": 1
+    }
   ]
 }

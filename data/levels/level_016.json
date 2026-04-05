@@ -2,27 +2,173 @@
   "id": "level_016",
   "name": "Praca da Colheita",
   "moves": 20,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 2,
   "theme_id": "terra_quente",
   "seed": 1016,
   "grid_mask": [
-    [0, 0, 1, 1, 1, 0, 0],
-    [0, 1, 1, 1, 1, 1, 0],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [0, 1, 1, 1, 1, 1, 0],
-    [0, 0, 1, 1, 1, 0, 0]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "collect_color", "color": "red", "amount": 16 },
-    { "type": "break_obstacle", "obstacle_type": "box", "amount": 4 }
+    {
+      "type": "collect_color",
+      "color": "red",
+      "amount": 16
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "box",
+      "amount": 4
+    }
   ],
   "obstacles": [
-    { "type": "box", "row": 2, "column": 0, "hit_points": 1 },
-    { "type": "box", "row": 2, "column": 6, "hit_points": 1 },
-    { "type": "box", "row": 4, "column": 0, "hit_points": 1 },
-    { "type": "box", "row": 4, "column": 6, "hit_points": 1 }
+    {
+      "type": "box",
+      "row": 4,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 4,
+      "column": 6,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 6,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 6,
+      "column": 6,
+      "hit_points": 1
+    }
   ]
 }

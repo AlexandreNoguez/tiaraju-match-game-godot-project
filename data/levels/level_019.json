@@ -2,30 +2,190 @@
   "id": "level_019",
   "name": "Curva da Feira",
   "moves": 21,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 2,
   "theme_id": "terra_quente",
   "seed": 1019,
   "grid_mask": [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "break_obstacle", "obstacle_type": "box", "amount": 2 },
-    { "type": "break_obstacle", "obstacle_type": "ice", "amount": 2 },
-    { "type": "break_obstacle", "obstacle_type": "grass", "amount": 2 }
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "box",
+      "amount": 2
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "ice",
+      "amount": 2
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "grass",
+      "amount": 2
+    }
   ],
   "obstacles": [
-    { "type": "box", "row": 0, "column": 0, "hit_points": 1 },
-    { "type": "box", "row": 6, "column": 6, "hit_points": 1 },
-    { "type": "ice", "row": 0, "column": 6, "hit_points": 1 },
-    { "type": "ice", "row": 6, "column": 0, "hit_points": 1 },
-    { "type": "grass", "row": 3, "column": 2, "hit_points": 1 },
-    { "type": "grass", "row": 3, "column": 4, "hit_points": 1 }
+    {
+      "type": "box",
+      "row": 2,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 8,
+      "column": 6,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 2,
+      "column": 6,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 8,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 5,
+      "column": 2,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 5,
+      "column": 4,
+      "hit_points": 1
+    }
   ]
 }

@@ -2,33 +2,208 @@
   "id": "level_024",
   "name": "Arco da Aldeia",
   "moves": 24,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 2,
   "theme_id": "terra_quente",
   "seed": 1024,
   "grid_mask": [
-    [0, 1, 1, 1, 1, 1, 0],
-    [1, 1, 0, 0, 0, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 0, 1, 0, 1, 1],
-    [0, 1, 1, 1, 1, 1, 0]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "break_obstacle", "obstacle_type": "box", "amount": 3 },
-    { "type": "break_obstacle", "obstacle_type": "ice", "amount": 3 },
-    { "type": "break_obstacle", "obstacle_type": "grass", "amount": 3 }
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "box",
+      "amount": 3
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "ice",
+      "amount": 3
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "grass",
+      "amount": 3
+    }
   ],
   "obstacles": [
-    { "type": "box", "row": 1, "column": 0, "hit_points": 1 },
-    { "type": "box", "row": 1, "column": 6, "hit_points": 1 },
-    { "type": "box", "row": 4, "column": 3, "hit_points": 1 },
-    { "type": "ice", "row": 2, "column": 2, "hit_points": 1 },
-    { "type": "ice", "row": 2, "column": 4, "hit_points": 1 },
-    { "type": "ice", "row": 6, "column": 4, "hit_points": 1 },
-    { "type": "grass", "row": 3, "column": 3, "hit_points": 1 },
-    { "type": "grass", "row": 5, "column": 3, "hit_points": 1 },
-    { "type": "grass", "row": 6, "column": 2, "hit_points": 1 }
+    {
+      "type": "box",
+      "row": 3,
+      "column": 0,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 3,
+      "column": 6,
+      "hit_points": 1
+    },
+    {
+      "type": "box",
+      "row": 6,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 4,
+      "column": 2,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 4,
+      "column": 4,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 8,
+      "column": 4,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 5,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 7,
+      "column": 3,
+      "hit_points": 1
+    },
+    {
+      "type": "grass",
+      "row": 8,
+      "column": 2,
+      "hit_points": 1
+    }
   ]
 }

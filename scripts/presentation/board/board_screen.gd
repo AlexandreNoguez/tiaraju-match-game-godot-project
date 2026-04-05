@@ -3,8 +3,11 @@ class_name BoardScreen
 
 signal home_requested
 
-const BOARD_CELL_SIZE := Vector2(112, 112)
-const BOARD_CELL_SPACING := 10.0
+const BOARD_CELL_SIZE := Vector2(56, 56)
+const BOARD_CELL_SPACING := 6.0
+const BOARD_PIECE_ICON_SIZE := Vector2(34, 34)
+const BOARD_CORNER_BADGE_SIZE := Vector2(18, 18)
+const BOARD_CENTER_BADGE_SIZE := Vector2(28, 28)
 const DROP_ANIMATION_MAX_DURATION := 0.80
 const DROP_ANIMATION_MIN_DURATION := 0.50
 const SWAP_ANIMATION_DURATION := 0.16
@@ -214,9 +217,6 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
     button.mouse_filter = Control.MOUSE_FILTER_IGNORE if is_interaction_locked else Control.MOUSE_FILTER_STOP
     button.mouse_default_cursor_shape = Control.CURSOR_ARROW if is_interaction_locked else Control.CURSOR_POINTING_HAND
     button.text = ""
-    button.icon = _piece_texture(piece)
-    button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    button.expand_icon = false
 
     style.bg_color = Color(0.15, 0.22, 0.19, 0.82)
     style.corner_radius_top_left = 16
@@ -240,6 +240,7 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
     button.add_theme_stylebox_override("pressed", style)
     button.set_meta("board_position", Vector2i(column, row))
     button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
+    button.add_child(_build_piece_texture_rect(_piece_texture(piece)))
     _add_piece_overlays(button, piece, cell)
 
     return button
@@ -290,7 +291,7 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
         centered_badge.texture = obstacle_badge
         centered_badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
         centered_badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-        centered_badge.custom_minimum_size = Vector2(44, 44)
+        centered_badge.custom_minimum_size = BOARD_CENTER_BADGE_SIZE
         centered_badge.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
         centered_badge.position -= centered_badge.custom_minimum_size * 0.5
         button.add_child(centered_badge)
@@ -300,13 +301,13 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
         hits_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
         hits_label.text = str(cell.obstacle_hits_remaining)
         hits_label.add_theme_font_override("font", VisualAssets.title_font())
-        hits_label.add_theme_font_size_override("font_size", 18)
+        hits_label.add_theme_font_size_override("font_size", 14)
         hits_label.add_theme_color_override("font_color", Color("fffaf1"))
         hits_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
         hits_label.add_theme_constant_override("shadow_offset_x", 1)
         hits_label.add_theme_constant_override("shadow_offset_y", 1)
         hits_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-        hits_label.position += Vector2(-12, -12)
+        hits_label.position += Vector2(-8, -8)
         button.add_child(hits_label)
 
     return button
@@ -440,10 +441,23 @@ func _build_badge_texture_rect(texture: Texture2D, align_right: bool) -> Texture
     badge.texture = texture
     badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-    badge.custom_minimum_size = Vector2(24, 24)
-    badge.position = Vector2(82, 6) if align_right else Vector2(6, 6)
-    badge.size = Vector2(24, 24)
+    badge.custom_minimum_size = BOARD_CORNER_BADGE_SIZE
+    badge.position = Vector2(BOARD_CELL_SIZE.x - BOARD_CORNER_BADGE_SIZE.x - 4, 4) if align_right else Vector2(4, 4)
+    badge.size = BOARD_CORNER_BADGE_SIZE
     return badge
+
+
+func _build_piece_texture_rect(texture: Texture2D) -> TextureRect:
+    var icon_rect := TextureRect.new()
+    icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    icon_rect.texture = texture
+    icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    icon_rect.custom_minimum_size = BOARD_PIECE_ICON_SIZE
+    icon_rect.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+    icon_rect.position -= BOARD_PIECE_ICON_SIZE * 0.5
+    icon_rect.size = BOARD_PIECE_ICON_SIZE
+    return icon_rect
 
 
 func _overlay_label(cell: BoardCell) -> String:

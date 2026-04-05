@@ -2,27 +2,173 @@
   "id": "level_022",
   "name": "Lagoa Clara",
   "moves": 22,
-  "allowed_colors": ["yellow", "red", "blue", "green"],
+  "allowed_colors": [
+    "yellow",
+    "red",
+    "blue",
+    "green"
+  ],
   "difficulty_tier": 2,
   "theme_id": "rio_claro",
   "seed": 1022,
   "grid_mask": [
-    [0, 0, 1, 1, 1, 0, 0],
-    [0, 1, 1, 1, 1, 1, 0],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [0, 1, 1, 1, 1, 1, 0],
-    [0, 0, 1, 1, 1, 0, 0]
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
   ],
   "goals": [
-    { "type": "collect_color", "color": "blue", "amount": 18 },
-    { "type": "break_obstacle", "obstacle_type": "ice", "amount": 4 }
+    {
+      "type": "collect_color",
+      "color": "blue",
+      "amount": 18
+    },
+    {
+      "type": "break_obstacle",
+      "obstacle_type": "ice",
+      "amount": 4
+    }
   ],
   "obstacles": [
-    { "type": "ice", "row": 1, "column": 1, "hit_points": 1 },
-    { "type": "ice", "row": 1, "column": 5, "hit_points": 1 },
-    { "type": "ice", "row": 5, "column": 1, "hit_points": 1 },
-    { "type": "ice", "row": 5, "column": 5, "hit_points": 1 }
+    {
+      "type": "ice",
+      "row": 3,
+      "column": 1,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 3,
+      "column": 5,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 7,
+      "column": 1,
+      "hit_points": 1
+    },
+    {
+      "type": "ice",
+      "row": 7,
+      "column": 5,
+      "hit_points": 1
+    }
   ]
 }
