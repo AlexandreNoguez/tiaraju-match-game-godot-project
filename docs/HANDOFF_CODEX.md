@@ -43,6 +43,7 @@ Estado atual do desenvolvimento:
 - obstaculos continuam com icones dedicados e a troca de pack ficou concentrada no catalogo visual
 - Fredoka virou a fonte padrao dos textos do jogo no `home`, HUD, pausa e fim de fase
 - todas as fases atuais foram reencaixadas em um canvas de `8x12`, preservando variacoes de silhueta dentro desse tamanho
+- `BoardState` agora expõe um helper reutilizavel de bounding box das celulas jogaveis para preparar top-align e centralizacao horizontal por area util
 - HUD da fase agora usa cards visuais para objetivos e jogadas, em vez de texto corrido
 - gems do board foram ajustadas para tamanho visual fixo `72x72`
 - area de clique das gems foi ampliada para uma tolerancia visual de `72x72`

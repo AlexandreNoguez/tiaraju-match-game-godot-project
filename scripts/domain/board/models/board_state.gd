@@ -106,6 +106,35 @@ func get_playable_positions() -> Array:
 	return positions
 
 
+func get_playable_bounds() -> Rect2i:
+	if playable_cells.is_empty():
+		return Rect2i(0, 0, 0, 0)
+
+	var min_row: int = height
+	var max_row: int = -1
+	var min_column: int = width
+	var max_column: int = -1
+
+	for cell in playable_cells:
+		if not cell.is_playable:
+			continue
+
+		min_row = min(min_row, cell.row)
+		max_row = max(max_row, cell.row)
+		min_column = min(min_column, cell.column)
+		max_column = max(max_column, cell.column)
+
+	if max_row < min_row or max_column < min_column:
+		return Rect2i(0, 0, 0, 0)
+
+	return Rect2i(
+		min_column,
+		min_row,
+		(max_column - min_column) + 1,
+		(max_row - min_row) + 1
+	)
+
+
 func draw_random_color() -> String:
 	if allowed_colors.is_empty():
 		return "yellow"
