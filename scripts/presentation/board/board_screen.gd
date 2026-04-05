@@ -17,7 +17,10 @@ const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/s
 const SOUND_SWITCH_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-b.ogg")
 const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
 const SOUND_TAP_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-b.ogg")
-const MUSIC_BOARD_PATH = "res://assets/third_party/kenney/music-jingles/jingles_STEEL07.ogg"
+const MUSIC_BOARD_PATHS := [
+    "res://assets/third_party/kenney/music-jingles/fase-1.ogg",
+    "res://assets/third_party/kenney/music-jingles/fase-2.ogg"
+]
 
 const ApplySwapUseCaseScript = preload("res://scripts/application/use_cases/apply_swap_use_case.gd")
 const BoardGeneratorScript = preload("res://scripts/domain/board/services/board_generator.gd")
@@ -82,6 +85,7 @@ var _is_drop_animating: bool = false
 var _is_swap_animating: bool = false
 var _pending_drop_animation: Dictionary = {}
 var _visual_board_state: BoardState
+var _phase_music_path: String = ""
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
@@ -97,12 +101,14 @@ func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_opt
     _is_swap_animating = false
     _pending_drop_animation.clear()
     _visual_board_state = null
+    _phase_music_path = _pick_phase_music_path()
     _playtest_mode = bool(runtime_options.get("playtest_mode", false))
     if _playtest_mode:
         _status_message = "Modo playtest: o save local nao sera alterado nesta fase."
     _hide_end_state()
     _hide_pause_layer()
     if is_node_ready():
+        _play_phase_music()
         _apply_level_theme()
 
 
@@ -118,7 +124,7 @@ func _ready() -> void:
     _combo_feedback_label.modulate.a = 0.0
     _coins_feedback_label.modulate.a = 0.0
     _hide_pause_layer()
-    _play_music_from_file(MUSIC_BOARD_PATH, -20.0)
+    _play_phase_music()
     _apply_level_theme()
     _refresh_view()
 
@@ -650,14 +656,41 @@ func _play_music(stream: AudioStream, volume_db: float) -> void:
 
 
 func _play_music_from_file(resource_path: String, volume_db: float) -> void:
-    if not FileAccess.file_exists(resource_path):
-        return
-
-    var music_stream := AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+    var music_stream: AudioStream = _load_music_stream(resource_path)
     if music_stream == null:
         return
 
     _play_music(music_stream, volume_db)
+
+
+func _load_music_stream(resource_path: String) -> AudioStream:
+    var imported_stream: Resource = ResourceLoader.load(resource_path)
+    if imported_stream is AudioStream:
+        return imported_stream
+
+    if not FileAccess.file_exists(resource_path):
+        return null
+
+    if resource_path.get_extension().to_lower() == "ogg":
+        return AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+
+    return null
+
+
+func _pick_phase_music_path() -> String:
+    if MUSIC_BOARD_PATHS.is_empty():
+        return ""
+
+    var rng := RandomNumberGenerator.new()
+    rng.randomize()
+    return String(MUSIC_BOARD_PATHS[rng.randi_range(0, MUSIC_BOARD_PATHS.size() - 1)])
+
+
+func _play_phase_music() -> void:
+    if _phase_music_path == "":
+        _phase_music_path = _pick_phase_music_path()
+
+    _play_music_from_file(_phase_music_path, -20.0)
 
 
 func _get_render_board_state() -> BoardState:

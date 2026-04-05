@@ -44,8 +44,8 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
 - licenca: `CC0`
 - pasta: `assets/third_party/kenney/music-jingles`
 - uso sugerido:
-  - musica temporaria do `home`
-  - musica temporaria das fases
+  - musica do `home` usando `home.ogg`
+  - musica das fases sorteada entre `fase-1.ogg` e `fase-2.ogg`
 
 ## Regras de uso no projeto
 

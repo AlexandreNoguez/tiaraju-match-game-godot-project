@@ -9,7 +9,7 @@ const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/cl
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
 const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
-const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/jingles_PIZZI07.ogg"
+const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/home.ogg"
 
 @onready var _background: ColorRect = $Background
 @onready var _ground_band: ColorRect = $GroundBand
@@ -317,11 +317,22 @@ func _play_music(stream: AudioStream, volume_db: float) -> void:
 
 
 func _play_music_from_file(resource_path: String, volume_db: float) -> void:
-    if not FileAccess.file_exists(resource_path):
-        return
-
-    var music_stream := AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+    var music_stream: AudioStream = _load_music_stream(resource_path)
     if music_stream == null:
         return
 
     _play_music(music_stream, volume_db)
+
+
+func _load_music_stream(resource_path: String) -> AudioStream:
+    var imported_stream: Resource = ResourceLoader.load(resource_path)
+    if imported_stream is AudioStream:
+        return imported_stream
+
+    if not FileAccess.file_exists(resource_path):
+        return null
+
+    if resource_path.get_extension().to_lower() == "ogg":
+        return AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+
+    return null

@@ -33,7 +33,8 @@ Estado atual do desenvolvimento:
 - tela de pausa funcionando
 - feedback visual de combo funcionando
 - efeitos sonoros básicos funcionando com assets gratuitos locais
-- músicas temporárias gratuitas tocando no home e nas fases
+- musica do `home` tocando a faixa local dedicada
+- fases sorteando aleatoriamente entre duas musicas locais a cada entrada
 - animação de troca lateral entre peças funcionando
 - animação de queda das peças funcionando com cascatas reproduzidas por etapas
 - efeito de pop antes da remoção das combinações funcionando
