@@ -43,6 +43,7 @@ Estado atual do desenvolvimento:
 - obstaculos continuam com icones dedicados e a troca de pack ficou concentrada no catalogo visual
 - Fredoka virou a fonte padrao dos textos do jogo no `home`, HUD, pausa e fim de fase
 - todas as fases atuais foram reencaixadas em um canvas de `8x12`, preservando variacoes de silhueta dentro desse tamanho
+- HUD da fase agora usa cards visuais para objetivos e jogadas, em vez de texto corrido
 - vitoria agora abre um overlay mais celebratorio com `Parabens!` e botao unico `Continuar`
 - configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
 - frente de polimento do jogo foi documentada em `docs/GAME_POLISH_PLAN.md`

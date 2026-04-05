@@ -29,7 +29,7 @@ color = Color(0.0980392, 0.211765, 0.219608, 1)
 [node name="GlowOrb" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 0
-offset_left = 780.0
+offset_left = 800.0
 offset_top = 110.0
 offset_right = 1010.0
 offset_bottom = 340.0
@@ -75,28 +75,47 @@ text = "Aldeia das Cores"
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="MovesLabel" type="Label" parent="MarginContainer/RootColumn/HudRow"]
+[node name="GoalsPanel" type="PanelContainer" parent="MarginContainer/RootColumn/HudRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 22
-text = "Jogadas: 0"
 
-[node name="GoalLabel" type="Label" parent="MarginContainer/RootColumn/HudRow"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/RootColumn/HudRow/GoalsPanel"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 22
-text = "Objetivo: -"
-horizontal_alignment = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="GoalCardsRow" type="HBoxContainer" parent="MarginContainer/RootColumn/HudRow/GoalsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MovesPanel" type="PanelContainer" parent="MarginContainer/RootColumn/HudRow"]
+custom_minimum_size = Vector2(96, 78)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/RootColumn/HudRow/MovesPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="MovesValueLabel" type="Label" parent="MarginContainer/RootColumn/HudRow/MovesPanel/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+text = "0"
 
 [node name="PauseButton" type="Button" parent="MarginContainer/RootColumn/HudRow"]
-custom_minimum_size = Vector2(142, 56)
+custom_minimum_size = Vector2(110, 52)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Pausar"
 
 [node name="StatusLabel" type="Label" parent="MarginContainer/RootColumn"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 18
 text = "Carregando tabuleiro..."
 autowrap_mode = 3
 
@@ -122,15 +141,15 @@ clip_contents = true
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/RootColumn/BoardShell"]
 layout_mode = 2
 clip_contents = true
-theme_override_constants/margin_left = 22
-theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 22
-theme_override_constants/margin_bottom = 18
+theme_override_constants/margin_left = 1
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 1
+theme_override_constants/margin_bottom = 1
 
 [node name="BoardGrid" type="GridContainer" parent="MarginContainer/RootColumn/BoardShell/MarginContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
+theme_override_constants/h_separation = 80
+theme_override_constants/v_separation = 80
 columns = 6
 
 [node name="EndStateLayer" type="Control" parent="."]

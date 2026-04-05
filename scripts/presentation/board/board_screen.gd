@@ -5,9 +5,7 @@ signal home_requested
 
 const BOARD_CELL_SIZE := Vector2(62, 62)
 const BOARD_CELL_SPACING := 4.0
-const BOARD_PIECE_ICON_SIZE := Vector2(38, 38)
-const BOARD_CORNER_BADGE_SIZE := Vector2(18, 18)
-const BOARD_CENTER_BADGE_SIZE := Vector2(32, 32)
+const BOARD_MIN_CELL_SIZE := Vector2(42, 42)
 const DROP_ANIMATION_MAX_DURATION := 0.80
 const DROP_ANIMATION_MIN_DURATION := 0.50
 const SWAP_ANIMATION_DURATION := 0.16
@@ -93,6 +91,7 @@ var _is_swap_animating: bool = false
 var _pending_drop_animation: Dictionary = {}
 var _visual_board_state: BoardState
 var _phase_music_path: String = ""
+var _active_board_cell_size: Vector2 = BOARD_CELL_SIZE
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
@@ -118,6 +117,7 @@ func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_opt
 	if is_node_ready():
 		_play_phase_music()
 		_apply_level_theme()
+		_recalculate_board_metrics()
 
 
 func _ready() -> void:
@@ -131,10 +131,13 @@ func _ready() -> void:
 	_coins_feedback_base_position = _coins_feedback_label.position
 	_combo_feedback_label.modulate.a = 0.0
 	_coins_feedback_label.modulate.a = 0.0
+	resized.connect(_on_screen_resized)
 	_hide_pause_layer()
 	_play_phase_music()
 	_apply_level_theme()
+	_recalculate_board_metrics()
 	_refresh_view()
+	_refresh_view.call_deferred()
 
 
 func _initialize_services() -> void:
@@ -213,22 +216,22 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
 	var is_interaction_locked: bool = _is_paused or _is_drop_animating or _is_swap_animating or not _session_state.can_accept_input()
 	var style: StyleBoxFlat = StyleBoxFlat.new()
 
-	button.custom_minimum_size = BOARD_CELL_SIZE
+	button.custom_minimum_size = _active_board_cell_size
 	button.focus_mode = Control.FOCUS_NONE
 	button.disabled = false
 	button.mouse_filter = Control.MOUSE_FILTER_IGNORE if is_interaction_locked else Control.MOUSE_FILTER_STOP
 	button.mouse_default_cursor_shape = Control.CURSOR_ARROW if is_interaction_locked else Control.CURSOR_POINTING_HAND
 	button.text = ""
 
-	style.bg_color = Color(0.15, 0.22, 0.19, 0.82)
+	style.bg_color = Color(0, 0, 0, 0)
 	style.corner_radius_top_left = 16
 	style.corner_radius_top_right = 16
 	style.corner_radius_bottom_right = 16
 	style.corner_radius_bottom_left = 16
-	style.border_width_left = 4
-	style.border_width_top = 4
-	style.border_width_right = 4
-	style.border_width_bottom = 4
+	style.border_width_left = 0
+	style.border_width_top = 0
+	style.border_width_right = 0
+	style.border_width_bottom = 0
 	if is_selected:
 		style.border_color = Color(1, 1, 1, 0.95)
 	elif cell != null and cell.has_obstacle():
@@ -252,7 +255,7 @@ func _build_blocked_cell() -> Control:
 	var panel: Panel = Panel.new()
 	var style: StyleBoxFlat = StyleBoxFlat.new()
 
-	panel.custom_minimum_size = BOARD_CELL_SIZE
+	panel.custom_minimum_size = _active_board_cell_size
 	style.bg_color = Color(0.09, 0.16, 0.12, 0.45)
 	style.corner_radius_top_left = 16
 	style.corner_radius_top_right = 16
@@ -267,7 +270,7 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
 	var button: Button = Button.new()
 	var style: StyleBoxFlat = StyleBoxFlat.new()
 
-	button.custom_minimum_size = BOARD_CELL_SIZE
+	button.custom_minimum_size = _active_board_cell_size
 	button.focus_mode = Control.FOCUS_NONE
 	button.disabled = true
 	button.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -293,7 +296,7 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
 		centered_badge.texture = obstacle_badge
 		centered_badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		centered_badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		centered_badge.custom_minimum_size = BOARD_CENTER_BADGE_SIZE
+		centered_badge.custom_minimum_size = _center_badge_size()
 		centered_badge.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 		centered_badge.position -= centered_badge.custom_minimum_size * 0.5
 		button.add_child(centered_badge)
@@ -303,13 +306,13 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
 		hits_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		hits_label.text = str(cell.obstacle_hits_remaining)
 		hits_label.add_theme_font_override("font", VisualAssets.title_font())
-		hits_label.add_theme_font_size_override("font_size", 14)
+		hits_label.add_theme_font_size_override("font_size", max(12, int(_active_board_cell_size.y * 0.24)))
 		hits_label.add_theme_color_override("font_color", Color("fffaf1"))
 		hits_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
 		hits_label.add_theme_constant_override("shadow_offset_x", 1)
 		hits_label.add_theme_constant_override("shadow_offset_y", 1)
 		hits_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-		hits_label.position += Vector2(-8, -8)
+		hits_label.position += Vector2(-6, -6)
 		button.add_child(hits_label)
 
 	return button
@@ -361,7 +364,14 @@ func _on_piece_pressed(position: Vector2i) -> void:
 func _on_piece_gui_input(event: InputEvent, position: Vector2i) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
-		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
+		if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
+			return
+
+		var center := _active_board_cell_size * 0.5
+		var clickable_half := Vector2(36, 36) # 72x72 total
+		var local_pos := mouse_event.position
+
+		if abs(local_pos.x - center.x) <= clickable_half.x and abs(local_pos.y - center.y) <= clickable_half.y:
 			_on_piece_pressed(position)
 
 
@@ -443,9 +453,9 @@ func _build_badge_texture_rect(texture: Texture2D, align_right: bool) -> Texture
 	badge.texture = texture
 	badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	badge.custom_minimum_size = BOARD_CORNER_BADGE_SIZE
-	badge.position = Vector2(BOARD_CELL_SIZE.x - BOARD_CORNER_BADGE_SIZE.x - 4, 4) if align_right else Vector2(4, 4)
-	badge.size = BOARD_CORNER_BADGE_SIZE
+	badge.custom_minimum_size = _corner_badge_size()
+	badge.position = Vector2(_active_board_cell_size.x - badge.custom_minimum_size.x - 4, 4) if align_right else Vector2(4, 4)
+	badge.size = badge.custom_minimum_size
 	return badge
 
 
@@ -455,11 +465,62 @@ func _build_piece_texture_rect(texture: Texture2D) -> TextureRect:
 	icon_rect.texture = texture
 	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon_rect.custom_minimum_size = BOARD_PIECE_ICON_SIZE
+	icon_rect.custom_minimum_size = _piece_icon_size()
 	icon_rect.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	icon_rect.position -= BOARD_PIECE_ICON_SIZE * 0.5
-	icon_rect.size = BOARD_PIECE_ICON_SIZE
+	icon_rect.position -= icon_rect.custom_minimum_size * 0.5
+	icon_rect.size = icon_rect.custom_minimum_size
 	return icon_rect
+
+
+func _piece_icon_size() -> Vector2:
+	return Vector2(72.0, 72.0)
+
+
+func _corner_badge_size() -> Vector2:
+	var min_side: float = min(_active_board_cell_size.x, _active_board_cell_size.y)
+	var size: float = max(14.0, min_side * 0.28)
+	return Vector2(size, size)
+
+
+func _center_badge_size() -> Vector2:
+	var min_side: float = min(_active_board_cell_size.x, _active_board_cell_size.y)
+	var size: float = max(22.0, min_side * 0.56)
+	return Vector2(size, size)
+
+
+func _compute_board_cell_size(board_state: BoardState) -> Vector2:
+	if board_state == null or _board_shell == null:
+		return BOARD_CELL_SIZE
+
+	var shell_size: Vector2 = _board_shell.size
+	if shell_size.x <= 0.0 or shell_size.y <= 0.0:
+		return BOARD_CELL_SIZE
+
+	var horizontal_padding: float = 20.0
+	var vertical_padding: float = 20.0
+	var available_width: float = max(0.0, shell_size.x - horizontal_padding)
+	var available_height: float = max(0.0, shell_size.y - vertical_padding)
+	var cell_width: float = floor((available_width - (BOARD_CELL_SPACING * max(0, board_state.width - 1))) / max(1, board_state.width))
+	var cell_height: float = floor((available_height - (BOARD_CELL_SPACING * max(0, board_state.height - 1))) / max(1, board_state.height))
+	return Vector2(
+		max(BOARD_MIN_CELL_SIZE.x, cell_width),
+		max(BOARD_MIN_CELL_SIZE.y, cell_height)
+	)
+
+
+func _recalculate_board_metrics() -> void:
+	if _session_state == null:
+		return
+
+	_active_board_cell_size = _compute_board_cell_size(_get_render_board_state())
+
+
+func _on_screen_resized() -> void:
+	if _session_state == null:
+		return
+
+	_recalculate_board_metrics()
+	_refresh_view()
 
 
 func _overlay_label(cell: BoardCell) -> String:
@@ -1012,7 +1073,7 @@ func _play_pending_drop_animation() -> void:
 		var target_position: Vector2 = child.position
 		var start_position := Vector2(
 			target_position.x,
-			target_position.y - (float(row_distance) * (BOARD_CELL_SIZE.y + BOARD_CELL_SPACING))
+			target_position.y - (float(row_distance) * (_active_board_cell_size.y + BOARD_CELL_SPACING))
 		)
 		var duration: float = min(DROP_ANIMATION_MAX_DURATION, DROP_ANIMATION_MIN_DURATION + (0.03 * row_distance))
 
