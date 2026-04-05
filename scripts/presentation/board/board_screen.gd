@@ -50,6 +50,7 @@ const StartLevelUseCaseScript = preload("res://scripts/application/use_cases/sta
 @onready var _pause_button: Button = $MarginContainer/RootColumn/HudRow/PauseButton
 @onready var _status_label: Label = $MarginContainer/RootColumn/StatusLabel
 @onready var _board_shell: PanelContainer = $MarginContainer/RootColumn/BoardShell
+@onready var _board_margin_container: MarginContainer = $MarginContainer/RootColumn/BoardShell/MarginContainer
 @onready var _board_grid: GridContainer = $MarginContainer/RootColumn/BoardShell/MarginContainer/BoardGrid
 @onready var _combo_feedback_label: Label = $MarginContainer/RootColumn/ComboFeedbackLabel
 @onready var _coins_feedback_label: Label = $MarginContainer/RootColumn/CoinsFeedbackLabel
@@ -92,6 +93,7 @@ var _pending_drop_animation: Dictionary = {}
 var _visual_board_state: BoardState
 var _phase_music_path: String = ""
 var _active_board_cell_size: Vector2 = BOARD_CELL_SIZE
+var _active_playable_bounds: Rect2i = Rect2i(0, 0, 0, 0)
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
@@ -189,14 +191,19 @@ func _refresh_view() -> void:
 
 func _render_grid() -> void:
 	var board_state: BoardState = _get_render_board_state()
+	var playable_bounds: Rect2i = _active_playable_bounds
 
 	for child in _board_grid.get_children():
 		child.queue_free()
 
-	_board_grid.columns = board_state.width
+	if playable_bounds.size == Vector2i.ZERO:
+		_board_grid.columns = 1
+		return
 
-	for row in range(board_state.height):
-		for column in range(board_state.width):
+	_board_grid.columns = playable_bounds.size.x
+
+	for row in range(playable_bounds.position.y, playable_bounds.end.y):
+		for column in range(playable_bounds.position.x, playable_bounds.end.x):
 			var cell: BoardCell = board_state.get_cell(row, column)
 			var piece = board_state.get_piece(row, column)
 			if board_state.can_hold_piece(row, column):
@@ -481,19 +488,23 @@ func _center_badge_size() -> Vector2:
 
 
 func _compute_board_cell_size(board_state: BoardState) -> Vector2:
-	if board_state == null or _board_shell == null:
+	if board_state == null or _board_margin_container == null:
 		return BOARD_CELL_SIZE
 
-	var shell_size: Vector2 = _board_shell.size
-	if shell_size.x <= 0.0 or shell_size.y <= 0.0:
+	var content_size: Vector2 = _board_margin_container.size
+	if content_size.x <= 0.0 or content_size.y <= 0.0:
 		return BOARD_CELL_SIZE
 
-	var horizontal_padding: float = 20.0
-	var vertical_padding: float = 20.0
-	var available_width: float = max(0.0, shell_size.x - horizontal_padding)
-	var available_height: float = max(0.0, shell_size.y - vertical_padding)
-	var cell_width: float = floor((available_width - (BOARD_CELL_SPACING * max(0, board_state.width - 1))) / max(1, board_state.width))
-	var cell_height: float = floor((available_height - (BOARD_CELL_SPACING * max(0, board_state.height - 1))) / max(1, board_state.height))
+	var playable_bounds: Rect2i = board_state.get_playable_bounds()
+	if playable_bounds.size == Vector2i.ZERO:
+		return BOARD_CELL_SIZE
+
+	var horizontal_padding: float = 0.0
+	var vertical_padding: float = 0.0
+	var available_width: float = max(0.0, content_size.x - horizontal_padding)
+	var available_height: float = max(0.0, content_size.y - vertical_padding)
+	var cell_width: float = floor((available_width - (BOARD_CELL_SPACING * max(0, playable_bounds.size.x - 1))) / max(1, playable_bounds.size.x))
+	var cell_height: float = floor((available_height - (BOARD_CELL_SPACING * max(0, playable_bounds.size.y - 1))) / max(1, playable_bounds.size.y))
 	return Vector2(
 		max(BOARD_MIN_CELL_SIZE.x, cell_width),
 		max(BOARD_MIN_CELL_SIZE.y, cell_height)
@@ -504,7 +515,9 @@ func _recalculate_board_metrics() -> void:
 	if _session_state == null:
 		return
 
-	_active_board_cell_size = _compute_board_cell_size(_get_render_board_state())
+	var board_state: BoardState = _get_render_board_state()
+	_active_playable_bounds = board_state.get_playable_bounds()
+	_active_board_cell_size = _compute_board_cell_size(board_state)
 
 
 func _on_screen_resized() -> void:
