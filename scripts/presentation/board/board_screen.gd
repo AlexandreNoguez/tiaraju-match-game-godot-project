@@ -75,12 +75,13 @@ var _start_level_use_case
 var _save_gateway
 var _level_progress_use_case
 var _has_recorded_victory: bool = false
-var _has_requested_home: bool = false
 var _has_played_end_state_sound: bool = false
 var _is_paused: bool = false
 var _combo_feedback_base_position: Vector2 = Vector2.ZERO
 var _coins_feedback_base_position: Vector2 = Vector2.ZERO
 var _playtest_mode: bool = false
+var _music_enabled: bool = true
+var _sfx_enabled: bool = true
 var _is_drop_animating: bool = false
 var _is_swap_animating: bool = false
 var _pending_drop_animation: Dictionary = {}
@@ -94,7 +95,6 @@ func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_opt
     _selected_position = Vector2i(-1, -1)
     _status_message = "Selecione duas pecas vizinhas para formar combinacoes."
     _has_recorded_victory = false
-    _has_requested_home = false
     _has_played_end_state_sound = false
     _is_paused = false
     _is_drop_animating = false
@@ -103,6 +103,8 @@ func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_opt
     _visual_board_state = null
     _phase_music_path = _pick_phase_music_path()
     _playtest_mode = bool(runtime_options.get("playtest_mode", false))
+    _music_enabled = bool(runtime_options.get("music_enabled", true))
+    _sfx_enabled = bool(runtime_options.get("sfx_enabled", true))
     if _playtest_mode:
         _status_message = "Modo playtest: o save local nao sera alterado nesta fase."
     _hide_end_state()
@@ -487,8 +489,7 @@ func _refresh_end_state() -> void:
 
     if _session_state.status == "defeat":
         _play_end_state_sound(false)
-        _show_end_state("Fase perdida", "As jogadas acabaram. Voltando ao home.", true, false, "Voltar agora")
-        _request_home_return()
+        _show_end_state("Fase perdida", "As jogadas acabaram. Leia o resumo e use o botao abaixo para voltar ao home.", true, false, "Voltar ao home")
         return
 
     _hide_end_state()
@@ -512,10 +513,9 @@ func _handle_victory() -> void:
         else:
             message += " Voce concluiu o pacote tecnico atual."
 
-    message += " Voltando ao home."
+    message += " Quando terminar de ler, use o botao abaixo para voltar ao home."
     _play_end_state_sound(true)
-    _show_end_state("Fase vencida", message, true, false, "Voltar agora")
-    _request_home_return()
+    _show_end_state("Fase vencida", message, true, false, "Voltar ao home")
 
 
 func _show_end_state(title: String, message: String, show_restart: bool, show_next: bool, restart_button_text: String = "Reiniciar") -> void:
@@ -589,17 +589,16 @@ func _load_level(level_id: String) -> void:
     if not _playtest_mode:
         _level_progress_use_case.record_opened_level(level_id)
 
-    setup(payload["level_data"], payload["session_state"], {"playtest_mode": _playtest_mode})
+    setup(
+        payload["level_data"],
+        payload["session_state"],
+        {
+            "playtest_mode": _playtest_mode,
+            "music_enabled": _music_enabled,
+            "sfx_enabled": _sfx_enabled
+        }
+    )
     _refresh_view()
-
-
-func _request_home_return() -> void:
-    if _has_requested_home:
-        return
-
-    _has_requested_home = true
-    var timer := get_tree().create_timer(1.2)
-    timer.timeout.connect(_emit_home_requested)
 
 
 func _emit_home_requested() -> void:
@@ -632,7 +631,7 @@ func _play_end_state_sound(is_victory: bool) -> void:
 
 
 func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
-    if _audio_player == null or stream == null:
+    if not _sfx_enabled or _audio_player == null or stream == null:
         return
 
     _audio_player.stop()
@@ -642,7 +641,11 @@ func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
 
 
 func _play_music(stream: AudioStream, volume_db: float) -> void:
-    if _music_player == null or stream == null:
+    if _music_player == null:
+        return
+
+    if not _music_enabled or stream == null:
+        _music_player.stop()
         return
 
     var music_stream: AudioStream = stream.duplicate(true)
@@ -671,8 +674,11 @@ func _load_music_stream(resource_path: String) -> AudioStream:
     if not FileAccess.file_exists(resource_path):
         return null
 
-    if resource_path.get_extension().to_lower() == "ogg":
+    var extension: String = resource_path.get_extension().to_lower()
+    if extension == "ogg":
         return AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+    if extension == "wav":
+        return AudioStreamWAV.load_from_file(ProjectSettings.globalize_path(resource_path))
 
     return null
 
@@ -687,6 +693,11 @@ func _pick_phase_music_path() -> String:
 
 
 func _play_phase_music() -> void:
+    if not _music_enabled:
+        if _music_player != null:
+            _music_player.stop()
+        return
+
     if _phase_music_path == "":
         _phase_music_path = _pick_phase_music_path()
 

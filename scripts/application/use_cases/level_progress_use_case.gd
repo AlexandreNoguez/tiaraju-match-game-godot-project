@@ -31,6 +31,8 @@ func load_progress_payload() -> Dictionary:
     normalized_payload["last_opened_level_id"] = String(normalized_payload.get("last_opened_level_id", ""))
     normalized_payload["last_completed_level_id"] = String(normalized_payload.get("last_completed_level_id", ""))
     normalized_payload["highest_unlocked_level_id"] = String(normalized_payload.get("highest_unlocked_level_id", ""))
+    normalized_payload["music_enabled"] = bool(normalized_payload.get("music_enabled", true))
+    normalized_payload["sfx_enabled"] = bool(normalized_payload.get("sfx_enabled", true))
 
     return normalized_payload
 
@@ -69,6 +71,13 @@ func award_coins(amount: int) -> void:
 
     var payload: Dictionary = load_progress_payload()
     payload["coins"] = int(payload.get("coins", 0)) + amount
+    _save_gateway.save_progress(payload)
+
+
+func save_audio_settings(music_enabled: bool, sfx_enabled: bool) -> void:
+    var payload: Dictionary = load_progress_payload()
+    payload["music_enabled"] = music_enabled
+    payload["sfx_enabled"] = sfx_enabled
     _save_gateway.save_progress(payload)
 
 

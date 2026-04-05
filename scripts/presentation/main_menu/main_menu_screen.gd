@@ -4,6 +4,7 @@ class_name MainMenuScreen
 signal play_requested(level_id: String)
 signal playtest_level_requested(level_id: String)
 signal reset_save_requested
+signal audio_settings_changed(music_enabled: bool, sfx_enabled: bool)
 
 const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
@@ -31,6 +32,8 @@ const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/home.ogg"
 @onready var _settings_button: Button = $MarginContainer/RootColumn/HeaderRow/SettingsButton
 @onready var _settings_layer: Control = $SettingsLayer
 @onready var _settings_message_label: Label = $SettingsLayer/PanelContainer/VBoxContainer/MessageLabel
+@onready var _settings_music_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/MusicButton
+@onready var _settings_sfx_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/SfxButton
 @onready var _playtest_section: VBoxContainer = $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection
 @onready var _playtest_level_select: OptionButton = $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/LevelSelect
 @onready var _playtest_open_button: Button = $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/OpenLevelButton
@@ -49,27 +52,35 @@ var _progress_payload: Dictionary = {}
 var _playtest_payload: Dictionary = {}
 var _playtest_level_ids: Array[String] = []
 var _status_message: String = "Beta offline-first: avatar, eventos, perfil e configuracoes seguem como placeholder."
+var _music_enabled: bool = true
+var _sfx_enabled: bool = true
 
 
 func setup(level_data: Dictionary, progress_payload: Dictionary = {}, playtest_payload: Dictionary = {}) -> void:
     _level_data = level_data.duplicate(true)
     _progress_payload = progress_payload.duplicate(true)
     _playtest_payload = playtest_payload.duplicate(true)
+    _music_enabled = bool(_progress_payload.get("music_enabled", true))
+    _sfx_enabled = bool(_progress_payload.get("sfx_enabled", true))
 
 
 func _ready() -> void:
     _apply_visual_theme()
+    _apply_audio_preferences()
     _play_music_from_file(MUSIC_HOME_PATH, -18.0)
     _play_button.pressed.connect(_on_play_pressed)
     _profile_button.pressed.connect(_on_profile_pressed)
     _events_button.pressed.connect(_on_events_pressed)
     _shop_button.pressed.connect(_on_shop_pressed)
     _settings_button.pressed.connect(_on_settings_pressed)
+    _settings_music_button.pressed.connect(_on_settings_music_pressed)
+    _settings_sfx_button.pressed.connect(_on_settings_sfx_pressed)
     _settings_cancel_button.pressed.connect(_on_settings_cancel_pressed)
     _settings_reset_button.pressed.connect(_on_settings_reset_pressed)
     _playtest_open_button.pressed.connect(_on_playtest_open_pressed)
     _hide_settings()
     _configure_playtest_tools()
+    _refresh_settings_controls()
     _refresh_view()
 
 
@@ -139,7 +150,8 @@ func _on_shop_pressed() -> void:
 
 func _on_settings_pressed() -> void:
     _play_sound(SOUND_SWITCH_A, 1.0)
-    _settings_message_label.text = "SFX e musicas temporarias ja usam assets gratuitos locais. Voce tambem pode resetar o save local. Essa acao nao pode ser desfeita."
+    _refresh_settings_controls()
+    _settings_message_label.text = "Musica e SFX podem ser ligados ou desligados agora e ficam salvos no aparelho. O reset de save tambem apaga esse progresso local e nao pode ser desfeito."
     _settings_layer.visible = true
 
 
@@ -152,6 +164,28 @@ func _on_settings_reset_pressed() -> void:
     _play_sound(SOUND_CLICK_B, 0.92)
     _hide_settings()
     emit_signal("reset_save_requested")
+
+
+func _on_settings_music_pressed() -> void:
+    _music_enabled = not _music_enabled
+    _progress_payload["music_enabled"] = _music_enabled
+    _apply_audio_preferences()
+    _refresh_settings_controls()
+    emit_signal("audio_settings_changed", _music_enabled, _sfx_enabled)
+    _play_sound(SOUND_SWITCH_A, 1.0)
+
+
+func _on_settings_sfx_pressed() -> void:
+    var next_sfx_enabled: bool = not _sfx_enabled
+    if next_sfx_enabled:
+        _sfx_enabled = true
+        _play_sound(SOUND_SWITCH_A, 1.0)
+    else:
+        _sfx_enabled = false
+
+    _progress_payload["sfx_enabled"] = _sfx_enabled
+    _refresh_settings_controls()
+    emit_signal("audio_settings_changed", _music_enabled, _sfx_enabled)
 
 
 func _on_playtest_open_pressed() -> void:
@@ -199,6 +233,25 @@ func _configure_playtest_tools() -> void:
         _playtest_level_select.select(selected_index)
 
 
+func _refresh_settings_controls() -> void:
+    _settings_music_button.text = "Musica: %s" % ("Ligada" if _music_enabled else "Desligada")
+    _settings_sfx_button.text = "SFX: %s" % ("Ligado" if _sfx_enabled else "Desligado")
+
+
+func _apply_audio_preferences() -> void:
+    if _music_player == null:
+        return
+
+    if not _music_enabled:
+        _music_player.stop()
+        return
+
+    if _music_player.playing:
+        return
+
+    _play_music_from_file(MUSIC_HOME_PATH, -18.0)
+
+
 func _apply_visual_theme() -> void:
     var palette: Dictionary = {
         "background": Color("f4e0b4"),
@@ -240,9 +293,13 @@ func _apply_visual_theme() -> void:
 
     _apply_panel_style($SettingsLayer/PanelContainer, Color(1, 0.97, 0.9, 0.95), palette["panel_border"], 28)
     _settings_message_label.add_theme_color_override("font_color", palette["body"])
+    $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/TitleLabel.add_theme_color_override("font_color", palette["title"])
+    $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/BodyLabel.add_theme_color_override("font_color", palette["body"])
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel.add_theme_color_override("font_color", palette["title"])
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel.add_theme_color_override("font_color", palette["body"])
     _playtest_level_select.add_theme_color_override("font_color", palette["title"])
+    _apply_button_style(_settings_music_button, Color("8e5a34"), Color("a56b42"), Color("6d4428"), palette["button_text"])
+    _apply_button_style(_settings_sfx_button, Color("8e5a34"), Color("a56b42"), Color("6d4428"), palette["button_text"])
     _apply_button_style(_playtest_open_button, Color("8e5a34"), Color("a56b42"), Color("6d4428"), palette["button_text"])
     _apply_button_style(_settings_cancel_button, Color("8a6a4b"), Color("9d7b59"), Color("6e543d"), palette["button_text"])
     _apply_button_style(_settings_reset_button, Color("b93c32"), Color("cf4c41"), Color("8f2c24"), palette["button_text"])
@@ -293,7 +350,7 @@ func _apply_button_style(button: Button, base_color: Color, hover_color: Color, 
 
 
 func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
-    if _audio_player == null or stream == null:
+    if not _sfx_enabled or _audio_player == null or stream == null:
         return
 
     _audio_player.stop()
@@ -303,7 +360,11 @@ func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
 
 
 func _play_music(stream: AudioStream, volume_db: float) -> void:
-    if _music_player == null or stream == null:
+    if _music_player == null:
+        return
+
+    if not _music_enabled or stream == null:
+        _music_player.stop()
         return
 
     var music_stream: AudioStream = stream.duplicate(true)
@@ -332,7 +393,10 @@ func _load_music_stream(resource_path: String) -> AudioStream:
     if not FileAccess.file_exists(resource_path):
         return null
 
-    if resource_path.get_extension().to_lower() == "ogg":
+    var extension: String = resource_path.get_extension().to_lower()
+    if extension == "ogg":
         return AudioStreamOggVorbis.load_from_file(ProjectSettings.globalize_path(resource_path))
+    if extension == "wav":
+        return AudioStreamWAV.load_from_file(ProjectSettings.globalize_path(resource_path))
 
     return null

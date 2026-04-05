@@ -55,6 +55,7 @@ func _show_main_menu() -> void:
     main_menu.play_requested.connect(_on_play_requested)
     main_menu.playtest_level_requested.connect(_on_playtest_level_requested)
     main_menu.reset_save_requested.connect(_on_reset_save_requested)
+    main_menu.audio_settings_changed.connect(_on_audio_settings_changed)
     _replace_active_screen(main_menu)
 
 
@@ -75,6 +76,10 @@ func _on_reset_save_requested() -> void:
     _show_main_menu()
 
 
+func _on_audio_settings_changed(music_enabled: bool, sfx_enabled: bool) -> void:
+    _progress_use_case.save_audio_settings(music_enabled, sfx_enabled)
+
+
 func _open_level(level_id: String, playtest_mode: bool = false) -> void:
     var resolved_level_id: String = _resolve_existing_level_id(level_id)
     var payload: Dictionary = _start_level_use_case.execute(resolved_level_id)
@@ -91,7 +96,16 @@ func _open_level(level_id: String, playtest_mode: bool = false) -> void:
         push_error("Failed to instantiate the board screen.")
         return
 
-    board_screen.setup(payload["level_data"], payload["session_state"], {"playtest_mode": playtest_mode})
+    var progress_payload: Dictionary = _progress_use_case.load_progress_payload()
+    board_screen.setup(
+        payload["level_data"],
+        payload["session_state"],
+        {
+            "playtest_mode": playtest_mode,
+            "music_enabled": bool(progress_payload.get("music_enabled", true)),
+            "sfx_enabled": bool(progress_payload.get("sfx_enabled", true))
+        }
+    )
     board_screen.home_requested.connect(_show_main_menu)
     _replace_active_screen(board_screen)
 

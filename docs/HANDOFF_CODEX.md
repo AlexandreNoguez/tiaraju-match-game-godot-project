@@ -29,12 +29,13 @@ Estado atual do desenvolvimento:
 - progressão básica entre fases funcionando
 - tela principal funcionando com botão Jogar
 - home com placeholders de avatar, eventos, perfil, configurações, moedas e shop
-- fim de fase retornando ao home
+- fim de fase aguardando confirmação manual para voltar ao home
 - tela de pausa funcionando
 - feedback visual de combo funcionando
 - efeitos sonoros básicos funcionando com assets gratuitos locais
 - musica do `home` tocando a faixa local dedicada
 - fases sorteando aleatoriamente entre duas musicas locais a cada entrada
+- configuracoes do home controlando `Musica` e `SFX` com persistencia local
 - animação de troca lateral entre peças funcionando
 - animação de queda das peças funcionando com cascatas reproduzidas por etapas
 - efeito de pop antes da remoção das combinações funcionando
@@ -55,7 +56,7 @@ Decisões de produto:
 - a cada 100 fases entra uma nova família de obstáculo
 - queremos suportar grids não quadrados
 - queremos uma tela principal com botão Jogar, avatar placeholder, eventos placeholder, perfil placeholder, moedas placeholder, shop placeholder e configurações
-- ao terminar cada fase, o jogador volta para o home
+- ao terminar cada fase, o jogador le o resumo final e escolhe quando voltar para o home
 - shop fica como placeholder no beta
 - moedas ja podem ser acumuladas localmente a partir de chains, mas a economia ainda e provisoria
 - login, perfil funcional, foto e social ficam para pós-beta
@@ -65,8 +66,8 @@ Próximos passos planejados:
 1. rodar a regressao manual de moedas, chains, save e animacoes no desktop
 2. validar no Android resolução, toque, performance e persistencia do save, preferindo exportacao pela Godot do Windows com SDK/JDK no Windows
 3. usar o atalho de playtest nas configurações em debug para acelerar a revisão da campanha sem poluir o save
-4. adicionar controles básicos de áudio nas configurações e persistir preferências locais
-5. voltar ao balanceamento fino da curva das fases 010-029
+4. voltar ao balanceamento fino da curva das fases 010-029
+5. decidir o proximo passo de UX entre controles de volume, HUD de moedas mais evidente ou primeiros elementos reais do shop offline
 
 Antes de editar, leia:
 - GAME_PLAN.md
