@@ -47,6 +47,16 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
   - musica do `home` usando `home.ogg`
   - musica das fases sorteada entre `fase-1.ogg` e `fase-2.ogg`
 
+### Kenney Particle Pack
+
+- origem: https://kenney.nl/assets/particle-pack
+- licenca: `CC0`
+- pasta: `assets/third_party/kenney/particle-pack`
+- uso sugerido:
+  - icones dos especiais de 4 gemas
+  - icone do especial de 5 gemas
+  - futuras particulas e explosoes do board
+
 ### Sylly / Gem Match Three
 
 - origem: `assets/third_party/Sylly/License.txt`
@@ -57,6 +67,18 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
   - formas base das gems
   - referencia para evoluir especiais e obstaculos
 
+### Google Fonts / Fredoka
+
+- origem: https://fonts.google.com/specimen/Fredoka
+- arquivo oficial usado: https://raw.githubusercontent.com/google/fonts/main/ofl/fredoka/Fredoka%5Bwdth,wght%5D.ttf
+- licenca: `OFL-1.1`
+- arquivo de licenca versionado em: `assets/third_party/google-fonts/Fredoka/OFL.txt`
+- pasta: `assets/third_party/google-fonts/Fredoka`
+- uso sugerido:
+  - fonte principal do `home`
+  - HUD, pausa e fim de fase
+  - base tipografica temporaria para o beta polido
+
 ## Regras de uso no projeto
 
 1. Priorizar assets `CC0` ou licencas claramente permissivas.
@@ -64,6 +86,7 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
 3. Registrar origem e licenca neste arquivo ao adicionar novos packs.
 4. Evitar misturar assets temporarios com arte final do jogo.
 5. Personagens principais e identidade cultural do projeto devem ser autorais.
+6. Centralizar a troca de texturas e fontes em `scripts/presentation/theme/visual_asset_catalog.gd` para reduzir acoplamento entre UI e asset pack.
 
 ## Fontes recomendadas para os proximos assets gratuitos
 
@@ -90,6 +113,8 @@ Registrar os assets gratuitos de terceiros usados no projeto, suas origens, lice
 - priorizar primeiro os assets gratuitos que ja estao no repositorio
 - usar SFX gratuitos locais antes de baixar novos packs
 - usar musica temporaria gratuita e simples no `home` e nas fases enquanto a direcao final de audio nao estiver fechada
+- manter Fredoka como fonte padrao enquanto a direcao tipografica final nao estiver fechada
+- usar o `VisualAssetCatalog` como camada de contrato sem espalhar caminhos de assets pelas telas
 - evitar adicionar muitos packs ao mesmo tempo para nao inchar o beta
 
 ## Referencias para assets premium ou semi-premium

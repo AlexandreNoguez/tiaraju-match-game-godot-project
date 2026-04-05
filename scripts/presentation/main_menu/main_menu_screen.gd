@@ -11,16 +11,7 @@ const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/cl
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
 const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
 const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/home.ogg"
-const KENNEY_FONT_TITLE = preload("res://assets/third_party/kenney/ui-pack/Font/Kenney Future.ttf")
-const KENNEY_FONT_BODY = preload("res://assets/third_party/kenney/ui-pack/Font/Kenney Future Narrow.ttf")
-const KENNEY_PANEL_TEXTURE = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/input_outline_rectangle.png")
-const KENNEY_BUTTON_PRIMARY = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/button_rectangle_depth_gloss.png")
-const KENNEY_BUTTON_SECONDARY = preload("res://assets/third_party/kenney/ui-pack/PNG/Yellow/Default/button_rectangle_depth_gloss.png")
-const KENNEY_BUTTON_DANGER = preload("res://assets/third_party/kenney/ui-pack/PNG/Red/Default/button_rectangle_depth_gloss.png")
-const KENNEY_ICON_PLAY = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_play_dark.png")
-const KENNEY_ICON_REPEAT = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_repeat_dark.png")
-const BUTTON_TEXT_DARK = Color("2a1b12")
-const PANEL_TEXT_DARK = Color("2a1b12")
+const VisualAssets = preload("res://scripts/presentation/theme/visual_asset_catalog.gd")
 
 @onready var _background: ColorRect = $Background
 @onready var _ground_band: ColorRect = $GroundBand
@@ -161,7 +152,7 @@ func _on_shop_pressed() -> void:
 func _on_settings_pressed() -> void:
     _play_sound(SOUND_SWITCH_A, 1.0)
     _refresh_settings_controls()
-    _settings_message_label.text = "Musica e SFX podem ser ligados ou desligados agora e ficam salvos no aparelho. O reset de save tambem apaga esse progresso local e nao pode ser desfeito.\n\nAgradecimentos do beta: pack de gems da pasta Sylly por Andrew Tidey (Gem Match Three, CC0) e UI, fontes, SFX e musicas temporarias da Kenney."
+    _settings_message_label.text = "Musica e SFX podem ser ligados ou desligados agora e ficam salvos no aparelho. O reset de save tambem apaga esse progresso local e nao pode ser desfeito.\n\nAgradecimentos do beta: pack de gems Gem Match Three por Andrew Tidey, UI, SFX e musicas temporarias da Kenney, icones de especiais do Kenney Particle Pack e fonte Fredoka pela Google Fonts."
     _settings_layer.visible = true
 
 
@@ -281,37 +272,38 @@ func _apply_visual_theme() -> void:
 
     _background.color = palette["background"]
     _ground_band.color = palette["ground"]
-    _apply_font_style(_title_label, KENNEY_FONT_TITLE)
-    _apply_font_style(_subtitle_label, KENNEY_FONT_BODY)
-    _apply_font_style($MarginContainer/RootColumn/HeaderRow/TitleColumn/EyebrowLabel, KENNEY_FONT_BODY)
-    _apply_font_style(_current_level_label, KENNEY_FONT_BODY)
-    _apply_font_style(_highest_unlocked_label, KENNEY_FONT_BODY)
-    _apply_font_style(_last_completed_label, KENNEY_FONT_BODY)
-    _apply_font_style(_progress_label, KENNEY_FONT_BODY)
-    _apply_font_style(_coins_label, KENNEY_FONT_BODY)
-    _apply_font_style(_status_label, KENNEY_FONT_BODY)
-    _apply_font_style($MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileTitleLabel, KENNEY_FONT_TITLE)
-    _apply_font_style($MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileBodyLabel, KENNEY_FONT_BODY)
-    _apply_font_style($MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsTitleLabel, KENNEY_FONT_TITLE)
-    _apply_font_style($MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsBodyLabel, KENNEY_FONT_BODY)
-    _apply_font_style($MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/CurrentLevelTitleLabel, KENNEY_FONT_TITLE)
-    _apply_font_style($MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyTitleLabel, KENNEY_FONT_TITLE)
-    _apply_font_style($MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyBodyLabel, KENNEY_FONT_BODY)
-    _title_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _subtitle_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _current_level_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _highest_unlocked_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _last_completed_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _progress_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _coins_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _status_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileTitleLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileBodyLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsTitleLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsBodyLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/CurrentLevelTitleLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyTitleLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyBodyLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
+    _apply_font_style(_title_label, VisualAssets.title_font())
+    _apply_font_style(_subtitle_label, VisualAssets.body_font())
+    _apply_font_style($MarginContainer/RootColumn/HeaderRow/TitleColumn/EyebrowLabel, VisualAssets.body_font())
+    _apply_font_style(_current_level_label, VisualAssets.body_font())
+    _apply_font_style(_highest_unlocked_label, VisualAssets.body_font())
+    _apply_font_style(_last_completed_label, VisualAssets.body_font())
+    _apply_font_style(_progress_label, VisualAssets.body_font())
+    _apply_font_style(_coins_label, VisualAssets.body_font())
+    _apply_font_style(_status_label, VisualAssets.body_font())
+    _apply_font_style($MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileTitleLabel, VisualAssets.title_font())
+    _apply_font_style($MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileBodyLabel, VisualAssets.body_font())
+    _apply_font_style($MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsTitleLabel, VisualAssets.title_font())
+    _apply_font_style($MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsBodyLabel, VisualAssets.body_font())
+    _apply_font_style($MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/CurrentLevelTitleLabel, VisualAssets.title_font())
+    _apply_font_style($MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyTitleLabel, VisualAssets.title_font())
+    _apply_font_style($MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyBodyLabel, VisualAssets.body_font())
+    _title_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _subtitle_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/HeaderRow/TitleColumn/EyebrowLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _current_level_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _highest_unlocked_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _last_completed_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _progress_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _coins_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _status_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileTitleLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileBodyLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsTitleLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsBodyLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/CurrentLevelTitleLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyTitleLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyBodyLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
 
     _apply_panel_style(_sun_disc, palette["sun"], palette["sun"], 999)
     _apply_panel_style(_leaf_cluster_left, palette["leaf_primary"], palette["leaf_primary"], 160)
@@ -321,33 +313,35 @@ func _apply_visual_theme() -> void:
     for panel in [_profile_panel, _events_panel, _current_level_panel, _economy_panel]:
         _apply_texture_panel_style(panel)
 
-    _apply_kenney_button_style(_play_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_profile_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_events_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_shop_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_settings_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _play_button.icon = KENNEY_ICON_PLAY
+    _apply_kenney_button_style(_play_button, VisualAssets.button_texture(VisualAssets.BUTTON_PRIMARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_profile_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_events_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_shop_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_settings_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _play_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_PLAY)
 
     _apply_texture_panel_style($SettingsLayer/PanelContainer)
-    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/TitleLabel, KENNEY_FONT_TITLE)
-    _apply_font_style(_settings_message_label, KENNEY_FONT_BODY)
-    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/AudioSection/TitleLabel, KENNEY_FONT_TITLE)
-    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/AudioSection/BodyLabel, KENNEY_FONT_BODY)
-    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel, KENNEY_FONT_TITLE)
-    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel, KENNEY_FONT_BODY)
-    _settings_message_label.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/TitleLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/BodyLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _playtest_level_select.add_theme_color_override("font_color", PANEL_TEXT_DARK)
-    _apply_kenney_button_style(_settings_music_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_settings_sfx_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_playtest_open_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_settings_cancel_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_settings_reset_button, KENNEY_BUTTON_DANGER, BUTTON_TEXT_DARK)
-    _playtest_open_button.icon = KENNEY_ICON_PLAY
-    _settings_reset_button.icon = KENNEY_ICON_REPEAT
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/TitleLabel, VisualAssets.title_font())
+    _apply_font_style(_settings_message_label, VisualAssets.body_font())
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/AudioSection/TitleLabel, VisualAssets.title_font())
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/AudioSection/BodyLabel, VisualAssets.body_font())
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel, VisualAssets.title_font())
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel, VisualAssets.body_font())
+    $SettingsLayer/PanelContainer/VBoxContainer/TitleLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _settings_message_label.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/TitleLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/BodyLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _apply_font_style(_playtest_level_select, VisualAssets.body_font())
+    _playtest_level_select.add_theme_color_override("font_color", VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_settings_music_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_settings_sfx_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_playtest_open_button, VisualAssets.button_texture(VisualAssets.BUTTON_PRIMARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_settings_cancel_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_settings_reset_button, VisualAssets.button_texture(VisualAssets.BUTTON_DANGER), VisualAssets.text_color_dark())
+    _playtest_open_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_PLAY)
+    _settings_reset_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_REPEAT)
 
 
 func _apply_panel_style(target: Control, background_color: Color, border_color: Color, radius: int) -> void:
@@ -369,7 +363,7 @@ func _apply_panel_style(target: Control, background_color: Color, border_color: 
 
 func _apply_texture_panel_style(target: Control) -> void:
     var style := StyleBoxTexture.new()
-    style.texture = KENNEY_PANEL_TEXTURE
+    style.texture = VisualAssets.panel_texture()
     style.texture_margin_left = 18
     style.texture_margin_top = 18
     style.texture_margin_right = 18
@@ -402,7 +396,7 @@ func _apply_kenney_button_style(button: Button, texture: Texture2D, text_color: 
     button.add_theme_constant_override("h_separation", 12)
     button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
     button.expand_icon = true
-    _apply_font_style(button, KENNEY_FONT_BODY)
+    _apply_font_style(button, VisualAssets.body_font())
 
 
 func _apply_font_style(target: Control, font_resource: FontFile) -> void:

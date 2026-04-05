@@ -17,27 +17,7 @@ const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/s
 const SOUND_SWITCH_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-b.ogg")
 const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
 const SOUND_TAP_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-b.ogg")
-const KENNEY_FONT_TITLE = preload("res://assets/third_party/kenney/ui-pack/Font/Kenney Future.ttf")
-const KENNEY_FONT_BODY = preload("res://assets/third_party/kenney/ui-pack/Font/Kenney Future Narrow.ttf")
-const KENNEY_PANEL_TEXTURE = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/input_outline_rectangle.png")
-const KENNEY_BUTTON_PRIMARY = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/button_rectangle_depth_gloss.png")
-const KENNEY_BUTTON_SECONDARY = preload("res://assets/third_party/kenney/ui-pack/PNG/Yellow/Default/button_rectangle_depth_gloss.png")
-const KENNEY_BUTTON_DANGER = preload("res://assets/third_party/kenney/ui-pack/PNG/Red/Default/button_rectangle_depth_gloss.png")
-const KENNEY_ICON_PLAY = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_play_dark.png")
-const KENNEY_ICON_REPEAT = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_repeat_dark.png")
-const KENNEY_ICON_ARROW_LEFT = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_w.png")
-const BUTTON_TEXT_DARK = Color("2a1b12")
-const GEM_YELLOW = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type1 Yellow.png")
-const GEM_RED = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type2 Red.png")
-const GEM_GREEN = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type3 Green.png")
-const GEM_BLUE = preload("res://assets/third_party/Sylly/PNG/Medium/Gem Type4 Blue.png")
-const SPECIAL_BADGE_FOUR_HORIZONTAL = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_e_small.png")
-const SPECIAL_BADGE_FOUR_VERTICAL = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/arrow_basic_n_small.png")
-const SPECIAL_BADGE_FIVE = preload("res://assets/third_party/kenney/ui-pack/PNG/Yellow/Default/star.png")
-const OBSTACLE_BADGE_BOX = preload("res://assets/third_party/kenney/ui-pack/PNG/Grey/Default/icon_square.png")
-const OBSTACLE_BADGE_ICE = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/icon_circle.png")
-const OBSTACLE_BADGE_GRASS = preload("res://assets/third_party/kenney/ui-pack/PNG/Green/Default/icon_checkmark.png")
-const OBSTACLE_BADGE_DENSE_GRASS = preload("res://assets/third_party/kenney/ui-pack/PNG/Red/Default/icon_cross.png")
+const VisualAssets = preload("res://scripts/presentation/theme/visual_asset_catalog.gd")
 const MUSIC_BOARD_PATHS := [
     "res://assets/third_party/kenney/music-jingles/fase-1.ogg",
     "res://assets/third_party/kenney/music-jingles/fase-2.ogg"
@@ -319,7 +299,7 @@ func _build_obstacle_cell(cell: BoardCell) -> Control:
         var hits_label := Label.new()
         hits_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
         hits_label.text = str(cell.obstacle_hits_remaining)
-        hits_label.add_theme_font_override("font", KENNEY_FONT_TITLE)
+        hits_label.add_theme_font_override("font", VisualAssets.title_font())
         hits_label.add_theme_font_size_override("font_size", 18)
         hits_label.add_theme_color_override("font_color", Color("fffaf1"))
         hits_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
@@ -423,21 +403,11 @@ func _piece_texture(piece) -> Texture2D:
     if piece == null:
         return null
 
-    return _piece_texture_for_color(piece.color_id)
+    return VisualAssets.piece_texture(piece.color_id, piece.special_type)
 
 
 func _piece_texture_for_color(color_id: String) -> Texture2D:
-    match color_id:
-        "yellow":
-            return GEM_YELLOW
-        "red":
-            return GEM_RED
-        "green":
-            return GEM_GREEN
-        "blue":
-            return GEM_BLUE
-
-    return GEM_YELLOW
+    return VisualAssets.gem_texture(color_id)
 
 
 func _add_piece_overlays(button: Button, piece, cell: BoardCell) -> void:
@@ -454,35 +424,14 @@ func _piece_special_badge_texture(piece) -> Texture2D:
     if piece == null:
         return null
 
-    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_HORIZONTAL:
-        return SPECIAL_BADGE_FOUR_HORIZONTAL
-
-    if piece.special_type == BoardPieceScript.SPECIAL_MISSILE_VERTICAL:
-        return SPECIAL_BADGE_FOUR_VERTICAL
-
-    if piece.special_type == BoardPieceScript.SPECIAL_RAINBOW:
-        return SPECIAL_BADGE_FIVE
-
-    return null
+    return VisualAssets.piece_badge_texture(piece.color_id, piece.special_type)
 
 
 func _obstacle_badge_texture(cell: BoardCell) -> Texture2D:
     if cell == null or not cell.has_obstacle():
         return null
 
-    if cell.obstacle_type == BoardCellScript.OBSTACLE_BOX:
-        return OBSTACLE_BADGE_BOX
-
-    if cell.obstacle_type == BoardCellScript.OBSTACLE_ICE:
-        return OBSTACLE_BADGE_ICE
-
-    if cell.obstacle_type == BoardCellScript.OBSTACLE_GRASS:
-        return OBSTACLE_BADGE_GRASS
-
-    if cell.obstacle_type == BoardCellScript.OBSTACLE_DENSE_GRASS:
-        return OBSTACLE_BADGE_DENSE_GRASS
-
-    return OBSTACLE_BADGE_BOX
+    return VisualAssets.obstacle_texture_for_type(cell.obstacle_type)
 
 
 func _build_badge_texture_rect(texture: Texture2D, align_right: bool) -> TextureRect:
@@ -656,7 +605,7 @@ func _apply_end_state_visual_state(celebratory: bool) -> void:
     _end_state_title_label.add_theme_color_override("font_color", Color("2a1b12"))
     _end_state_title_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0))
     _end_state_title_label.add_theme_constant_override("outline_size", 0)
-    _restart_button.icon = KENNEY_ICON_ARROW_LEFT
+    _restart_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_BACK)
 
     if not celebratory:
         return
@@ -665,7 +614,7 @@ func _apply_end_state_visual_state(celebratory: bool) -> void:
     _end_state_title_label.add_theme_color_override("font_color", Color("ffcf5c"))
     _end_state_title_label.add_theme_color_override("font_outline_color", Color("c95f3d"))
     _end_state_title_label.add_theme_constant_override("outline_size", 10)
-    _restart_button.icon = KENNEY_ICON_PLAY
+    _restart_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_PLAY)
 
 
 func _on_restart_pressed() -> void:
@@ -1121,16 +1070,16 @@ func _apply_level_theme() -> void:
 
     var palette: Dictionary = _build_theme_palette(String(_level_data.get("theme_id", "mata_clara")))
     _background.color = palette["background"]
-    _apply_font_style(_title_label, KENNEY_FONT_TITLE)
-    _apply_font_style(_moves_label, KENNEY_FONT_BODY)
-    _apply_font_style(_goal_label, KENNEY_FONT_BODY)
-    _apply_font_style(_status_label, KENNEY_FONT_BODY)
-    _apply_font_style(_combo_feedback_label, KENNEY_FONT_TITLE)
-    _apply_font_style(_coins_feedback_label, KENNEY_FONT_BODY)
-    _apply_font_style(_pause_title_label, KENNEY_FONT_TITLE)
-    _apply_font_style(_pause_message_label, KENNEY_FONT_BODY)
-    _apply_font_style(_end_state_title_label, KENNEY_FONT_TITLE)
-    _apply_font_style(_end_state_message_label, KENNEY_FONT_BODY)
+    _apply_font_style(_title_label, VisualAssets.title_font())
+    _apply_font_style(_moves_label, VisualAssets.body_font())
+    _apply_font_style(_goal_label, VisualAssets.body_font())
+    _apply_font_style(_status_label, VisualAssets.body_font())
+    _apply_font_style(_combo_feedback_label, VisualAssets.title_font())
+    _apply_font_style(_coins_feedback_label, VisualAssets.body_font())
+    _apply_font_style(_pause_title_label, VisualAssets.title_font())
+    _apply_font_style(_pause_message_label, VisualAssets.body_font())
+    _apply_font_style(_end_state_title_label, VisualAssets.title_font())
+    _apply_font_style(_end_state_message_label, VisualAssets.body_font())
     _title_label.add_theme_color_override("font_color", palette["title"])
     _moves_label.add_theme_color_override("font_color", palette["hud"])
     _goal_label.add_theme_color_override("font_color", palette["hud"])
@@ -1148,15 +1097,15 @@ func _apply_level_theme() -> void:
     _apply_texture_panel_style(_board_shell)
     _apply_texture_panel_style(_pause_panel)
     _apply_texture_panel_style(_end_state_panel)
-    _apply_kenney_button_style(_pause_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_pause_resume_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_pause_home_button, KENNEY_BUTTON_SECONDARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_restart_button, KENNEY_BUTTON_PRIMARY, BUTTON_TEXT_DARK)
-    _apply_kenney_button_style(_next_button, KENNEY_BUTTON_DANGER, BUTTON_TEXT_DARK)
-    _pause_resume_button.icon = KENNEY_ICON_PLAY
-    _pause_home_button.icon = KENNEY_ICON_ARROW_LEFT
-    _restart_button.icon = KENNEY_ICON_ARROW_LEFT
-    _next_button.icon = KENNEY_ICON_REPEAT
+    _apply_kenney_button_style(_pause_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_pause_resume_button, VisualAssets.button_texture(VisualAssets.BUTTON_PRIMARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_pause_home_button, VisualAssets.button_texture(VisualAssets.BUTTON_SECONDARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_restart_button, VisualAssets.button_texture(VisualAssets.BUTTON_PRIMARY), VisualAssets.text_color_dark())
+    _apply_kenney_button_style(_next_button, VisualAssets.button_texture(VisualAssets.BUTTON_DANGER), VisualAssets.text_color_dark())
+    _pause_resume_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_PLAY)
+    _pause_home_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_BACK)
+    _restart_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_BACK)
+    _next_button.icon = VisualAssets.icon_texture(VisualAssets.ICON_REPEAT)
 
 
 func _build_theme_palette(theme_id: String) -> Dictionary:
@@ -1246,7 +1195,7 @@ func _apply_panel_style(target: Control, background_color: Color, border_color: 
 
 func _apply_texture_panel_style(target: Control) -> void:
     var style := StyleBoxTexture.new()
-    style.texture = KENNEY_PANEL_TEXTURE
+    style.texture = VisualAssets.panel_texture()
     style.texture_margin_left = 18
     style.texture_margin_top = 18
     style.texture_margin_right = 18
@@ -1279,7 +1228,7 @@ func _apply_kenney_button_style(button: Button, texture: Texture2D, text_color: 
     button.add_theme_constant_override("h_separation", 12)
     button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
     button.expand_icon = true
-    _apply_font_style(button, KENNEY_FONT_BODY)
+    _apply_font_style(button, VisualAssets.body_font())
 
 
 func _apply_font_style(target: Control, font_resource: FontFile) -> void:

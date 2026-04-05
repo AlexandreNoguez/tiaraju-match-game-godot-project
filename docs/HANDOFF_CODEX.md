@@ -38,8 +38,11 @@ Estado atual do desenvolvimento:
 - configuracoes do home controlando `Musica` e `SFX` com persistencia local
 - interface do `home`, pausa e fim de fase recebeu uma primeira passada visual usando `Kenney UI Pack`
 - board passou a usar o novo set de gems da pasta `assets/third_party/Sylly`
-- board agora separa visualmente forma base por cor, badge de especial e badge de obstaculo
-- vitoria agora abre um overlay mais celebratorio com `Parabens!`, efeito leve no titulo e botao unico `Continuar`
+- board agora usa um catalogo visual reutilizavel em `scripts/presentation/theme/visual_asset_catalog.gd`
+- especiais de 4 e 5 gemas agora usam icones dedicados do `Kenney Particle Pack` em vez de badge sobre a gema
+- obstaculos continuam com icones dedicados e a troca de pack ficou concentrada no catalogo visual
+- Fredoka virou a fonte padrao dos textos do jogo no `home`, HUD, pausa e fim de fase
+- vitoria agora abre um overlay mais celebratorio com `Parabens!` e botao unico `Continuar`
 - configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
 - frente de polimento do jogo foi documentada em `docs/GAME_POLISH_PLAN.md`
 - animação de troca lateral entre peças funcionando
