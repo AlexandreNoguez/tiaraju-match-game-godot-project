@@ -627,37 +627,45 @@ func _handle_victory() -> void:
         _level_progress_use_case.record_victory(_session_state.level_id, next_level_id)
         _has_recorded_victory = true
 
-    var message: String = ""
-    if _playtest_mode:
-        message = "Objetivos concluidos em modo playtest. O progresso local nao foi alterado."
-        if next_level_id != "":
-            message += " Use o home para abrir rapidamente a proxima fase que quiser revisar."
-    else:
-        message = "Objetivos concluidos. Progresso salvo localmente."
-        if next_level_id != "":
-            message += " A proxima fase ja foi desbloqueada no home."
-        else:
-            message += " Voce concluiu o pacote tecnico atual."
-
-    message += " Quando terminar de ler, use o botao abaixo para voltar ao home."
     _play_end_state_sound(true)
-    _show_end_state("Fase vencida", message, true, false, "Voltar ao home")
+    _show_end_state("Parabens!", "", true, false, "Continuar", true)
 
-
-func _show_end_state(title: String, message: String, show_restart: bool, show_next: bool, restart_button_text: String = "Reiniciar") -> void:
+func _show_end_state(title: String, message: String, show_restart: bool, show_next: bool, restart_button_text: String = "Reiniciar", celebratory: bool = false) -> void:
     _end_state_title_label.text = title
     _end_state_message_label.text = message
+    _end_state_message_label.visible = message.strip_edges() != ""
     _restart_button.text = restart_button_text
     _restart_button.visible = show_restart
     _restart_button.disabled = not show_restart
     _next_button.visible = show_next
     _next_button.disabled = not show_next
+    _apply_end_state_visual_state(celebratory)
     _end_state_layer.visible = true
 
 
 func _hide_end_state() -> void:
     if _end_state_layer != null:
         _end_state_layer.visible = false
+
+
+func _apply_end_state_visual_state(celebratory: bool) -> void:
+    _end_state_title_label.modulate = Color(1, 1, 1, 1)
+    _end_state_title_label.scale = Vector2.ONE
+    _end_state_title_label.rotation = 0.0
+    _end_state_title_label.add_theme_font_size_override("font_size", 34)
+    _end_state_title_label.add_theme_color_override("font_color", Color("2a1b12"))
+    _end_state_title_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0))
+    _end_state_title_label.add_theme_constant_override("outline_size", 0)
+    _restart_button.icon = KENNEY_ICON_ARROW_LEFT
+
+    if not celebratory:
+        return
+
+    _end_state_title_label.add_theme_font_size_override("font_size", 46)
+    _end_state_title_label.add_theme_color_override("font_color", Color("ffcf5c"))
+    _end_state_title_label.add_theme_color_override("font_outline_color", Color("c95f3d"))
+    _end_state_title_label.add_theme_constant_override("outline_size", 10)
+    _restart_button.icon = KENNEY_ICON_PLAY
 
 
 func _on_restart_pressed() -> void:
