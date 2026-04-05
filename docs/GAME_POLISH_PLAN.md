@@ -18,62 +18,98 @@ Hoje o jogo ja tem:
 
 O que mais falta agora e camada de apresentacao, conteudo e meta game.
 
+## Status consolidado
+
+### Ja concluido
+
+- [x] Loop principal funcional
+- [x] Cascatas, especiais e obstaculos basicos funcionando
+- [x] Save local
+- [x] `home` com placeholders principais
+- [x] Audio basico com musica e SFX
+- [x] Primeira passada visual com `Kenney UI Pack`
+- [x] Gems novas da pasta `Sylly`
+- [x] Fonte `Fredoka` aplicada na UI principal
+- [x] HUD da fase com cards de objetivo e jogadas
+- [x] Vitoria, derrota e pausa com apresentacao melhorada
+- [x] Cascatas em etapas com efeito de `pop`
+- [x] Moedas por chain salvas localmente
+- [x] Catalogo visual centralizado em `scripts/presentation/theme/visual_asset_catalog.gd`
+- [x] Board usando bounding box jogavel para reduzir areas externas vazias
+
+### Ainda falta para a sensacao premium
+
+- [ ] Brilho melhor ao selecionar pecas
+- [ ] Particulas leves em matches e especiais
+- [ ] Tremor sutil em explosoes e combos fortes
+- [ ] Ativacao visual mais rica para especiais
+- [ ] Saldo de moedas visivel durante a fase
+- [ ] Tela pre-fase simples com nome, objetivo e CTA
+- [ ] Tela de derrota com hierarquia visual melhor
+- [ ] Mapa de progressao visual
+- [ ] `shop` offline com primeiros itens
+- [ ] Fundos mais ricos por tema
+- [ ] Iconografia totalmente consolidada entre HUD, objetivos e status
+- [ ] Mix de audio mais refinada
+- [ ] Mais conteudo e tutorial guiado
+
 ## Frentes principais de polimento
 
 ### 1. Juice do tabuleiro
 
-- brilho melhor ao selecionar pecas
-- efeitos de impacto ao remover combinacoes
-- particulas leves em matches e especiais
-- tremor sutil em explosoes e combos fortes
-- entrada mais rica de especiais
-- transicao de vitoria e derrota mais refinada
+- [ ] brilho melhor ao selecionar pecas
+- [x] efeitos de impacto ao remover combinacoes
+- [ ] particulas leves em matches e especiais
+- [ ] tremor sutil em explosoes e combos fortes
+- [ ] entrada mais rica de especiais
+- [x] transicao de vitoria e derrota mais refinada
 
 ### 2. HUD e UX premium
 
-- objetivos com icones em vez de texto puro
-- contador de jogadas com hierarquia visual mais forte
-- saldo de moedas visivel tambem na fase
-- pre-fase simples com nome, objetivo e CTA claro
-- vitoria e derrota com layout mais premium
+- [x] objetivos com icones em vez de texto puro
+- [x] contador de jogadas com hierarquia visual mais forte
+- [ ] saldo de moedas visivel tambem na fase
+- [ ] pre-fase simples com nome, objetivo e CTA claro
+- [x] vitoria e derrota com layout mais premium
 
 ### 3. Progressao e meta game
 
-- mapa de fases em trilha visual
-- marcos, baus e recompensas
-- moedas com utilidade real
-- `shop` offline com primeiros itens compraveis
-- sistema de restauracao da vila ou colecao visual
+- [ ] mapa de fases em trilha visual
+- [ ] marcos, baus e recompensas
+- [ ] moedas com utilidade real
+- [ ] `shop` offline com primeiros itens compraveis
+- [ ] sistema de restauracao da vila ou colecao visual
 
 ### 4. Arte e identidade
 
-- consolidar familia visual das gems, especiais e obstaculos
-- fundos mais ricos por tema
-- fontes mais legiveis e com melhor espacamento
-- maior consistencia entre `home`, HUD, pausa e vitoria
-- iconografia padronizada para objetivos, reward e status
+- [x] consolidar familia visual das gems, especiais e obstaculos
+- [ ] fundos mais ricos por tema
+- [x] fontes mais legiveis e com melhor espacamento
+- [x] maior consistencia entre `home`, HUD, pausa e vitoria
+- [ ] iconografia padronizada para objetivos, reward e status
 
 ### 5. Audio e sensacao geral
 
-- SFX com mais peso para especiais
-- trilhas mais coerentes com `home` e fase
-- mix mais controlada entre musica e SFX
-- variacao maior de feedback sonoro por situacao
+- [ ] SFX com mais peso para especiais
+- [x] trilhas mais coerentes com `home` e fase
+- [ ] mix mais controlada entre musica e SFX
+- [ ] variacao maior de feedback sonoro por situacao
 
 ### 6. Conteudo
 
-- muito mais fases
-- curva de dificuldade revisada com playtest
-- mais familias de obstaculos
-- tutorial guiado nas primeiras fases
+- [ ] muito mais fases
+- [x] curva de dificuldade revisada com playtest inicial
+- [ ] mais familias de obstaculos
+- [ ] tutorial guiado nas primeiras fases
 
 ## Ordem sugerida
 
-1. polimento visual do board e da HUD
-2. mapa de progressao
-3. economia real com moedas e `shop`
-4. maior pacote de conteudo
-5. validacao forte em Android
+1. polimento visual fino do board e da HUD
+2. saldo de moedas na HUD e tela pre-fase
+3. mapa de progressao
+4. economia real com moedas e `shop`
+5. maior pacote de conteudo
+6. validacao forte em Android
 
 ## Estrategia de assets premium
 

@@ -53,6 +53,7 @@ Estado atual do desenvolvimento:
 - vitoria agora abre um overlay mais celebratorio com `Parabens!` e botao unico `Continuar`
 - configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
 - frente de polimento do jogo foi documentada em `docs/GAME_POLISH_PLAN.md`
+- `docs/GAME_POLISH_PLAN.md` agora tambem funciona como checklist do que ja foi entregue e do que ainda falta para a sensacao premium
 - animação de troca lateral entre peças funcionando
 - animação de queda das peças funcionando com cascatas reproduzidas por etapas
 - efeito de pop antes da remoção das combinações funcionando

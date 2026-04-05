@@ -278,6 +278,12 @@ Leitura pratica:
 - definir a economia so depois de validar loop principal, curva de fases e recompensas
 - adiar qualquer monetizacao real, login ou sincronizacao online para uma fase posterior
 
+Leitura atual do roadmap:
+
+- o primeiro bloco de polimento visual do board e da HUD ja entrou
+- o proximo passo premium mais forte agora e mostrar moedas tambem na HUD da fase e criar uma tela pre-fase simples
+- depois disso, a maior alavanca de apresentacao passa a ser o mapa de progressao
+
 ## 11. Plano de Desenvolvimento Numerado para o Beta
 
 ### 11.1 Fase 0: preparacao

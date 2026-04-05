@@ -47,7 +47,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Criar cena principal
 - [x] Configurar resolucao base
 - [ ] Configurar input principal
-- [ ] Configurar export templates
+- [x] Configurar export templates
 
 ## 4. Nucleo do tabuleiro
 
@@ -70,7 +70,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Implementar objetivos de fase
 - [x] Implementar condicao de vitoria
 - [x] Implementar condicao de derrota
-- [ ] Bloquear input enquanto o tabuleiro resolve
+- [x] Bloquear input enquanto o tabuleiro resolve
 - [x] Mostrar HUD basica
 
 ## 6. Especiais
@@ -116,13 +116,15 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [x] Criar tela de pausa
 - [x] Adicionar feedback visual de combo
 - [x] Adicionar efeitos sonoros basicos
+- [x] Melhorar HUD visual da fase
+- [x] Aplicar primeira passada premium no board e na UI
 
 ## 10. Save e progresso
 
 - [x] Implementar save local
 - [x] Salvar fase desbloqueada
 - [x] Manter fluxo principal linear sem replay de fases antigas
-- [ ] Salvar configuracoes basicas
+- [x] Salvar configuracoes basicas
 - [x] Validar leitura do save apos fechar e abrir o jogo
 
 ## 11. Android
@@ -139,7 +141,7 @@ Marque com `[x]` quando a tarefa estiver concluida.
 
 - [x] Criar roteiro de teste manual
 - [ ] Testar trocas invalidas
-- [ ] Testar cascatas longas
+- [x] Testar cascatas longas
 - [ ] Testar fases com poucos movimentos
 - [ ] Testar especiais isolados
 - [ ] Testar combos de especiais
@@ -147,18 +149,18 @@ Marque com `[x]` quando a tarefa estiver concluida.
 - [ ] Testar mistura de obstaculos
 - [ ] Testar vitoria por objetivo
 - [ ] Testar derrota por falta de movimentos
-- [ ] Testar save local
-- [ ] Testar no desktop
+- [x] Testar save local
+- [x] Testar no desktop
 - [ ] Testar no emulador Android
 - [ ] Testar em celular Android real
 
 ## 13. Pronto para beta
 
-- [ ] Loop principal estavel
+- [x] Loop principal estavel
 - [ ] 20 fases concluidas
 - [ ] Especiais do beta corretos
 - [ ] Obstaculos do beta corretos
-- [ ] Save local funcionando
+- [x] Save local funcionando
 - [ ] Build Android funcional
 - [ ] Sem bugs bloqueadores conhecidos
 
