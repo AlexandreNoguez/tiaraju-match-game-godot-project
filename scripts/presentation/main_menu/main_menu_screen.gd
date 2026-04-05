@@ -11,6 +11,14 @@ const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/cl
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
 const SOUND_TAP_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg")
 const MUSIC_HOME_PATH = "res://assets/third_party/kenney/music-jingles/home.ogg"
+const KENNEY_FONT_TITLE = preload("res://assets/third_party/kenney/ui-pack/Font/Kenney Future.ttf")
+const KENNEY_FONT_BODY = preload("res://assets/third_party/kenney/ui-pack/Font/Kenney Future Narrow.ttf")
+const KENNEY_PANEL_TEXTURE = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/input_outline_rectangle.png")
+const KENNEY_BUTTON_PRIMARY = preload("res://assets/third_party/kenney/ui-pack/PNG/Blue/Default/button_rectangle_depth_gloss.png")
+const KENNEY_BUTTON_SECONDARY = preload("res://assets/third_party/kenney/ui-pack/PNG/Yellow/Default/button_rectangle_depth_gloss.png")
+const KENNEY_BUTTON_DANGER = preload("res://assets/third_party/kenney/ui-pack/PNG/Red/Default/button_rectangle_depth_gloss.png")
+const KENNEY_ICON_PLAY = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_play_dark.png")
+const KENNEY_ICON_REPEAT = preload("res://assets/third_party/kenney/ui-pack/PNG/Extra/Default/icon_repeat_dark.png")
 
 @onready var _background: ColorRect = $Background
 @onready var _ground_band: ColorRect = $GroundBand
@@ -271,6 +279,22 @@ func _apply_visual_theme() -> void:
 
     _background.color = palette["background"]
     _ground_band.color = palette["ground"]
+    _apply_font_style(_title_label, KENNEY_FONT_TITLE)
+    _apply_font_style(_subtitle_label, KENNEY_FONT_BODY)
+    _apply_font_style($MarginContainer/RootColumn/HeaderRow/TitleColumn/EyebrowLabel, KENNEY_FONT_BODY)
+    _apply_font_style(_current_level_label, KENNEY_FONT_BODY)
+    _apply_font_style(_highest_unlocked_label, KENNEY_FONT_BODY)
+    _apply_font_style(_last_completed_label, KENNEY_FONT_BODY)
+    _apply_font_style(_progress_label, KENNEY_FONT_BODY)
+    _apply_font_style(_coins_label, KENNEY_FONT_BODY)
+    _apply_font_style(_status_label, KENNEY_FONT_BODY)
+    _apply_font_style($MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileTitleLabel, KENNEY_FONT_TITLE)
+    _apply_font_style($MarginContainer/RootColumn/ProfilePanel/HBoxContainer/VBoxContainer/ProfileBodyLabel, KENNEY_FONT_BODY)
+    _apply_font_style($MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsTitleLabel, KENNEY_FONT_TITLE)
+    _apply_font_style($MarginContainer/RootColumn/EventsPanel/VBoxContainer/EventsBodyLabel, KENNEY_FONT_BODY)
+    _apply_font_style($MarginContainer/RootColumn/CurrentLevelPanel/VBoxContainer/CurrentLevelTitleLabel, KENNEY_FONT_TITLE)
+    _apply_font_style($MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyTitleLabel, KENNEY_FONT_TITLE)
+    _apply_font_style($MarginContainer/RootColumn/EconomyPanel/VBoxContainer/EconomyBodyLabel, KENNEY_FONT_BODY)
     _title_label.add_theme_color_override("font_color", palette["title"])
     _subtitle_label.add_theme_color_override("font_color", palette["body"])
     _current_level_label.add_theme_color_override("font_color", palette["title"])
@@ -286,23 +310,35 @@ func _apply_visual_theme() -> void:
     _apply_panel_style(_avatar_placeholder, Color("f7c86a"), palette["panel_border"], 40)
 
     for panel in [_profile_panel, _events_panel, _current_level_panel, _economy_panel]:
-        _apply_panel_style(panel, palette["panel"], palette["panel_border"], 28)
+        _apply_texture_panel_style(panel)
 
-    for button in [_play_button, _profile_button, _events_button, _shop_button, _settings_button]:
-        _apply_button_style(button, palette["button"], palette["button_hover"], palette["button_pressed"], palette["button_text"])
+    _apply_kenney_button_style(_play_button, KENNEY_BUTTON_PRIMARY, palette["button_text"])
+    _apply_kenney_button_style(_profile_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_events_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_shop_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_settings_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _play_button.icon = KENNEY_ICON_PLAY
 
-    _apply_panel_style($SettingsLayer/PanelContainer, Color(1, 0.97, 0.9, 0.95), palette["panel_border"], 28)
+    _apply_texture_panel_style($SettingsLayer/PanelContainer)
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/TitleLabel, KENNEY_FONT_TITLE)
+    _apply_font_style(_settings_message_label, KENNEY_FONT_BODY)
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/AudioSection/TitleLabel, KENNEY_FONT_TITLE)
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/AudioSection/BodyLabel, KENNEY_FONT_BODY)
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel, KENNEY_FONT_TITLE)
+    _apply_font_style($SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel, KENNEY_FONT_BODY)
     _settings_message_label.add_theme_color_override("font_color", palette["body"])
     $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/TitleLabel.add_theme_color_override("font_color", palette["title"])
     $SettingsLayer/PanelContainer/VBoxContainer/AudioSection/BodyLabel.add_theme_color_override("font_color", palette["body"])
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/TitleLabel.add_theme_color_override("font_color", palette["title"])
     $SettingsLayer/PanelContainer/VBoxContainer/PlaytestSection/BodyLabel.add_theme_color_override("font_color", palette["body"])
     _playtest_level_select.add_theme_color_override("font_color", palette["title"])
-    _apply_button_style(_settings_music_button, Color("8e5a34"), Color("a56b42"), Color("6d4428"), palette["button_text"])
-    _apply_button_style(_settings_sfx_button, Color("8e5a34"), Color("a56b42"), Color("6d4428"), palette["button_text"])
-    _apply_button_style(_playtest_open_button, Color("8e5a34"), Color("a56b42"), Color("6d4428"), palette["button_text"])
-    _apply_button_style(_settings_cancel_button, Color("8a6a4b"), Color("9d7b59"), Color("6e543d"), palette["button_text"])
-    _apply_button_style(_settings_reset_button, Color("b93c32"), Color("cf4c41"), Color("8f2c24"), palette["button_text"])
+    _apply_kenney_button_style(_settings_music_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_settings_sfx_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_playtest_open_button, KENNEY_BUTTON_PRIMARY, palette["button_text"])
+    _apply_kenney_button_style(_settings_cancel_button, KENNEY_BUTTON_SECONDARY, palette["button_text"])
+    _apply_kenney_button_style(_settings_reset_button, KENNEY_BUTTON_DANGER, palette["button_text"])
+    _playtest_open_button.icon = KENNEY_ICON_PLAY
+    _settings_reset_button.icon = KENNEY_ICON_REPEAT
 
 
 func _apply_panel_style(target: Control, background_color: Color, border_color: Color, radius: int) -> void:
@@ -322,24 +358,31 @@ func _apply_panel_style(target: Control, background_color: Color, border_color: 
     target.add_theme_stylebox_override(theme_key, style)
 
 
-func _apply_button_style(button: Button, base_color: Color, hover_color: Color, pressed_color: Color, text_color: Color) -> void:
-    var normal := StyleBoxFlat.new()
-    normal.bg_color = base_color
-    normal.border_color = base_color.darkened(0.25)
-    normal.border_width_left = 3
-    normal.border_width_top = 3
-    normal.border_width_right = 3
-    normal.border_width_bottom = 3
-    normal.corner_radius_top_left = 24
-    normal.corner_radius_top_right = 24
-    normal.corner_radius_bottom_right = 24
-    normal.corner_radius_bottom_left = 24
+func _apply_texture_panel_style(target: Control) -> void:
+    var style := StyleBoxTexture.new()
+    style.texture = KENNEY_PANEL_TEXTURE
+    style.texture_margin_left = 18
+    style.texture_margin_top = 18
+    style.texture_margin_right = 18
+    style.texture_margin_bottom = 18
+    style.draw_center = true
+    var theme_key: String = "panel" if target is PanelContainer or target is Panel else "normal"
+    target.add_theme_stylebox_override(theme_key, style)
+
+
+func _apply_kenney_button_style(button: Button, texture: Texture2D, text_color: Color) -> void:
+    var normal := StyleBoxTexture.new()
+    normal.texture = texture
+    normal.texture_margin_left = 24
+    normal.texture_margin_top = 20
+    normal.texture_margin_right = 24
+    normal.texture_margin_bottom = 20
+    normal.draw_center = true
 
     var hover := normal.duplicate()
-    hover.bg_color = hover_color
 
     var pressed := normal.duplicate()
-    pressed.bg_color = pressed_color
+    pressed.expand_margin_top = 2
 
     button.add_theme_stylebox_override("normal", normal)
     button.add_theme_stylebox_override("hover", hover)
@@ -347,6 +390,17 @@ func _apply_button_style(button: Button, base_color: Color, hover_color: Color, 
     button.add_theme_color_override("font_color", text_color)
     button.add_theme_color_override("font_hover_color", text_color)
     button.add_theme_color_override("font_pressed_color", text_color)
+    button.add_theme_constant_override("h_separation", 12)
+    button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+    button.expand_icon = true
+    _apply_font_style(button, KENNEY_FONT_BODY)
+
+
+func _apply_font_style(target: Control, font_resource: FontFile) -> void:
+    if target == null or font_resource == null:
+        return
+
+    target.add_theme_font_override("font", font_resource)
 
 
 func _play_sound(stream: AudioStream, pitch_scale: float = 1.0) -> void:
