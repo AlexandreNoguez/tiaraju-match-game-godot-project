@@ -12,6 +12,7 @@ const SWAP_ANIMATION_DURATION := 0.16
 const CASCADE_STEP_PAUSE := 0.06
 const POP_ANIMATION_GROW_DURATION := 0.08
 const POP_ANIMATION_SHRINK_DURATION := 0.12
+const DRAG_SWAP_THRESHOLD := 18.0
 const SOUND_CLICK_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-a.ogg")
 const SOUND_CLICK_B = preload("res://assets/third_party/kenney/ui-pack/Sounds/click-b.ogg")
 const SOUND_SWITCH_A = preload("res://assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg")
@@ -94,12 +95,20 @@ var _visual_board_state: BoardState
 var _phase_music_path: String = ""
 var _active_board_cell_size: Vector2 = BOARD_CELL_SIZE
 var _active_playable_bounds: Rect2i = Rect2i(0, 0, 0, 0)
+var _preview_selected_position: Vector2i = Vector2i(-1, -1)
+var _drag_origin_position: Vector2i = Vector2i(-1, -1)
+var _drag_origin_viewport_position: Vector2 = Vector2.ZERO
+var _drag_swap_triggered: bool = false
+var _drag_press_active: bool = false
+var _drag_direction_detected: bool = false
+var _drag_pointer_index: int = -2
 
 
 func setup(level_data: Dictionary, session_state: LevelSessionState, runtime_options: Dictionary = {}) -> void:
 	_level_data = level_data
 	_session_state = session_state
 	_selected_position = Vector2i(-1, -1)
+	_preview_selected_position = Vector2i(-1, -1)
 	_status_message = "Selecione duas pecas vizinhas para formar combinacoes."
 	_has_recorded_victory = false
 	_has_played_end_state_sound = false
@@ -219,7 +228,8 @@ func _render_grid() -> void:
 
 func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Button:
 	var button: Button = Button.new()
-	var is_selected: bool = _selected_position == Vector2i(column, row)
+	var board_position := Vector2i(column, row)
+	var is_selected: bool = _selected_position == board_position or _preview_selected_position == board_position
 	var is_interaction_locked: bool = _is_paused or _is_drop_animating or _is_swap_animating or not _session_state.can_accept_input()
 	var style: StyleBoxFlat = StyleBoxFlat.new()
 
@@ -251,7 +261,7 @@ func _build_piece_button(row: int, column: int, piece, cell: BoardCell) -> Butto
 	button.add_theme_stylebox_override("hover", style)
 	button.add_theme_stylebox_override("pressed", style)
 	button.set_meta("board_position", Vector2i(column, row))
-	button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row)))
+	button.gui_input.connect(_on_piece_gui_input.bind(Vector2i(column, row), button))
 	button.add_child(_build_piece_texture_rect(_piece_texture(piece)))
 	_add_piece_overlays(button, piece, cell)
 
@@ -343,8 +353,12 @@ func _on_piece_pressed(position: Vector2i) -> void:
 		return
 
 	var first_position: Vector2i = _selected_position
-	var swap_targets: Dictionary = await _play_swap_animation(first_position, position)
-	var result: Dictionary = _apply_swap_use_case.execute(_session_state, first_position, position)
+	await _execute_swap(first_position, position)
+
+
+func _execute_swap(first_position: Vector2i, second_position: Vector2i) -> void:
+	var swap_targets: Dictionary = await _play_swap_animation(first_position, second_position)
+	var result: Dictionary = _apply_swap_use_case.execute(_session_state, first_position, second_position)
 	_selected_position = Vector2i(-1, -1)
 	_status_message = String(result.get("message", "Jogada processada."))
 	_play_resolution_sound(result)
@@ -360,18 +374,133 @@ func _on_piece_pressed(position: Vector2i) -> void:
 	_refresh_view()
 
 
-func _on_piece_gui_input(event: InputEvent, position: Vector2i) -> void:
+func _input(event: InputEvent) -> void:
+	if not _drag_press_active:
+		return
+
+	if event is InputEventMouseMotion:
+		if _drag_pointer_index == -1 and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			var mouse_motion := event as InputEventMouseMotion
+			_try_drag_swap(mouse_motion.position)
+		return
+
+	if event is InputEventMouseButton:
+		var mouse_button := event as InputEventMouseButton
+		if _drag_pointer_index == -1 and mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
+			_finalize_pointer_interaction(mouse_button.position)
+		return
+
+	if event is InputEventScreenDrag:
+		var drag_event := event as InputEventScreenDrag
+		if drag_event.index == _drag_pointer_index:
+			_try_drag_swap(drag_event.position)
+		return
+
+	if event is InputEventScreenTouch:
+		var touch_event := event as InputEventScreenTouch
+		if touch_event.index == _drag_pointer_index and not touch_event.pressed:
+			_finalize_pointer_interaction(touch_event.position)
+
+
+func _on_piece_gui_input(event: InputEvent, position: Vector2i, button: Button) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
 			return
 
-		var center := _active_board_cell_size * 0.5
-		var clickable_half := Vector2(36, 36) # 72x72 total
-		var local_pos := mouse_event.position
+		_begin_drag_selection(position, button, mouse_event.position, -1)
+		return
 
-		if abs(local_pos.x - center.x) <= clickable_half.x and abs(local_pos.y - center.y) <= clickable_half.y:
-			_on_piece_pressed(position)
+	if event is InputEventScreenTouch:
+		var touch_event := event as InputEventScreenTouch
+		if touch_event.pressed:
+			_begin_drag_selection(position, button, touch_event.position, touch_event.index)
+
+
+func _begin_drag_selection(position: Vector2i, button: Button, local_pos: Vector2, pointer_index: int) -> void:
+	if _drag_press_active:
+		return
+
+	if not _is_within_clickable_area(local_pos):
+		_reset_drag_state()
+		return
+
+	_drag_origin_position = position
+	_drag_origin_viewport_position = _button_viewport_position(button, local_pos)
+	_drag_swap_triggered = false
+	_drag_press_active = true
+	_drag_direction_detected = false
+	_drag_pointer_index = pointer_index
+	_preview_selected_position = position
+	_refresh_view()
+
+
+func _finalize_pointer_interaction(_viewport_pos: Vector2) -> void:
+	var should_process_tap: bool = _drag_press_active \
+		and not _drag_swap_triggered \
+		and not _drag_direction_detected
+
+	var tap_position: Vector2i = _drag_origin_position
+	_preview_selected_position = Vector2i(-1, -1)
+	_reset_drag_state()
+
+	if should_process_tap:
+		_on_piece_pressed(tap_position)
+	else:
+		_refresh_view()
+
+
+func _try_drag_swap(viewport_pos: Vector2) -> void:
+	if _drag_swap_triggered:
+		return
+
+	if _drag_origin_position == Vector2i(-1, -1):
+		return
+
+	var delta: Vector2 = viewport_pos - _drag_origin_viewport_position
+	var cardinal_direction: Vector2i = _cardinal_direction_from_drag(delta)
+	if cardinal_direction == Vector2i.ZERO:
+		return
+
+	_drag_direction_detected = true
+
+	var target_position: Vector2i = _drag_origin_position + cardinal_direction
+	var board_state: BoardState = _get_render_board_state()
+	if board_state == null or not board_state.can_hold_piece(target_position.y, target_position.x):
+		return
+
+	_drag_swap_triggered = true
+	_preview_selected_position = Vector2i(-1, -1)
+	await _execute_swap(_drag_origin_position, target_position)
+
+
+func _cardinal_direction_from_drag(delta: Vector2) -> Vector2i:
+	if delta.length() < DRAG_SWAP_THRESHOLD:
+		return Vector2i.ZERO
+
+	if absf(delta.x) > absf(delta.y):
+		return Vector2i.RIGHT if delta.x > 0.0 else Vector2i.LEFT
+
+	return Vector2i.DOWN if delta.y > 0.0 else Vector2i.UP
+
+
+func _is_within_clickable_area(local_pos: Vector2) -> bool:
+	var center := _active_board_cell_size * 0.5
+	var clickable_half := Vector2(36, 36) # 72x72 total
+	return abs(local_pos.x - center.x) <= clickable_half.x and abs(local_pos.y - center.y) <= clickable_half.y
+
+
+func _button_viewport_position(button: Button, local_pos: Vector2) -> Vector2:
+	return button.get_global_rect().position + local_pos
+
+
+func _reset_drag_state() -> void:
+	_drag_origin_position = Vector2i(-1, -1)
+	_drag_origin_viewport_position = Vector2.ZERO
+	_drag_swap_triggered = false
+	_drag_press_active = false
+	_drag_direction_detected = false
+	_drag_pointer_index = -2
 
 
 func _piece_color(piece) -> Color:

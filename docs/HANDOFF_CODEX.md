@@ -49,6 +49,8 @@ Estado atual do desenvolvimento:
 - HUD da fase agora usa cards visuais para objetivos e jogadas, em vez de texto corrido
 - gems do board foram ajustadas para tamanho visual fixo `72x72`
 - area de clique das gems foi ampliada para uma tolerancia visual de `72x72`
+- selecao de gemas agora prioriza gesto de arrastar cardinal para cima, baixo, esquerda e direita, sem permitir diagonal, mantendo toque/clique como fallback quando nao houve arraste
+- toque pressionado agora mostra pre-selecao visual imediata da gema, antes mesmo de confirmar tap ou swap por arraste
 - celulas fora da mascara do level agora ficam invisiveis, preservando o layout sem mostrar blocos cinza
 - vitoria agora abre um overlay mais celebratorio com `Parabens!` e botao unico `Continuar`
 - configuracoes exibem agradecimentos pelos assets gratuitos usados no beta
